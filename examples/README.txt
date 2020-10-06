@@ -14,10 +14,12 @@ example7: "Persisting data .pkl format"
 
 example8: "Making synthetic data"                                                                                   done
 
-example8: "Handling data in RackioAI"   class Wrangler
+example9: "Using KalmanFilter in RackioAI"
 
-example9: "Scaling data in RackioAI"    class Scaler
+example10: "Handling data in RackioAI"   class Wrangler
 
-example10: "Splitting data in RackioAI"  class Splitter
+example11: "Scaling data in RackioAI"    class Scaler
 
-example11: "Adding Deep Neural Newtork models to RackioAI"  module models
+example12: "Splitting data in RackioAI"  class Splitter
+
+example13: "Adding Deep Neural Newtork models to RackioAI"  module models

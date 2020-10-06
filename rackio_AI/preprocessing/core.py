@@ -1,4 +1,5 @@
 from .scaler import Scaler
+from .kalman_filter import KalmanFilter
 
 
 class Preprocessing:
@@ -12,3 +13,4 @@ class Preprocessing:
         self._description = description
 
         self.scaler = Scaler()
+        self.kalman_filter = KalmanFilter()
