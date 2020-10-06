@@ -8,6 +8,8 @@ RackioAI(app)
 
 os.chdir('..')
 cwd = os.getcwd()
-filename = os.path.join(cwd,'data', 'Stroke de fuga 10s','Case112.tpl')
+filename = os.path.join(cwd, 'rackio_AI', 'data', 'tpl_files', 'Leak112.tpl')
 
 data = RackioAI.load_data(filename)
+
+print(data)
