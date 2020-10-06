@@ -1,0 +1,6 @@
+falcon==2.0.0
+pyBigParser==2.1
+peewee==3.9.6
+python-statemachine==0.7.1
+APScheduler==3.6.3
+Jinja2==2.10.3
