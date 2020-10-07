@@ -1,48 +1,66 @@
 class KalmanFilter(object):
+    """
+    alpha = 1.0 (default)
+    beta = 0.0 (default)
+    """
 
     def __init__(self):
-        self._process_variance = 1.0
-        self._estimated_measurement_variance = 0.1
-        self._posteri_estimate = 0.0
-        self._posteri_error_estimate = 1.0
+        self._alpha = 1.0
+        self._beta = 0.0
+        self._init_value = 0.0
+        self._posteri_error_estimate = 0.0
 
     @property
-    def process_variance(self):
+    def alpha(self):
         """
 
         """
-        return self._process_variance
+        return self._alpha
 
-    @process_variance.setter
-    def process_variance(self, value):
+    @alpha.setter
+    def alpha(self, value):
         """
 
         """
-        self._process_variance = value
+        self._alpha = value
 
     @property
-    def estimated_measurement_variance(self):
+    def beta(self):
         """
 
         """
-        return self._estimated_measurement_variance
+        return self._beta
 
-    @estimated_measurement_variance.setter
-    def estimated_measurement_variance(self, value):
+    @beta.setter
+    def beta(self, value):
         """
 
         """
-        self._estimated_measurement_variance = value
+        self._beta = value
+
+    @property
+    def init_value(self):
+        """
+
+        """
+        return self._init_value
+
+    @init_value.setter
+    def init_value(self, value):
+        """
+
+        """
+        self._init_value = value
 
     def __call__(self, value):
         """
 
         """
-        priori_estimate = self._posteri_estimate
-        priori_error_estimate = self._posteri_error_estimate + self.process_variance
+        init_value = self._init_value
+        priori_error_estimate = self._posteri_error_estimate + self.alpha
 
-        blending_factor = priori_error_estimate / (priori_error_estimate + self.estimated_measurement_variance)
-        self._posteri_estimate = priori_estimate + blending_factor * (value - priori_estimate)
+        blending_factor = priori_error_estimate / (priori_error_estimate + self.beta)
+        self._init_value = init_value + blending_factor * (value - init_value)
         self._posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
 
-        return self._posteri_estimate
+        return self._init_value

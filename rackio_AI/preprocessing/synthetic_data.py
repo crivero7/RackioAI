@@ -81,7 +81,14 @@ class SyntheticData(PrepareData):
 
         """
         options = self._check_options(**options)
-        {setattr(self, key, options[key]) for key in options.keys()}
+
+        for key in options.keys():
+            if isinstance(options[key], np.ndarray):
+                setattr(self, key, options[key])
+            elif isinstance(options[key], list):
+                setattr(self, key, np.array(options[key]))
+
+        #{setattr(self, key, options[key]) for key in options.keys()}
         self.accuracy = self.error - self.repeteability
         self.span = self.upper_limit - self.lower_limit
 
@@ -198,7 +205,7 @@ class SyntheticData(PrepareData):
             else:
                 self.data[pos:pos+duration, count] = self.upper_limit[count] + anomaly[count]
 
-    def done(self, view=True, **options):
+    def done(self, view=False, **options):
         """
         Este método permite graficar las variables que el usuario quiera visualizar
         """
@@ -209,15 +216,24 @@ class SyntheticData(PrepareData):
         """
         Este método permite generar las anomalías a la data para simular una data sintética proveniente de campo
         """
+        default_options = {'duration': {'min': 50,
+                                        'max': 500},
+                           'view': False,
+                           'columns': [0]}
+
+        options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
+
+        duration_min = options['duration']['min']
+        duration_max = options['duration']['max']
 
         "Agregando descalibración"
         for i in range(decalibrations):
-            duration = np.random.randint(50, 500)
+            duration = np.random.randint(duration_min, duration_max)
             self.add_decalibration(duration=duration)
 
         "Agregando sensor drift"
         for i in range(sensor_drift):
-            duration = np.random.randint(50, 500)
+            duration = np.random.randint(duration_min, duration_max)
             self.add_sensor_drift(duration=duration)
 
         "Agregando anomalía de ruido gaussiano"
@@ -226,12 +242,12 @@ class SyntheticData(PrepareData):
 
         "Agregando anomalía de ruido gaussiano excesivo"
         for i in range(excesive_noise):
-            duration = np.random.randint(50, 500)
+            duration = np.random.randint(duration_min, duration_max)
             self.add_excesive_noise(duration=duration)
 
         "Agregando anomalía de instrumento congelado"
         for i in range(frozen_data):
-            duration = np.random.randint(50, 500)
+            duration = np.random.randint(duration_min, duration_max)
             self.add_frozen_data(duration=duration)
 
         "Agregando anomalía de outlier"
@@ -241,11 +257,11 @@ class SyntheticData(PrepareData):
 
         "Agregando anomalía de instrumento fuera de rango"
         for i in range(out_of_range):
-            duration = np.random.randint(50, 500)
+            duration = np.random.randint(duration_min, duration_max)
             self.add_out_of_range(duration=duration)
 
 
-        self.done(columns=[0, 1, 2, 3], ylabel='Amplitude', xlabel='Point')
+        self.done(view=options['view'], columns=options['columns'], ylabel='Amplitude', xlabel='Point')
 
         return self.data
 
@@ -279,7 +295,9 @@ class SyntheticData(PrepareData):
         " Definiendo los parámetros por defecto de los instrumentos"
         default_options = {key:np.zeros(sensors_numbers) for key in data_type_synthetic_data if key != '_data'}
 
-        return default_options
+        options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
+
+        return options
 
     def _add_dead_band(self, *args):
         """
