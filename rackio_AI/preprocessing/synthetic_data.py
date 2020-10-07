@@ -41,23 +41,19 @@ class SyntheticData(PrepareData):
     dead_band = [DB1, DB2, DB3, ... DBn]
     obj = SyntheticData(data, error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
     """
-    _data = np.array([])
-    error = np.array([])
-    repeteability = np.array([])
-    lower_limit = np.array([])
-    upper_limit = np.array([])
-    dead_band = np.array([])
-
-
     def __init__(self, **options):
 
         super(SyntheticData, self).__init__()
-        self._data = np.zeros(0)
+        self._data = np.array([])
+        self.error = np.array([])
+        self.repeteability = np.array([])
+        self.lower_limit = np.array([])
+        self.upper_limit = np.array([])
+        self.dead_band = np.array([])
         options = self._check_options(**options)
         {setattr(self, key, options[key]) for key in options.keys()}
         self.accuracy = self.error - self.repeteability
         self.span = self.upper_limit - self.lower_limit
-
 
     @property
     def data(self):
@@ -88,7 +84,6 @@ class SyntheticData(PrepareData):
             elif isinstance(options[key], list):
                 setattr(self, key, np.array(options[key]))
 
-        #{setattr(self, key, options[key]) for key in options.keys()}
         self.accuracy = self.error - self.repeteability
         self.span = self.upper_limit - self.lower_limit
 
@@ -103,7 +98,7 @@ class SyntheticData(PrepareData):
         Este método permite agregar el fenomeno de descalibración a una data simulada
 
         min: Booleano que permite establecer si el outlier es positivo (False) o negativo (True)
-        decalibrationFactor: Es la magnitud que multiplica al error del instrumento para generar la descalibración
+        decalibration_factor: Es la magnitud que multiplica al error del instrumento para generar la descalibración
         duration: es la cantidad de valores seguidos en la data en la que se mantenddrá la anomalía
         """
         bias = -decalibration_factor * self.error - self.repeteability
@@ -135,10 +130,10 @@ class SyntheticData(PrepareData):
             min = bool(np.random.randint(2))
             if min:
                 new_value = drift[k, :] - sensor_drift_factor * self.error * self.span / duration
-                drift = np.append(drift, new_value.reshape([1, self.data.shape[-1]]), axis=0)
             else:
                 new_value = drift[k,:] + sensor_drift_factor * self.error * self.span / duration
-                drift = np.append(drift, new_value.reshape([1, self.data.shape[-1]]), axis=0)
+
+            drift = np.append(drift, new_value.reshape([1, self.data.shape[-1]]), axis=0)
         "Agregando la deriva a la data del instrumento"
         for count, pos in enumerate(init_position):
             self.data[pos:pos+duration, count] = drift[:,count]
@@ -216,8 +211,8 @@ class SyntheticData(PrepareData):
         """
         Este método permite generar las anomalías a la data para simular una data sintética proveniente de campo
         """
-        default_options = {'duration': {'min': 50,
-                                        'max': 500},
+        default_options = {'duration': {'min': 10,
+                                        'max': 50},
                            'view': False,
                            'columns': [0]}
 
