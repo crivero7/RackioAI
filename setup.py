@@ -18,10 +18,10 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        'Rackio==0.9.3',
-        'pandas==1.0.1',
-        'numpy==1.16.4',
-        'tqdm==4.45.0',
+        'Rackio',
+        'pandas',
+        'numpy',
+        'tqdm',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
