@@ -25,7 +25,6 @@ class Preprocess:
 
                 self.preprocess = Classification(name, description)
 
-
     def __call__(self, action, data):
         """
 

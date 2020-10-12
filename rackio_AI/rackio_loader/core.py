@@ -11,7 +11,6 @@ class ReaderTPL:
     path_filename = None
     options = TPLOptions()
 
-
     def __init__(self, filename):
 
         if os.path.isfile(filename):
@@ -31,7 +30,6 @@ class ReaderTPL:
             self.path_filename = filename
             self.doc = list()
 
-
     def __call__(self):
         """
 
@@ -45,7 +43,6 @@ class ReaderTPL:
             self.doc = self._read_all_files()
 
         return self.doc
-
 
     def _read_file(self, filename):
         """
@@ -101,7 +98,6 @@ class ReaderTPL:
         self.doc.append(self._read_file(filenames))
 
         return self.doc
-
 
     def _get_section_from(self):
         """
@@ -203,13 +199,11 @@ class ReaderTPL:
         """
         return self._join(flag=True)
 
-
     def _to_series(self):
         """
 
         """
         return self._join(flag=False)
-
 
     def _to_csv(self, **kwargs):
         """
@@ -224,7 +218,6 @@ class ReaderTPL:
 
         df[column_list] = df[column_list].apply(pd.to_numeric, errors='coerce')
         return df
-
 
     def _join(self, flag=True):
         """
@@ -266,4 +259,3 @@ class ReaderTPL:
             data = pd.Series(new_data)
             data.index = index_name
             return data
-
