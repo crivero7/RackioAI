@@ -10,7 +10,7 @@ setuptools.setup(
     version="0.0.1",
     author="Carlos Rivero",
     author_email="cdrr.rivero@gmail.com",
-    description="A modern Python Framework for AI models development",
+    description="A Rackio extension for AI models development",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
