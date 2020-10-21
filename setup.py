@@ -27,6 +27,7 @@ setuptools.setup(
         'Pillow==8.0.0',
         'Rackio==0.9.7',
         'PyYAML==5.3.1',
+        'matplotlib==3.3.2',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
