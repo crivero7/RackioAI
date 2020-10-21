@@ -3,6 +3,7 @@ import pandas as pd
 from ._singleton import Singleton
 from .managers.preprocess import PreprocessManager
 from .rackio_loader.rackio_tpl import TPL
+from .data_handler import DataHandler
 from .preprocessing.synthetic_data import SyntheticData
 
 
@@ -18,6 +19,7 @@ class RackioAI(Singleton):
         self.synthetic_data = SyntheticData()
         self._preprocess_manager = PreprocessManager()
 
+
         self.app = None
 
     def __call__(self, app):
@@ -26,13 +28,10 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def load_data(self, filename):
+    def _load_data(self, filename):
         """
 
         """
-        if not hasattr(self, 'convert_data_to'):
-            setattr(self, 'convert_data_to', self.loader.to)
-
         return self.loader.read(filename)
 
     @property
@@ -48,14 +47,14 @@ class RackioAI(Singleton):
         filename (str):
         """
         if os.path.isdir(filename):
-            self._data = self.load_data(filename)
+            self._data = self._load_data(filename)
 
         elif os.path.isfile(filename):
 
             if filename.endswith('.tpl'):
-                data = self.load_data(filename)
+                self._load_data(filename)
 
-                self._data = data
+                self._data = self.loader.to('dataframe')
 
             elif filename.endswith('.pkl'):
                 try:
