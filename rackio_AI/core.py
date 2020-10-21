@@ -118,3 +118,34 @@ class RackioAI(Singleton):
 
 
         return result
+
+    @staticmethod
+    def save(obj, filename, format='pkl'):
+        """
+        Method to persist any object
+        params:
+            obj: (obj) any object persistable
+            filename: (str) with no extension
+            format: (str) with no dot (.) at the beginning
+        """
+        if format.lower()=='pkl':
+            with open('{}.{}'.format(filename,format), 'wb') as file:
+                pickle.dump(obj, file)
+
+    @staticmethod
+    def load(filename, format='pkl'):
+        """
+        Method to load any saved object with RackioAI's save method
+        params:
+            filename: (str) with no extension
+            format: (str) with no dot (.) at the beginning
+
+        return:
+            obj: (obj)
+        """
+        obj = None
+        if format.lower()=='pkl':
+            with open('{}.{}'.format(filename,format), 'rb') as file:
+                obj = pickle.load(file)
+
+        return obj

@@ -10,11 +10,11 @@ example5: "Converting .tpl file to dataframe"                                   
 
 example6: "Loading multiple .tpl files found starting from a parent directory"                                      done
 
-example7: "Persisting data .pkl format"
+example7: "Persisting objects in .pkl format"
 
 example8: "Making synthetic data"                                                                                   done
 
-example9: "Using KalmanFilter in RackioAI"
+example9: "Using KalmanFilter in RackioAI"                                                                          done
 
 example10: "Handling data in RackioAI"   class Wrangler
 
