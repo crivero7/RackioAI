@@ -149,3 +149,13 @@ class RackioAI(Singleton):
                 obj = pickle.load(file)
 
         return obj
+
+    def test_data(self, name='Leak'):
+        """
+
+        """
+        os.chdir('..')
+        cwd = os.getcwd()
+        filename = os.path.join(cwd, 'rackio_AI', 'data', name)
+        self.load_data(filename)
+        return self.convert_data_to('dataframe')

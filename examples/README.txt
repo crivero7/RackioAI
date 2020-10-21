@@ -16,10 +16,12 @@ example8: "Making synthetic data"                                               
 
 example9: "Using KalmanFilter in RackioAI"                                                                          done
 
-example10: "Handling data"   class Wrangler
+example10: "Loading Leak test data"                                                                                 done
 
-example11: "Scaling data"    class Scaler
+example11: "Handling data"   class Wrangler
 
-example12: "Splitting data"  class Splitter
+example12: "Scaling data"    class Scaler
 
-example13: "Adding Deep Neural Newtork model"  module models
+example13: "Splitting data"  class Splitter
+
+example14: "Adding Deep Neural Newtork model"  module models
