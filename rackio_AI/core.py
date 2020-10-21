@@ -1,5 +1,6 @@
 import os, pickle
 import pandas as pd
+import numpy as np
 from ._singleton import Singleton
 from .managers.preprocess import PreprocessManager
 from .rackio_loader.rackio_tpl import TPL
@@ -47,7 +48,9 @@ class RackioAI(Singleton):
         filename (str):
         """
         if os.path.isdir(filename):
-            self._data = self._load_data(filename)
+            self._load_data(filename)
+
+            self._data = self.loader.to('dataframe')
 
         elif os.path.isfile(filename):
 
@@ -72,12 +75,12 @@ class RackioAI(Singleton):
                         raise ImportError('{} is not possible loaded it'.format(filename))
 
 
-    def set_data(self, filename):
+    def set_data(self, data):
         """
-        filename (str):
+        data (pd.DataFrame):
         """
-
-        self._data = self.load_data(filename)
+        if isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray):
+            self._data = data
 
     def append_preprocess_model(self, preprocess_model):
         """Append a preprocessing model to the preprocessing manager.
