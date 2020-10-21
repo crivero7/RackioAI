@@ -9,15 +9,9 @@ from abc import abstractmethod, ABCMeta
 class PrepareData(metaclass=ABCMeta):
 
     def __init__(self):
-        """
-
-        """
         pass
 
     def __str__(self):
-        """
-
-        """
         return '{}'.format(self.__dict__)
 
     @staticmethod
