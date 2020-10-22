@@ -19,7 +19,6 @@ The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) 
 * Rackio (0.9.7)
 
 ___
-**RackioAI** 0.0.1 is the first release and require Python 3.6 or newer
 
 ## User installation
 The easiest way to install **RackioAI** is using pip
