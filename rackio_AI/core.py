@@ -85,7 +85,6 @@ class RackioAI(Singleton):
             if isinstance(value, np.ndarray):
                 value = pd.DataFrame(value)
 
-            self._data = value
             self.synthetic_data.data = value
             self.data_handler.data = value
         else:

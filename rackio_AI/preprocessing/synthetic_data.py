@@ -1,8 +1,8 @@
-from rackio_AI.decorators import typeCheckedAttribute
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from .synthetic_data_base import PrepareData
+from rackio_AI.decorators import typeCheckedAttribute
+from rackio_AI.preprocessing.synthetic_data_base import PrepareData
 
 
 data_type_synthetic_data = {'_data': [pd.Series, pd.DataFrame, np.ndarray],
@@ -41,17 +41,6 @@ class SyntheticData(PrepareData):
     obj = SyntheticData(data, error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
     """
     def __init__(self, **options):
-        """
-        Initializer
-        params:
-            **options: {'error': [np.ndarray, list],
-                        'repeteability': [np.ndarray, list],
-                        'lower_limit': [np.ndarray, list],
-                        'upper_limit': [np.ndarray, list],
-                        'dead_band': [np.ndarray, list]}
-        return:
-            None
-        """
         super(SyntheticData, self).__init__()
         self._data = np.array([])
         self.error = np.array([])
@@ -68,8 +57,10 @@ class SyntheticData(PrepareData):
     def data(self):
         """
         Property getter method
-        return:
-            data (np.array, pd.DataFrame)
+        **Parameters**
+            None
+        **return**
+            * **data:** (np.array, pd.DataFrame)
         """
         return self._data
 
@@ -77,9 +68,11 @@ class SyntheticData(PrepareData):
     def data(self, value):
         """
         Property setter methods
-        params:
-            value (np.array, pd.DataFrame)
-        return: None
+        **Parameters**
+            * **value:** (np.array, pd.DataFrame)
+
+        **return**
+            None
         """
         if not isinstance(value, np.ndarray):
             self._data = value.values
@@ -90,14 +83,44 @@ class SyntheticData(PrepareData):
         """
         This method allows to you set user options like instrument attributes, if the option is not passed by the user,
         then this function set it zeros
-        params:
-            **options: {'error': [np.ndarray, list],
-                        'repeteability': [np.ndarray, list],
-                        'lower_limit': [np.ndarray, list],
-                        'upper_limit': [np.ndarray, list],
-                        'dead_band': [np.ndarray, list]}
-
+        **Parameters**
+            * ****options:** {'error': [np.ndarray, list],
+                              'repeteability': [np.ndarray, list],
+                              'lower_limit': [np.ndarray, list],
+                              'upper_limit': [np.ndarray, list],
+                              'dead_band': [np.ndarray, list]}
         return: None
+        >>> import os
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> os.chdir('..')
+        >>> cwd = os.getcwd()
+        >>> filename = os.path.join(cwd,'data','pkl_files', 'test_data.pkl')
+        >>> RackioAI.load(filename)
+                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
+        0.000000                        37.83052  ...                352683.3
+        0.502732                        37.83918  ...                353449.8
+        1.232772                        37.83237  ...                353587.3
+        1.653696                        37.80707  ...                353654.8
+        2.200430                        37.76957  ...                353706.8
+        ...                                  ...  ...                     ...
+        383.031800                     169.36700  ...                374582.2
+        383.518200                     169.37650  ...                374575.9
+        384.004500                     169.38550  ...                374572.7
+        384.490900                     169.39400  ...                374573.0
+        384.977200                     169.40170  ...                374576.1
+        <BLANKLINE>
+        [20000 rows x 4 columns]
+        >>> variable_names = RackioAI.data.columns.to_list()
+        >>> error = [0.0025, 0.0025, 0.0025, 0.0025]
+        >>> repeteability = [0.001, 0.001, 0.001, 0.001]
+        >>> lower_limit = [0, 0, 400000, 100000]
+        >>> upper_limit = [500, 500, 1200000, 600000]
+        >>> dead_band = [0.001, 0.001, 0.001, 0.001]
+        >>> RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
         """
         options = self._check_options(**options)
         # convert the options to np.array
@@ -251,21 +274,60 @@ class SyntheticData(PrepareData):
     def __call__(self, decalibrations=0, sensor_drift=0, excesive_noise=0, frozen_data=0, outliers=0, out_of_range=0, add_WN=False, **options):
         """
         Callback to do anomalies
-        params:
-            decalibrations (int) default=0: decalibration anomalies to add
-            sensor_drift (int) default=0: sensor drift anomalies to add
-            excesive_noise (int) default=0: excesive noise anomalies to add
-            frozen_data (int) default=0: frozen data anomalies to add
-            outliers (int) default=0: outlier anomalies to add
-            out_of_range (int) default=0: out of range anomalies to add
-            add_WN (bool) default=False: add or not add error instrumentation
-            **options (dict): {'duration': (dict) {'min': (int) default=10,
+        **Parameters**
+            * **decalibrations:** (int) default=0: decalibration anomalies to add
+            * **sensor_drift:** (int) default=0: sensor drift anomalies to add
+            * **excesive_noise:** (int) default=0: excesive noise anomalies to add
+            * **frozen_data:** (int) default=0: frozen data anomalies to add
+            * **outliers:** (int) default=0: outlier anomalies to add
+            * **out_of_range:** (int) default=0: out of range anomalies to add
+            * **add_WN:** (bool) default=False: add or not add error instrumentation
+            * ****options** (dict): {'duration': (dict) {'min': (int) default=10,
                                                     'max': (int) default=50},
                                'view': (bool) default=False,
                                'columns': (list) default=[0]}
 
-        return:
-            data (np.array, pd.DataFrame): data with anomalies
+        **return:**
+            * **data:** (np.array, pd.DataFrame): data with anomalies
+        >>> import os
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> os.chdir('..')
+        >>> cwd = os.getcwd()
+        >>> filename = os.path.join(cwd,'data','pkl_files', 'test_data.pkl')
+        >>> RackioAI.load(filename)
+                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
+        0.000000                        37.83052  ...                352683.3
+        0.502732                        37.83918  ...                353449.8
+        1.232772                        37.83237  ...                353587.3
+        1.653696                        37.80707  ...                353654.8
+        2.200430                        37.76957  ...                353706.8
+        ...                                  ...  ...                     ...
+        383.031800                     169.36700  ...                374582.2
+        383.518200                     169.37650  ...                374575.9
+        384.004500                     169.38550  ...                374572.7
+        384.490900                     169.39400  ...                374573.0
+        384.977200                     169.40170  ...                374576.1
+        <BLANKLINE>
+        [20000 rows x 4 columns]
+        >>> variable_names = RackioAI.data.columns.to_list()
+        >>> error = [0.0025, 0.0025, 0.0025, 0.0025]
+        >>> repeteability = [0.001, 0.001, 0.001, 0.001]
+        >>> lower_limit = [0, 0, 400000, 100000]
+        >>> upper_limit = [500, 500, 1200000, 600000]
+        >>> dead_band = [0.001, 0.001, 0.001, 0.001]
+        >>> RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
+        >>> RackioAI.synthetic_data(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
+        array([[3.87647663e+01, 3.75889739e+01, 5.67794303e+05, 3.52048723e+05],
+               [3.80072074e+01, 3.79376399e+01, 5.67327196e+05, 3.53887622e+05],
+               [3.76772146e+01, 3.68759064e+01, 5.69482976e+05, 3.53711490e+05],
+               ...,
+               [1.70324488e+02, 1.69601736e+02, 7.84901541e+05, 3.74691472e+05],
+               [1.70259582e+02, 1.69336040e+02, 7.84280526e+05, 3.74594640e+05],
+               [1.68932373e+02, 1.69688147e+02, 7.83626896e+05, 3.74642713e+05]])
         """
         default_options = {'duration': {'min': 10,
                                         'max': 50},
@@ -390,3 +452,7 @@ class SyntheticData(PrepareData):
         plt.ylabel(ylabel)
         plt.xlabel(xlabel)
         plt.show(block=True)
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()
