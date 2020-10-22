@@ -18,10 +18,17 @@ class RackioAI(Singleton):
 
         self.loader = TPL()
         self.synthetic_data = SyntheticData()
+        self.data_handler = DataHandler(self.observer)
         self._preprocess_manager = PreprocessManager()
 
 
         self.app = None
+
+    def observer(self, value):
+        """
+
+        """
+        self._data = value
 
     def __call__(self, app):
         """
@@ -29,11 +36,37 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def _load_data(self, filename):
+    def load(self, filename):
         """
+        filename (str):
+        """
+        if os.path.isdir(filename) or os.path.isfile(filename):
 
-        """
-        return self.loader.read(filename)
+            if filename.endswith('.pkl'):
+                try:
+                    with open(filename, 'rb') as file:
+                        data = pickle.load(file)
+                except:
+                    try:
+                        with open(filename, 'rb') as file:
+                            data = pd.read_pickle(file)
+                    except:
+                        raise ImportError('{} is not possible loaded it'.format(filename))
+
+                self.data = data
+                return data
+
+            try:
+                self._load_data(filename)
+                data = self.loader.to('dataframe')
+                self.data = data
+                return data
+
+            except:
+                raise ImportError('{} is not possible loaded because is no a .tpl file'.format(filename))
+
+        else:
+            raise TypeError('You can only load .tpl or .pkl files')
 
     @property
     def data(self):
@@ -43,44 +76,20 @@ class RackioAI(Singleton):
         return self._data
 
     @data.setter
-    def data(self, filename):
+    def data(self, value):
         """
-        filename (str):
+        value (pd.DataFrame or np.ndarray):
         """
-        if os.path.isdir(filename):
-            self._load_data(filename)
+        if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
-            self._data = self.loader.to('dataframe')
+            if isinstance(value, np.ndarray):
+                value = pd.DataFrame(value)
 
-        elif os.path.isfile(filename):
-
-            if filename.endswith('.tpl'):
-                self._load_data(filename)
-
-                self._data = self.loader.to('dataframe')
-
-            elif filename.endswith('.pkl'):
-                try:
-                    with open(filename, 'rb') as file:
-                        data = pickle.load(file)
-                        self.synthetic_data.data = data
-                        self._data = data
-                except:
-                    try:
-                        with open(filename, 'rb') as file:
-                            data = pd.read_pickle(file)
-                            self.synthetic_data.data = data
-                            self._data = data
-                    except:
-                        raise ImportError('{} is not possible loaded it'.format(filename))
-
-
-    def set_data(self, data):
-        """
-        data (pd.DataFrame):
-        """
-        if isinstance(data, pd.DataFrame) or isinstance(data, np.ndarray):
-            self._data = data
+            self._data = value
+            self.synthetic_data.data = value
+            self.data_handler.data = value
+        else:
+            raise TypeError('value must be a pd.DataFrame or np.ndarray')
 
     def append_preprocess_model(self, preprocess_model):
         """Append a preprocessing model to the preprocessing manager.
@@ -104,7 +113,6 @@ class RackioAI(Singleton):
         """
 
         """
-
         preprocess = self.get_preprocess(name)
 
         return preprocess.serialize()
@@ -113,16 +121,13 @@ class RackioAI(Singleton):
         """
         Returns a RackioAI Application Summary (dict).
         """
-
         result = dict()
-
         result["preprocessing_manager"] = self._preprocess_manager.summary()
-
 
         return result
 
     @staticmethod
-    def save(obj, filename, format='pkl'):
+    def save_obj(obj, filename, format='pkl'):
         """
         Method to persist any object
         params:
@@ -135,7 +140,7 @@ class RackioAI(Singleton):
                 pickle.dump(obj, file)
 
     @staticmethod
-    def load(filename, format='pkl'):
+    def load_obj(filename, format='pkl'):
         """
         Method to load any saved object with RackioAI's save method
         params:
@@ -159,5 +164,11 @@ class RackioAI(Singleton):
         os.chdir('..')
         cwd = os.getcwd()
         filename = os.path.join(cwd, 'rackio_AI', 'data', name)
-        self.load_data(filename)
-        return self.convert_data_to('dataframe')
+        self._load_data(filename)
+        return self.loader.to('dataframe')
+
+    def _load_data(self, filename):
+        """
+
+        """
+        return self.loader.read(filename)

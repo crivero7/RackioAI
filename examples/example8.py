@@ -15,7 +15,7 @@ os.chdir('..')
 cwd = os.getcwd()
 filename = os.path.join(cwd,'rackio_AI','data','pkl_files', 'test_data.pkl')
 
-RackioAI.data = filename
+RackioAI.load(filename)
 
 variable_names = RackioAI.data.columns.to_list()
 

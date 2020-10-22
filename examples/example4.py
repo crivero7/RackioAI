@@ -13,7 +13,7 @@ base_path = os.path.join(cwd,'rackio_AI','data')
 
 filename = os.path.join(base_path, 'Leak')
 
-RackioAI.data = filename
+RackioAI.load(filename)
 
 url_to_save = os.path.join(base_path,'name.csv')
 RackioAI.loader.to('csv', filename=url_to_save)

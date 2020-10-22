@@ -10,7 +10,7 @@ os.chdir('..')
 cwd = os.getcwd()
 filename = os.path.join(cwd, 'rackio_AI', 'data', 'Leak','Leak112.tpl')
 
-RackioAI.data = filename
+RackioAI.load(filename)
 
 df = RackioAI.loader.to('dataframe')
 print(' ')
@@ -22,10 +22,10 @@ df.info()
 
 filename = 'test'
 # Save pkl object
-RackioAI.save(df, filename)
+RackioAI.save_obj(df, filename)
 
 # Load pkl object
-df2 = RackioAI.load(filename)
+df2 = RackioAI.load_obj(filename)
 
 print(' ')
 print('----------------------------------------------------------------------------------------')

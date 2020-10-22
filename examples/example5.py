@@ -10,6 +10,6 @@ os.chdir('..')
 cwd = os.getcwd()
 filename = os.path.join(cwd, 'rackio_AI', 'data', 'Leak','Leak112.tpl')
 
-RackioAI.data = filename
+RackioAI.load(filename)
 
 RackioAI.data.info()

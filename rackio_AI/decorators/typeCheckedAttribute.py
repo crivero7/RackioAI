@@ -68,7 +68,7 @@ def checkOptions(function=None, **kwargs):
             options = {key: options[key] if key in options.keys() else defaultOptions[key] for key in defaultOptions.keys()}
             lengthOfEachOption = [len(options[option]) for option in options]
             # verificar cantidad de sensores
-            lengthOfEachOption.append(args[-1].data.shape[-1])
+            lengthOfEachOption.append(args[-1]._data.shape[-1])
             if not all([x==lengthOfEachOption[0] for x in lengthOfEachOption]):
                 raise ValueError('{} must be the same length that data sensor'.format(options.keys()))
             return options
