@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import numpy as np
 from rackio_AI import RackioAI
 from rackio import Rackio
 
