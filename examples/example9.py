@@ -16,7 +16,7 @@ cwd = os.getcwd()
 filename = os.path.join(cwd,'rackio_AI','data','pkl_files', 'test_data.pkl')
 
 "Load Data to RackioAI"
-RackioAI.data = filename
+RackioAI.load(filename)
 
 "Definition of instrument parameters"
 error = [0.0025, 0.0025, 0.0025, 0.0025]
@@ -46,7 +46,7 @@ FI_01 = data[:,0]
 FI_01 = FI_01.reshape(-1,1)
 
 "Optional - set filter init_value"
-kf.init_value = FI_01[0]
+kf.set_init_value(FI_01[0])
 
 "Applying Kalman filter"
 f_FI_01 = np.array([kf(value) for value in FI_01])

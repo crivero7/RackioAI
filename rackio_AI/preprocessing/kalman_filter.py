@@ -1,66 +1,73 @@
-class KalmanFilter(object):
+class KalmanFilter:
     """
-    alpha = 1.0 (default)
+    Class to filter data using kalman filter
+    **Attributes**
+        * **alpha:** (float) (default=1.0)
+        * **beta:** (float) (default=0.0)
+        * **f_value
     beta = 0.0 (default)
     """
 
     def __init__(self):
-        self._alpha = 1.0
-        self._beta = 0.0
-        self._init_value = 0.0
-        self._posteri_error_estimate = 0.0
+        self.alpha = 1.0
+        self.beta = 0.0
+        self.filtered_value = 0.0
+        self.posteri_error_estimate = 0.0
 
-    @property
-    def alpha(self):
+    def set_init_value(self, value):
         """
+        set init value for the Kalman filter
+        **Parameters**
+            * **value:** (float)
 
+        **return**
+            None
+        >>> import numpy as np
+        >>> from rackio_AI.preprocess import Preprocess
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocess(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
+        >>> kf = preprocess.preprocess.kalman_filter # Kalman filter definition
+        >>> variable_to_filter = np.ones((10,1)) +np.random.random((10,1))
+        >>> kf.set_init_value(variable_to_filter[0])
         """
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, value):
-        """
-
-        """
-        self._alpha = value
-
-    @property
-    def beta(self):
-        """
-
-        """
-        return self._beta
-
-    @beta.setter
-    def beta(self, value):
-        """
-
-        """
-        self._beta = value
-
-    @property
-    def init_value(self):
-        """
-
-        """
-        return self._init_value
-
-    @init_value.setter
-    def init_value(self, value):
-        """
-
-        """
-        self._init_value = value
+        self.filtered_value = value
 
     def __call__(self, value):
         """
 
+        **Parameters**
+            * **value:** (float) value to filter
+
+        **return**
+            (float) filtered value
+
+        See [This example](https://github.com/crivero7/RackioAI/blob/main/examples/example9.py) for a real example
+        >>> import numpy as np
+        >>> from rackio_AI.preprocess import Preprocess
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocess(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
+        >>> kf = preprocess.preprocess.kalman_filter # Kalman filter definition
+        >>> kf.alpha = 0.001
+        >>> kf.beta = 0.2
+        >>> variable_to_filter = np.ones((10,1)) +np.random.random((10,1))
+        >>> filtered_variable = np.array([kf(value) for value in variable_to_filter]) # Applying Kalman filter
         """
-        init_value = self._init_value
-        priori_error_estimate = self._posteri_error_estimate + self.alpha
+
+        f_value = self.filtered_value
+        priori_error_estimate = self.posteri_error_estimate + self.alpha
 
         blending_factor = priori_error_estimate / (priori_error_estimate + self.beta)
-        self._init_value = init_value + blending_factor * (value - init_value)
-        self._posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
+        self.filtered_value = f_value + blending_factor * (value - f_value)
+        self.posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
 
-        return self._init_value
+        return self.filtered_value
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()

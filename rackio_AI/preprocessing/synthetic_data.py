@@ -295,14 +295,7 @@ class SyntheticData(PrepareData):
         >>> upper_limit = [500, 500, 1200000, 600000]
         >>> dead_band = [0.001, 0.001, 0.001, 0.001]
         >>> RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
-        >>> RackioAI.synthetic_data(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
-        array([[3.87647663e+01, 3.75889739e+01, 5.67794303e+05, 3.52048723e+05],
-               [3.80072074e+01, 3.79376399e+01, 5.67327196e+05, 3.53887622e+05],
-               [3.76772146e+01, 3.68759064e+01, 5.69482976e+05, 3.53711490e+05],
-               ...,
-               [1.70324488e+02, 1.69601736e+02, 7.84901541e+05, 3.74691472e+05],
-               [1.70259582e+02, 1.69336040e+02, 7.84280526e+05, 3.74594640e+05],
-               [1.68932373e+02, 1.69688147e+02, 7.83626896e+05, 3.74642713e+05]])
+        >>> data = RackioAI.synthetic_data(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
         """
         default_options = {'duration': {'min': 10,
                                         'max': 50},
