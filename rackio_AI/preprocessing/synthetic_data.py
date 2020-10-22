@@ -89,38 +89,8 @@ class SyntheticData(PrepareData):
                               'lower_limit': [np.ndarray, list],
                               'upper_limit': [np.ndarray, list],
                               'dead_band': [np.ndarray, list]}
-        return: None
-        >>> import os
-        >>> import pandas as pd
-        >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> os.chdir('..')
-        >>> cwd = os.getcwd()
-        >>> filename = os.path.join(cwd,'data','pkl_files', 'test_data.pkl')
-        >>> RackioAI.load(filename)
-                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
-        0.000000                        37.83052  ...                352683.3
-        0.502732                        37.83918  ...                353449.8
-        1.232772                        37.83237  ...                353587.3
-        1.653696                        37.80707  ...                353654.8
-        2.200430                        37.76957  ...                353706.8
-        ...                                  ...  ...                     ...
-        383.031800                     169.36700  ...                374582.2
-        383.518200                     169.37650  ...                374575.9
-        384.004500                     169.38550  ...                374572.7
-        384.490900                     169.39400  ...                374573.0
-        384.977200                     169.40170  ...                374576.1
-        <BLANKLINE>
-        [20000 rows x 4 columns]
-        >>> variable_names = RackioAI.data.columns.to_list()
-        >>> error = [0.0025, 0.0025, 0.0025, 0.0025]
-        >>> repeteability = [0.001, 0.001, 0.001, 0.001]
-        >>> lower_limit = [0, 0, 400000, 100000]
-        >>> upper_limit = [500, 500, 1200000, 600000]
-        >>> dead_band = [0.001, 0.001, 0.001, 0.001]
-        >>> RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
+        **return**
+            None
         """
         options = self._check_options(**options)
         # convert the options to np.array
@@ -137,9 +107,11 @@ class SyntheticData(PrepareData):
     def add_instrument_error(self):
         """
         Add insturment error according the error and repeteability instrument
-        params: None
+        **Parameters**
+            None
 
-        return: None
+        **return**
+            None
         """
         # Adding sensibility according to the deadband instrument
         self._add_dead_band()
@@ -150,9 +122,9 @@ class SyntheticData(PrepareData):
     def add_decalibration(self, decalibration_factor=2.0, duration=10):
         """
         Add instrument decalibration to the data
-        params:
-            decalibration_factor (float) default=2.0: Instrument error amplitude respect to original error
-            duration (int) default=10: Values followed in the data in which the anomaly will be maintained
+        **Parameters**
+            * **decalibration_factor:** (float) default=2.0: Instrument error amplitude respect to original error
+            * **duration:** (int) default=10: Values followed in the data in which the anomaly will be maintained
         """
         bias = -decalibration_factor * self.error - self.repeteability
         init_position = np.random.randint(self.data.shape[0]-duration, size=(1,self.data.shape[-1]))[0]
@@ -168,9 +140,9 @@ class SyntheticData(PrepareData):
     def add_sensor_drift(self, sensor_drift_factor=5.0, duration=10):
         """
         Adding sensor drift anomaly to the data
-        params:
-            sensor_drift_factor (float) default=5.0: Instrument sensor drift amplitude respect to origina sensor drift
-            duration (int) default=10: Values followed in the data in which the anomaly will be maintained
+        **Parameters**
+            * **sensor_drift_factor:** (float) default=5.0: Instrument sensor drift amplitude respect to origina sensor drift
+            * **duration:** (int) default=10: Values followed in the data in which the anomaly will be maintained
         return:
             None
         """
@@ -194,11 +166,11 @@ class SyntheticData(PrepareData):
     def add_excesive_noise(self, error_factor=3.0, repeteability_factor=3.0, duration=10):
         """
         Adding excessive gaussian noise anomaly to the data
-        params:
-            error_factor (float) default=3.0: Instrument error amplitude respect to original error
-            repeteability_factor (float) default=3.0: Instrument repeteability amplitude respect to original repeteability
-            duration (int) default=10: Values followed in the data in which the anomaly will be maintained
-        return:
+        **Parameters**
+            * **error_factor:** (float) default=3.0: Instrument error amplitude respect to original error
+            * **repeteability_factor:** (float) default=3.0: Instrument repeteability amplitude respect to original repeteability
+            * **duration:** (int) default=10: Values followed in the data in which the anomaly will be maintained
+        **return**
             None
         """
         init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
@@ -214,9 +186,9 @@ class SyntheticData(PrepareData):
     def add_frozen_data(self, duration=10):
         """
         Adding frozing anomaly to the data
-        params:
-            duration (int) default=10: Values followed in the data in which the anomaly will be maintained
-        return:
+        **Parameters**
+            * **duration:** (int) default=10: Values followed in the data in which the anomaly will be maintained
+        **return**
             None
         """
         init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
@@ -227,9 +199,9 @@ class SyntheticData(PrepareData):
     def add_outliers(self, span_factor=0.03):
         """
         Adding outlier anomaly to the data
-        params:
-            span_factor (float) default=0.03: Fraction respect to instrument range to add to the data
-        return:
+        **Parameters**
+            * **span_factor:** (float) default=0.03: Fraction respect to instrument range to add to the data
+        **return**
             None
         """
         init_position = np.random.randint(self.data.shape[0], size=(1, self.data.shape[-1]))[0]
@@ -245,9 +217,9 @@ class SyntheticData(PrepareData):
     def add_out_of_range(self, duration=10):
         """
         Adding out of range anomaly to the data
-        params:
-            duration (int) default=10: Values followed in the data in which the anomaly will be maintained
-        return:
+        **Parameters**
+            * **duration:** (int) default=10: Values followed in the data in which the anomaly will be maintained
+        **return**
             None
         """
         init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
@@ -262,11 +234,14 @@ class SyntheticData(PrepareData):
     def done(self, view=False, **options):
         """
         This method allows to you plot the anomalies added to the data
-        params:
-            view (bool) default=False: If False no plot, True plot
-            **options (dict): {'columns': columns to plot in a list,
-                               'ylable': ylabel string,
-                               'xlabel': xlabel string}
+        **Parameters**
+            * **view:** (bool) default=False: If False no plot, True plot
+            * ****options:** (dict): {'columns': columns to plot in a list,
+                                      'ylable': ylabel string,
+                                      'xlabel': xlabel string}
+
+        **return**
+            None
         """
         if view:
             self.view(columns=options['columns'], ylabel=options['ylabel'], xlabel=options['ylabel'])
@@ -379,11 +354,11 @@ class SyntheticData(PrepareData):
     def round_by_dead_band(self, data):
         """
         Round data according to the instrument dead band
-        params:
-            data (np.array)
+        **Parameters**
+            * **data:** (np.array)
 
-        return
-            data (np.array): round data applied
+        **return**
+            * **data:** (np.array): round data applied
         """
         return np.array([np.round(data[:, count] * (10 **str(value)[::-1].find('.'))) / (10 **str(value)[::-1].find('.'))
                 for count, value in enumerate(self.dead_band)])
@@ -393,13 +368,14 @@ class SyntheticData(PrepareData):
         """
         This method allows to you check user options, if the option is not passed by the user, then this function set it
         zeros
-        params:
-            **options: {'error': [np.ndarray, list],
-                        'repeteability': [np.ndarray, list],
-                        'lower_limit': [np.ndarray, list],
-                        'upper_limit': [np.ndarray, list],
-                        'dead_band': [np.ndarray, list]}
-        return: (dict) valid options
+        **Paramters**
+            * ****options:** {'error': [np.ndarray, list],
+                              'repeteability': [np.ndarray, list],
+                              'lower_limit': [np.ndarray, list],
+                              'upper_limit': [np.ndarray, list],
+                              'dead_band': [np.ndarray, list]}
+        **return**
+            * **options:** (dict) valid options
         """
         if isinstance(self._data, pd.Series):
             sensors_numbers = 1
@@ -415,14 +391,13 @@ class SyntheticData(PrepareData):
     def _add_dead_band(self):
         """
         This method allows to you to add instrument sensibility behavior to the data
-        params:
+        **Parameters**
             None
 
-        return:
+        **return**
             None
         """
         data = self.data
-
         difference = np.diff(data, axis=0)
         # Positions where the new value has reached the instrument sensibility
         pos_true = abs(difference) >= self.dead_band
@@ -439,13 +414,13 @@ class SyntheticData(PrepareData):
 
     def view(self, columns=[0], xlabel='Time', ylabel='Amplitude'):
         """
-        plot the data with anomalies added
-        params:
-            columns (list) default=[0]:
-            xlabel (str) default='Time'
-            ylabel (str) default='Amplitude'
+        Plot the data with anomalies added
+        **Paramters**
+            * **columns:** (list) default=[0]:
+            * **xlabel:** (str) default='Time'
+            * **ylabel:** (str) default='Amplitude'
 
-        return
+        **return**
             None
         """
         plt.plot(self.data[:, columns])
