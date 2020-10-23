@@ -32,5 +32,3 @@ RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lo
 data = RackioAI.synthetic_data(frozen_data=2, out_of_range=1, add_WN=True, view=True, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
 
 data = pd.DataFrame(data, columns=variable_names)
-
-print('done')

@@ -1,6 +1,7 @@
 site_name: RackioAI Documentation
 
-theme: readthedocs
+theme:
+  name: material
 
 repo_name: RackioAI
 repo_url: https://github.com/crivero7/RackioAI
@@ -8,8 +9,17 @@ edit_uri: ""
 
 nav:
     - Introduction: 'index.md'
+    - Install: 'install.md'
     - QuickStart: 'quick_start.md'
-    - API Reference: 'api.md'
+    - API Reference:
+      - RackioAI:
+        - DataHandler: 'api_data_handler_DataHandler.md'
+        - Preprocess: 'api_preprocess_Preprocess.md'
+        - Data Loaders: 'api_rackio_loader.md'
+      - Data Analysis:
+        - RackioEDA: 'api_data_analysis_RackioEDA.md'
+      - Preprocessing:
+        - Synthetic Data: 'api_preprocessing_synthetic_data.md'
     - User Guide: 'user_guide.md'
     - Contributing: 'contributing.md'
 
@@ -17,3 +27,6 @@ markdown_extensions:
   - admonition
   - codehilite
   - mkautodoc
+
+extra_css:
+    - css/custom.css

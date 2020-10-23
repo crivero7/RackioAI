@@ -1,30 +1,38 @@
 import os, pickle
 import pandas as pd
 import numpy as np
-from ._singleton import Singleton
-from .managers.preprocess import PreprocessManager
-from .rackio_loader.rackio_tpl import TPL
-from .data_handler import DataHandler
-from .preprocessing.synthetic_data import SyntheticData
+from rackio_AI._singleton import Singleton
+from rackio_AI.managers.preprocess import PreprocessManager
+from rackio_AI.rackio_loader.rackio_tpl import TPL
+from rackio_AI.data_handler import DataHandler
+from rackio_AI.preprocessing.synthetic_data import SyntheticData
 
 
 class RackioAI(Singleton):
+    """
+    This is the main class of the package.
+
+    **RackioAI** is an open source, MIT License [Rackio-Framework](https://github.com/rack-io/rackio-framework) extension
+    to do data analysis (based on [Pandas](https://pandas.pydata.org/)) and deep learning models (based on [Keras](https://keras.io/))
+    taking advantage of **Rackio** system architecture.
+
+    You can use it by the following snippet code:
+
+    >>> from rackio import Rackio
+    >>> from rackio_AI import RackioAI
+    >>> app = Rackio()
+    >>> RackioAI(app)
+    """
 
     def __init__(self):
-        """
-
-        """
         super(RackioAI, self).__init__()
-
         self.loader = TPL()
         self.synthetic_data = SyntheticData()
-        self.data_handler = DataHandler(self.observer)
+        self.data_handler = DataHandler(self._observer)
         self._preprocess_manager = PreprocessManager()
-
-
         self.app = None
 
-    def observer(self, value):
+    def _observer(self, value):
         """
 
         """
@@ -171,3 +179,7 @@ class RackioAI(Singleton):
 
         """
         return self.loader.read(filename)
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()
