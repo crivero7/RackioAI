@@ -7,7 +7,7 @@ version: 2
 
 # Build documentation with MkDocs
 mkdocs:
-  configuration: RackioAI-documentation/mkdocs.yml
+  configuration: mkdocs.yml
   fail_on_warning: false
 
 # Optionally build your docs in additional formats such as PDF and ePub
@@ -20,4 +20,4 @@ formats:
 python:
   version: 3.7
   install:
-    - requirements: RackioAI-documentation/requirements.txt
+    - requirements: docs_requirements.txt
