@@ -13,6 +13,7 @@ nav:
     - QuickStart: 'quick_start.md'
     - API Reference:
       - RackioAI:
+        - core: 'api_core_RackioAI.md'
         - DataHandler: 'api_data_handler_DataHandler.md'
         - Preprocess: 'api_preprocess_Preprocess.md'
         - Data Loaders: 'api_rackio_loader.md'

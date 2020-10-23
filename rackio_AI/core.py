@@ -17,11 +17,13 @@ class RackioAI(Singleton):
     taking advantage of **Rackio** system architecture.
 
     You can use it by the following snippet code:
-
+    ```python
     >>> from rackio import Rackio
     >>> from rackio_AI import RackioAI
     >>> app = Rackio()
     >>> RackioAI(app)
+
+    ```
     """
 
     def __init__(self):
