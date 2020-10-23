@@ -66,4 +66,3 @@ The RackioAI documentation can be found in [The RackioAI documentation can be fo
 * Changelog
 * Contributing guide
 * Testing code
-
