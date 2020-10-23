@@ -60,7 +60,7 @@ You can check the latest sources with the command:
 ___
 ## Documentation (in progress...)
 
-The RackioAI documentation can be found in [The RackioAI documentation can be found in](https://rackioai.readthedocs.io/en/latest/)
+The RackioAI documentation can be found in [Read the Docs](https://rackioai.readthedocs.io/en/latest/)
 
 # Todo
 * Changelog
