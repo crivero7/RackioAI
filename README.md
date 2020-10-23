@@ -1,4 +1,5 @@
 # RackioAI
+
 **RackioAI** is a [Rackio](https://github.com/rack-io/rackio-framework) extension for Artificial Intelligence (AI) models.
 
 The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) as a *Leak Detection System* and *Virtual Analyzer* project in **Intelcon System C.A** and [MCL Control S.A](http://mclcontrol.com/) respectively as a workaround to development and deployment *Deep Learning* models faster way.
@@ -6,6 +7,7 @@ The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) 
 # Installation
 
 ## Dependencies
+
 **RackioAI** requieres:
 
 * Python (>=3.8)
@@ -21,6 +23,7 @@ The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) 
 ___
 
 ## User installation
+
 The easiest way to install **RackioAI** is using pip
 > pip install RackioAI
 
@@ -31,6 +34,7 @@ from rackio_AI import RackioAI
 ```
 
 ## User instantiation
+
 The most important thing you keep in mind is that **RackioAI** is a [Rackio](https://github.com/rack-io/rackio-framework) extension, therefore, to use RackioAI in any project you must do the following steps, respecting the order
 1. import Rackio
 2. import RackioAI
@@ -49,13 +53,16 @@ RackioAI(app)
 Now, you can get access to **RackioAI** methods and attributes.
 ___
 ## Source code
+
 You can check the latest sources with the command:
 
 `git clone https://github.com/crivero7/RackioAI.git`
 ___
+## Documentation (in progress...)
+
+The RackioAI documentation can be found in [The RackioAI documentation can be found in](https://rackioai.readthedocs.io/en/latest/)
 
 # Todo
-* Documentation (in Progress...)
 * Changelog
 * Contributing guide
 * Testing code
