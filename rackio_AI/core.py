@@ -30,7 +30,7 @@ class RackioAI(Singleton):
         super(RackioAI, self).__init__()
         self.loader = TPL()
         self.synthetic_data = SyntheticData()
-        self._preprocess_manager = PreprocessManager()
+        self._preprocessing_manager = PreprocessManager()
         self._data_analysis_manager = DataAnalysisManager()
         self.app = None
 
@@ -161,7 +161,7 @@ class RackioAI(Singleton):
     @property
     def data(self):
         """
-        Variable when is storaged the loaded data.
+        Variable where is storaged the loaded data.
 
         **Parameters**
 
@@ -190,25 +190,46 @@ class RackioAI(Singleton):
         self._data = value
 
     def append_data(self, data_analysis_object):
-        """Append a preprocessing model to the preprocessing manager.
+        """
+        Append a RackioEDA object to the data analysis manager.
 
-        # Parameters
-        preprocessing_model (Preprocess): a Preprocess object.
+        **Parameters**
+
+        * **data_analysis_object:** (RackioEDA): RackioEDA object.
+
+        **return**
+
+        None
         """
 
         self._data_analysis_manager.append(data_analysis_object)
 
     def get_data(self, name):
-        """Returns a RackioAI preprocess model defined by its name.
+        """
+        Returns a RackioEDA object defined by its name.
 
-        # Parameters
-        name (str): a RackioAI preprocess name.
+        **Parameters**
+
+        * **name:** (str) RackioEDA name.
+
+        **return**
+
+        * **data_object:** (RackioEDA) RackioEDA object
         """
 
         return self._data_analysis_manager.get_data(name)
 
     def serialize_data(self, name):
         """
+        serialize RackioEDA
+
+        **Parameters**
+
+        * **name:** (str) RackioEDA object name
+
+        **return**
+
+        * **data:** (dict) RackioEDA object serialized
 
         """
         data = self.get_data(name)
@@ -216,26 +237,47 @@ class RackioAI(Singleton):
         return data.serialize()
 
 
-    def append_preprocess_model(self, preprocess_model):
-        """Append a preprocessing model to the preprocessing manager.
+    def append_preprocess_model(self, preprocessing_model):
+        """
+        Append a Preprocessing object to the data analysis manager.
 
-        # Parameters
-        preprocessing_model (Preprocess): a Preprocess object.
+        **Parameters**
+
+        * **preprocessing_model:** (Preprocessing): Preprocessing object.
+
+        **return**
+
+        None
         """
 
-        self._preprocess_manager.append_preprocessing(preprocess_model)
+        self._preprocessing_manager.append_preprocessing(preprocessing_model)
 
     def get_preprocess(self, name):
-        """Returns a RackioAI preprocess model defined by its name.
+        """
+        Returns a Preprocessing object defined by its name.
 
-        # Parameters
-        name (str): a RackioAI preprocess name.
+        **Parameters**
+
+        * **name:** (str) Preprocessing name.
+
+        **return**
+
+        * **preprocessing_model:** (Preprocesing) Preprocessing model
         """
 
         return self._preprocess_manager.get_preprocessing_model(name)
 
     def serialize_preprocess(self, name):
         """
+        serialize Preprocessing model
+
+        **Parameters**
+
+        * **name:** (str) Preprocessing model name
+
+        **return**
+
+        * **data:** (dict) Preprocessin model serialized
 
         """
         preprocess = self.get_preprocess(name)
@@ -244,7 +286,15 @@ class RackioAI(Singleton):
 
     def summary(self):
         """
-        Returns a RackioAI Application Summary (dict).
+        Get a RackioAI summary.
+
+        **Parameters**
+
+        None
+
+        **return**
+
+        * **result:** (dict) All defined Managers
         """
         result = dict()
         result["preprocessing manager"] = self._preprocess_manager.summary()
@@ -256,42 +306,120 @@ class RackioAI(Singleton):
     def save_obj(obj, filename, format='pkl'):
         """
         Method to persist any object
-        params:
-            obj: (obj) any object persistable
-            filename: (str) with no extension
-            format: (str) with no dot (.) at the beginning
+
+        **Parameters**
+
+        * **obj:** (obj) any persistable object
+        * **filename:** (str) with no extension
+        * **format:** (str) with no dot (.) at the beginning (default='pkl')
+
+        **return**
+
+        * obj in the path defined by *filename*
         """
         if format.lower()=='pkl':
+
             with open('{}.{}'.format(filename,format), 'wb') as file:
                 pickle.dump(obj, file)
 
     @staticmethod
     def load_obj(filename, format='pkl'):
         """
-        Method to load any saved object with RackioAI's save method
-        params:
-            filename: (str) with no extension
-            format: (str) with no dot (.) at the beginning
+        load any saved object with RackioAI's save method
 
-        return:
-            obj: (obj)
+        **Parameters**
+
+        * **filename:** (str) with no extension
+        * **format:** (str) with no dot (.) at the beginning
+
+        **return**
+
+        * **obj:** (obj)
         """
         obj = None
         if format.lower()=='pkl':
+
             with open('{}.{}'.format(filename,format), 'rb') as file:
                 obj = pickle.load(file)
 
         return obj
 
-    def test_data(self, name='Leak'):
+    def load_test_data(self, *name):
         """
+        Load RackioAI test data contained in folder data
 
+        rackio_AI package has a folder called data
+
+        > rackio_AI/data
+
+        In this directory there are the following folders
+
+        > rackio_AI/data/Leak
+        > rackio_AI/data/pkl_files
+
+        *test_data* allows to you an specific file or all files in the previous folders
+
+        **Parameters**
+
+        * **name:** (str) a folder name or filename in rackio_AI/data
+
+        **return**
+
+        * **data:** (pandas.DataFrame)
+
+        #**Example**
+
+        ```python
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> RackioAI.load_test_data('Leak') # Load test data fron a folder
+        tag       TIME_SERIES  ...     file
+        variable               ... filename
+        unit                S  ...     .tpl
+        0            0.000000  ...  Leak111
+        1            0.502732  ...  Leak111
+        2            1.232772  ...  Leak111
+        3            1.653696  ...  Leak111
+        4            2.200430  ...  Leak111
+        ...               ...  ...      ...
+        32182     1618.124000  ...  Leak120
+        32183     1618.662000  ...  Leak120
+        32184     1619.200000  ...  Leak120
+        32185     1619.737000  ...  Leak120
+        32186     1620.275000  ...  Leak120
+        <BLANKLINE>
+        [32187 rows x 12 columns]
+        >>> RackioAI.load_test_data('Leak', 'Leak111.tpl') # Load test data from a file in Leak Folder
+        tag       TIME_SERIES  ...     file
+        variable               ... filename
+        unit                S  ...     .tpl
+        0            0.000000  ...  Leak111
+        1            0.502732  ...  Leak111
+        2            1.232772  ...  Leak111
+        3            1.653696  ...  Leak111
+        4            2.200430  ...  Leak111
+        ...               ...  ...      ...
+        3214      1618.327000  ...  Leak111
+        3215      1618.849000  ...  Leak111
+        3216      1619.370000  ...  Leak111
+        3217      1619.892000  ...  Leak111
+        3218      1620.413000  ...  Leak111
+        <BLANKLINE>
+        [3219 rows x 12 columns]
+
+        ```
         """
-        os.chdir('..')
+        if not os.getcwd().split(os.path.sep)[-1]=='RackioAI':
+            os.chdir('..')
+
         cwd = os.getcwd()
-        filename = os.path.join(cwd, 'rackio_AI', 'data', name)
+        filename = os.path.join(cwd, 'rackio_AI', 'data', *name)
         self._load_data(filename)
-        return self.loader.to('dataframe')
+        data = self.loader.to('dataframe')
+
+        return data
 
     def _load_data(self, filename):
         """

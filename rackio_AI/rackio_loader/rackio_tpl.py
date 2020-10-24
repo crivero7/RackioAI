@@ -15,7 +15,6 @@ class TPL:
         that parent root. if it's a filename so the TPLc class will read only that file
         return: An instance os TPL class
         """
-        super(TPL, self).__init__()
 
 
     def read(self, path):
@@ -26,7 +25,7 @@ class TPL:
         self.reader = ReaderTPL(path)
         self.reader.options = TPLOptions(split_expression="CATALOG")
 
-        self.doc = self.reader()
+        self.doc = self.reader.read(path)
 
         return self.doc
 

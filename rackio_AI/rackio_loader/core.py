@@ -7,8 +7,6 @@ from rackio_AI.rackio_loader.options import TPLOptions
 
 class ReaderTPL:
 
-    filename = None
-    path_filename = None
     options = TPLOptions()
 
     def __init__(self, filename):
@@ -20,6 +18,7 @@ class ReaderTPL:
             if file_extension == self.options.file_extension:
 
                 self.filename = filename
+                self.path_filename = None
 
             else:
 
@@ -28,12 +27,33 @@ class ReaderTPL:
         elif os.path.isdir(filename):
 
             self.path_filename = filename
+            self.filename = None
             self.doc = list()
 
-    def __call__(self):
+    def read(self, filename):
         """
 
         """
+        if os.path.isfile(filename):
+
+            (_, file_extension) = os.path.splitext(filename)
+
+            if file_extension == self.options.file_extension:
+
+                self.filename = filename
+                self.path_filename = None
+
+            else:
+
+                raise TypeError('file {} is not a {} file'.format(filename, self.options.file_extension))
+
+        elif os.path.isdir(filename):
+
+            self.path_filename = filename
+            self.filename = None
+            self.doc = list()
+
+
         if self.filename is not None:
 
             self.doc = [self._read_file(self.filename)]
@@ -242,7 +262,7 @@ class ReaderTPL:
             [delattr(self, key) for key in columns]
 
             df = pd.DataFrame(data, columns=self.header)
-            change = [key for key in columns if key is not 'file']
+            change = [key for key in columns if key != 'file']
 
             df = self.coerce_df_columns_to_numeric(df, change)
             return df
