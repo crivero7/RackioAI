@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from rackio_AI._singleton import Singleton
 from rackio_AI.managers.preprocess import PreprocessManager
-from rackio_AI.rackio_loader.rackio_tpl import TPL
+from rackio_AI.readers import Reader
 from rackio_AI.managers.data_analysis import DataAnalysisManager
 from rackio_AI.preprocessing.synthetic_data import SyntheticData
 
@@ -28,7 +28,7 @@ class RackioAI(Singleton):
 
     def __init__(self):
         super(RackioAI, self).__init__()
-        self.loader = TPL()
+        self.reader = Reader()
         self.synthetic_data = SyntheticData()
         self._preprocessing_manager = PreprocessManager()
         self._data_analysis_manager = DataAnalysisManager()
@@ -150,7 +150,7 @@ class RackioAI(Singleton):
 
             try:
                 self._load_data(filename)
-                data = self.loader.to('dataframe')
+                data = self.reader.tpl.to('dataframe')
                 self._data = data
                 return data
 
@@ -469,7 +469,7 @@ class RackioAI(Singleton):
         cwd = os.getcwd()
         filename = os.path.join(cwd, 'rackio_AI', 'data', *name)
         self._load_data(filename)
-        data = self.loader.to('dataframe')
+        data = self.reader.to('dataframe')
 
         return data
 
@@ -477,7 +477,7 @@ class RackioAI(Singleton):
         """
 
         """
-        return self.loader.read(filename)
+        return self.reader.read(filename)
 
 if __name__=="__main__":
     import doctest

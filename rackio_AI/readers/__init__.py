@@ -1,3 +1,3 @@
 from .core import *
-from .rackio_tpl import *
+from .tpl import *
 from .options import *

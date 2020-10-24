@@ -2,61 +2,32 @@ import os
 import numpy as np
 import pandas as pd
 from rackio_AI.decorators.progress_bar import progressBar
-from rackio_AI.rackio_loader.options import TPLOptions
+from .options import TPLOptions
 
 
-class ReaderTPL:
+class TPL:
 
-    options = TPLOptions()
+    tpl_options = TPLOptions()
 
-    def __init__(self, filename):
-
-        if os.path.isfile(filename):
-
-            (_, file_extension) = os.path.splitext(filename)
-
-            if file_extension == self.options.file_extension:
-
-                self.filename = filename
-                self.path_filename = None
-
-            else:
-
-                raise TypeError('file {} is not a {} file'.format(filename, self.options.file_extension))
-
-        elif os.path.isdir(filename):
-
-            self.path_filename = filename
-            self.filename = None
-            self.doc = list()
-
-    def read(self, filename):
+    def __init__(self):
         """
-
+        This class help you to read .tpl files from OLGA simulator and convert it into dataframes, series or csv, so you
+        can handle it easier to data analysis
+        path: (str) it can be a filename or a directory, if it's a directory so the class will read all .tpl files from
+        that parent root. if it's a filename so the TPLc class will read only that file
+        return: An instance os TPL class
         """
-        if os.path.isfile(filename):
-
-            (_, file_extension) = os.path.splitext(filename)
-
-            if file_extension == self.options.file_extension:
-
-                self.filename = filename
-                self.path_filename = None
-
-            else:
-
-                raise TypeError('file {} is not a {} file'.format(filename, self.options.file_extension))
-
-        elif os.path.isdir(filename):
-
-            self.path_filename = filename
-            self.filename = None
-            self.doc = list()
+        self.file_extension = ".tpl"
 
 
-        if self.filename is not None:
+    def read(self, filename, specific_file=True):
+        """
+        This method read the file or files in self.path
+        return: A list of dictionaries with .tpl files
+        """
+        if specific_file:
 
-            self.doc = [self._read_file(self.filename)]
+            self.doc = [self._read_file(filename)]
 
         else:
 
@@ -101,7 +72,7 @@ class ReaderTPL:
         """
 
         """
-        filenames = self.find_files(self.options.file_extension, self.path_filename)
+        filenames = self.find_files(self.tpl_options.file_extension, self.path_filename)
 
         doc = self._read_files(filenames)
 
@@ -123,13 +94,13 @@ class ReaderTPL:
         """
 
         """
-        sections = self.file.split("{} \n".format(self.options.split_expression))
+        sections = self.file.split("{} \n".format(self.tpl_options.split_expression))
 
-        self.options.header_line_numbers = int(sections[1].split('\n')[0])
+        self.tpl_options.header_line_numbers = int(sections[1].split('\n')[0])
 
         data_header_section = sections[1].split('\n')
 
-        data= self._get_data(data_header_section[self.options.header_line_numbers + 2::])
+        data= self._get_data(data_header_section[self.tpl_options.header_line_numbers + 2::])
 
         return (data_header_section, data)
 
@@ -138,7 +109,7 @@ class ReaderTPL:
         """
 
         """
-        header_section = data_header_section[1: self.options.header_line_numbers + 2]
+        header_section = data_header_section[1: self.tpl_options.header_line_numbers + 2]
 
         return header_section[-1:] + header_section[:-1]
 
@@ -279,3 +250,32 @@ class ReaderTPL:
             data = pd.Series(new_data)
             data.index = index_name
             return data
+
+    def to(self, data_type, **kwargs):
+        """
+        This method allows transform from .tpl to 'data_type'
+        data_type: (str) 'dataframe' - 'series' - 'csv'
+        path : (str ) path to save csv file
+        filename: (str) 'name.csv' if date_type == 'csv'
+
+        return: pandas.dataframe or pandas.serie or .csv file
+        """
+        kwargs_default = {'path': os.getcwd(),
+                          'filename': 'tpl_to_csv.csv'}
+        options = {key: kwargs[key] if key in kwargs.keys() else kwargs_default[key] for key in kwargs_default.keys()}
+        if data_type.lower() == 'dataframe':
+
+            return self._to_dataframe()
+
+        elif data_type.lower() == 'series':
+
+            return self._to_series()
+
+        elif data_type.lower() == 'csv':
+
+            self._to_csv(**options)
+            return self.doc
+
+        else:
+
+            raise NameError('{} is not possible convert to {}'.format(type(self).__name__, data_type.lower()))
