@@ -6,7 +6,7 @@ theme:
 repo_name: RackioAI
 repo_url: https://github.com/crivero7/RackioAI
 edit_uri: ""
-site_dir: /RackioAI-documentation/_build/html
+site_dir: _build/html
 
 nav:
     - Introduction: 'index.md'

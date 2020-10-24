@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from rackio_AI.preprocessing import Preprocessing
+from rackio_AI.preprocessing.core import Preprocessing
 from rackio_AI import RackioAI
 from rackio import Rackio
 

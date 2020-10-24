@@ -1,5 +1,5 @@
 from .api import *
-#from .data_analysis import *
+from .data_analysis import *
 from .decorators import *
 from .managers import *
 from .models import *
