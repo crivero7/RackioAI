@@ -13,12 +13,26 @@ nav:
     - Install: 'install.md'
     - QuickStart: 'quick_start.md'
     - API Reference:
-      - RackioAI: 'api_core_RackioAI.md'
-      - Data Loaders: 'api_rackio_loader.md'
+      - RackioAI: 'api_core.md'
+      - Data Loaders:
+        - TPL Reader: 'api_rackio_loader_core.md'
       - Data Analysis:
-        - RackioEDA: 'api_data_analysis_RackioEDA.md'
+        - RackioEDA: 'api_data_analysis_core.md'
       - Preprocessing:
+        - Preprocessing: 'api_preprocessing_core.md'
         - Synthetic Data: 'api_preprocessing_synthetic_data.md'
+        - Kalman Filter: 'api_preprocessing_kalman_filter.md'
+        - Scaler: 'api_preprocessing_scaler.md'
+        - Splitter: 'api_preprocessing_splitter.md'
+      - Models:
+        - RackioDNN: 'api_model_RackioDNN.md'
+      - Restful API: 'restful_api.md'
+      - Utils:
+        - decorators: 'decorators.md'
+      - Managers:
+        - Data Analysis: 'api_managers_data_analysis.md'
+        - Models: 'api_managers_models.md'
+        - Preprocess: 'api_managers_preprocess.md'
     - User Guide: 'user_guide.md'
     - Contributing: 'contributing.md'
 
