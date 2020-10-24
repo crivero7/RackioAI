@@ -13,10 +13,8 @@ nav:
     - Install: 'install.md'
     - QuickStart: 'quick_start.md'
     - API Reference:
-      - RackioAI:
-        - core: 'api_core_RackioAI.md'
-        - Preprocess: 'api_preprocess_Preprocess.md'
-        - Data Loaders: 'api_rackio_loader.md'
+      - RackioAI: 'api_core_RackioAI.md'
+      - Data Loaders: 'api_rackio_loader.md'
       - Data Analysis:
         - RackioEDA: 'api_data_analysis_RackioEDA.md'
       - Preprocessing:
