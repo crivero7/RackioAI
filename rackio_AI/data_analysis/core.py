@@ -60,13 +60,14 @@ class RackioEDA:
         """
         Property setter methods
 
-        **parameters**
+        **Parameters**
 
-        * **value:** (np.array, pd.DataFrame)
+        * **:param value:** (np.array, pd.DataFrame)
 
-        **return:**
+        **:return:**
 
         None
+
         ```python
         >>> import numpy as np
         >>> import numpy as np
@@ -97,10 +98,14 @@ class RackioEDA:
 
         **Parameters**
 
-        * **data:** (np.ndarray or pd.Series) column to insert
-        * **column:** (str) column name to to be added
-        * **loc:** (int) location where the column will be added, (optional, default=Last position)
-        * **allow_duplicates:** (bool) (optional, default=False)
+        * **:param data:** (np.ndarray or pd.Series) column to insert
+        * **:param column:** (str) column name to to be added
+        * **:param loc:** (int) location where the column will be added, (optional, default=Last position)
+        * **:param allow_duplicates:** (bool) (optional, default=False)
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
 
         ```python
         >>> import pandas as pd
@@ -133,14 +138,18 @@ class RackioEDA:
 
     def insert_columns(self, data, columns, locs=[], allow_duplicates=False):
         """
-        Insert several columns in any location in **RackioAI.data**
+        Insert several columns in any location
 
         **Parameters**
 
-        * **data:** (np.ndarray, pd.DataFrame or pd.Series) column to insert
-        * **columns:** (list['str']) column name to to be added
-        * **locs:** (list[int]) location where the column will be added, (optional, default=Last position)
-        * **allow_duplicates:** (bool) (optional, default=False)
+        * **:param data:** (np.ndarray, pd.DataFrame or pd.Series) column to insert
+        * **:param columns:** (list['str']) column name to to be added
+        * **:param locs:** (list[int]) location where the column will be added, (optional, default=Last position)
+        * **:param allow_duplicates:** (bool) (optional, default=False)
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
 
         ```python
         >>> import pandas as pd
@@ -179,7 +188,11 @@ class RackioEDA:
 
         **Parameters**
 
-        * **column_names:** (str) column name or column names to remove from the data
+        * **:param args:** (str) column name or column names to remove from the data
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
 
         ```python
         >>> import pandas as pd
@@ -210,7 +223,11 @@ class RackioEDA:
 
         **Parameters**
 
-        * **column_names:** (dict) column name or column names to remove from the data
+        * **:param kwargs:** (dict) column name or column names to remove from the data
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
 
         ```python
         >>> import pandas as pd
@@ -246,7 +263,12 @@ class RackioEDA:
 
         **Parameters**
 
-        * **data:** (dict) column name or column names to remove from the data
+        * **:param data:** (pandas.DataFrame) to change in *self.data*
+        * **:param args:** (str) column or columns names to change
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
 
         ```python
         >>> import pandas as pd

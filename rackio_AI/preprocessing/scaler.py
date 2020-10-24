@@ -2,13 +2,19 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import pandas as pd
 
 
-
 class Scaler:
+    """
+    ...Description here...
+    """
 
     def __init__(self, _type='minmax', **kwargs):
         """
-        _type (str): 'minmax' or 'standard'
-        kwargs: {'range': tuple (0,1) if _type is 'minmax', else no kwargs}
+        ...Description here...
+
+        **Parameters**
+
+        * **:param _type:**  'minmax' or 'standard'
+        * **:param kwargs:** {'range': tuple (0,1) if _type is 'minmax', else no kwargs}
         """
 
         if _type.lower() in ['minmax', 'standard']:
@@ -29,32 +35,13 @@ class Scaler:
         else:
             raise TypeError('scaler {} is not available in class {}'.format(_type, self.__class__.__name__))
 
-    def __call__(self, data):
-        """
-        data: np.array or pd.dataframe
-
-        """
-        if isinstance(data, pd.DataFrame):
-            data = data.values
-
-        return self._scaler.fit(data)
-
-    def __str__(self):
-        """
-
-        """
-        pass
-
-    def apply_inverse(self, data):
-        """
-        data: np.array or pd.dataframe
-
-        """
-        return self._scaler.inverse_transform(data)
-
     @property
     def range(self):
+        """
+        ...Description here...
 
+        **:return:**
+        """
         return self._range
 
     @range.setter
@@ -66,3 +53,42 @@ class Scaler:
             self._scaler = MinMaxScaler(feature_range=value)
 
         self._range = value
+
+    def __call__(self, data):
+        """
+        ...Description here...
+
+        **Parameters**
+
+        * **:param data:** (np.array or pd.dataframe)
+
+        **:return:**
+
+        * **data:** (np.array or DataFrame) scaled values
+        """
+
+        if isinstance(data, pd.DataFrame):
+            data = data.values
+
+        return self._scaler.fit(data)
+
+    def __str__(self):
+        """
+
+        :return:
+        """
+        pass
+
+    def apply_inverse(self, data):
+        """
+        ...Description here...
+
+        **Paramerters**
+
+        * **:param data:** (np.array or pd.dataframe)
+
+        **:return:**
+
+        """
+
+        return self._scaler.inverse_transform(data)

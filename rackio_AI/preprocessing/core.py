@@ -4,13 +4,21 @@ from rackio_AI.core import RackioAI
 
 
 class Preprocessing:
+    """
+    Description here
+    """
 
     app = RackioAI()
 
     def __init__(self, name, description, problem_type='regression'):
         """
-        name (str): preprocessing model's name
+        ...Description here...
 
+        **Parameters**
+
+        * **:param name:**
+        * **:param description:**
+        * **:param problem_type:**
         """
         self._data = None
         self._name = name
@@ -29,8 +37,58 @@ class Preprocessing:
         self.scaler = Scaler()
         self.kalman_filter = KalmanFilter()
 
+    @property
+    def data(self):
+        """
+        ...Description here...
+
+        **:return:**
+
+        """
+        return self.app._data
+
+    @data.setter
+    def data(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+        self.app._data = value
+
+    @property
+    def description(self):
+        """
+        ...Description here...
+
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        """
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+        self._description = value
+
     def __call__(self, action, data):
         """
+        ...Description here...
+
+        **Parameters**
+
+        * **:param action:**
+        * **:param data:**
+
+        **:return:**
 
         """
         allowed_actions = ["scaler", "prepare", "split"]
@@ -45,6 +103,14 @@ class Preprocessing:
 
     def serialize(self):
         """
+        ...Description here..
+
+        **Parameters**
+
+        None
+
+        **:return:**
+
 
         """
         result = {"name": self.get_name(),
@@ -53,45 +119,54 @@ class Preprocessing:
 
         return result
 
-    @property
-    def data(self):
-        return self.app._data
-
-    @data.setter
-    def data(self, value):
-        self.app._data = value
-
     def get_name(self):
-        return self._name
+        """
+        ...Description here...
 
-    @property
-    def description(self):
-        return self._description
+        **Parameters**
 
-    @description.setter
-    def description(self, value):
-        self._description = value
+        None
 
-    def get_name(self):
+        **:return:**
 
+        * **name:** (str) Preprocessing name
+        """
         return self._name
 
 
 class Regression(Preprocessing):
+    """
+    ...Description here...
+
+    """
 
     def __init__(self, name, description):
         """
+        ...Description here...
 
+        **Parameters**
 
-
+        * **:param name:**
+        * **:param description:**
         """
-        #super(Regression, self).__init__(name, description)
+        self._name = name
+        self._description = description
 
 
 class Classification(Preprocessing):
+    """
+    ...Description here...
+
+    """
 
     def __init__(self, name, description):
         """
+        ...Description here...
 
+        **Parameters**
+
+        * **:param name:**
+        * **:param description:**
         """
-        #super(Classification, self).__init__(name, description)
+        self._name = name
+        self._description = description

@@ -10,6 +10,9 @@ class KalmanFilter:
     """
 
     def __init__(self):
+        """
+
+        """
         self.alpha = 1.0
         self.beta = 0.0
         self.filtered_value = 0.0
@@ -21,11 +24,11 @@ class KalmanFilter:
 
         **Parameters**
 
-        * **value:** (float)
+        * **:param value:** (float)
 
-        **return**
+        * **:return:**
 
-            None
+        None
 
         ```python
         >>> import numpy as np
@@ -45,14 +48,10 @@ class KalmanFilter:
 
     def __call__(self, value):
         """
-
         **Parameters**
 
-        * **value:** (float) value to filter
-
-        **return**
-
-        * **value: **(float) filtered value
+        * **:param value:** (float) value to filter
+        :return:
 
         See [This example](https://github.com/crivero7/RackioAI/blob/main/examples/example9.py) for a real example
 

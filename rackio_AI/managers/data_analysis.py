@@ -1,21 +1,38 @@
 class DataAnalysisManager:
+    """
+    ...Description here...
+
+    """
 
     def __init__(self):
         """
-
+        ...Description here...
         """
 
         self._data = list()
 
     def append(self, data):
         """
+        ...Description here...
 
+        **Parameters**
+
+        * **:param data:**
+
+        **:return:**
         """
 
         self._data.append(data)
 
     def get_data(self, name=None):
         """
+        ...Description here...
+
+        **Parameters..
+
+        * **:param name:**
+
+        **:return:**
 
         """
         if name:
@@ -30,25 +47,57 @@ class DataAnalysisManager:
 
     def get_names(self):
         """
+        ...Description here...
 
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        * **result:** (list)
         """
         return [_data.get_name() for _data in self._data]
 
     def get_types(self):
         """
+        ...Description here...
 
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        * **result:** (list)
         """
         return [_data._type for _data in self._data]
 
     def get_descriptions(self):
         """
+        ...Description here...
 
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        * **result:** (list)
         """
         return [_data.description for _data in self._data]
 
     def summary(self):
         """
-        Returns a Preprocess Manager Summary (dict).
+        ...Description here...
+
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        * **result:** (list)
         """
         result = dict()
 

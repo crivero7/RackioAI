@@ -27,6 +27,9 @@ class SyntheticData(PrepareData):
     * **Sensor drift**
     """
     def __init__(self):
+        """
+
+        """
         super(SyntheticData, self).__init__()
         self._data = np.array([])
         options = {'error': np.array([]),
@@ -42,16 +45,18 @@ class SyntheticData(PrepareData):
     @property
     def data(self):
         """
-        Property getter method
+        Property method
 
+        @setter
         **Parameters**
 
-            None
+        * **:param value:** (np.ndarray or pandas.DataFrame)
 
-        **return**
+        **:return:**
 
         * **data:** (np.array, pd.DataFrame)
         """
+
         return self._data
 
     @data.setter
@@ -79,16 +84,16 @@ class SyntheticData(PrepareData):
 
         **Parameters**
 
-        * **options:**
+        * **:param options:**
             * **error:** (np.ndarray, list)
             * **repeteability:** (np.ndarray, list)
             * **lower_limit:** (np.ndarray, list)
             * **upper_limit:** (np.ndarray, list)
             * **dead_band:** (np.ndarray, list)
 
-        **return**
+        **:return:**
 
-            None
+        None
         """
         options = self._check_options(**options)
         # convert the options to np.array
@@ -104,13 +109,13 @@ class SyntheticData(PrepareData):
     @PrepareData.step
     def add_instrument_error(self):
         """
-        Add insturment error according the error and repeteability instrument
+         Add insturment error according the error and repeteability instrument
 
         **Parameters**
 
             None
 
-        **return**
+        **:return:**
 
         * **data:** (np.ndarray) data with instrument error
         """

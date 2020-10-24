@@ -2,6 +2,19 @@ from functools import wraps
 from tqdm import tqdm
 
 def progressBar(**kwargs):
+    """
+    ...Description here...
+
+    **Parameters**
+
+    * **:param kwargs:**
+        * **desc:** (str) description
+        * **unit:** (str) measure unit
+
+    **:return:**
+
+    func
+    """
     defaultOptions = {'desc': 'Reading files',
                       'unit': 'Files'}
     Options = {key:kwargs[key] if key in list(kwargs.keys()) else defaultOptions[key] for key in list(defaultOptions.keys())}
