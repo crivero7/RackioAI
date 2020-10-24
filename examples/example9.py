@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from rackio_AI.preprocess import Preprocess
+from rackio_AI.preprocessing import Preprocessing
 from rackio_AI import RackioAI
 from rackio import Rackio
 
@@ -32,10 +32,10 @@ RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lo
 data = RackioAI.synthetic_data(add_WN=True)
 
 "Preprocess class instantiation"
-preprocess = Preprocess(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
+preprocess = Preprocessing(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
 
 "Kalman filter Definition"
-kf = preprocess.preprocess.kalman_filter
+kf = preprocess.kalman_filter
 
 "Filter Parameter  alpha=1.0, beta=0.0 No Filter"
 kf.alpha = 0.001

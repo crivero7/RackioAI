@@ -1,4 +1,3 @@
-import os
 from rackio_AI import RackioAI
 from rackio import Rackio
 

@@ -1,4 +1,4 @@
-from rackio_AI.preprocess import Preprocess
+from rackio_AI.preprocessing import Preprocessing
 from rackio_AI import RackioAI
 from rackio import Rackio
 
@@ -6,9 +6,9 @@ app = Rackio()
 
 RackioAI(app)
 
-preprocess1 = Preprocess(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
+preprocess1 = Preprocessing(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
 
-preprocess2 = Preprocess(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
+preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
 
 RackioAI.append_preprocess_model(preprocess1)
 

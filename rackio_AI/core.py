@@ -4,7 +4,7 @@ import numpy as np
 from rackio_AI._singleton import Singleton
 from rackio_AI.managers.preprocess import PreprocessManager
 from rackio_AI.rackio_loader.rackio_tpl import TPL
-from rackio_AI.data_handler import DataHandler
+from rackio_AI.managers.data_analysis import DataAnalysisManager
 from rackio_AI.preprocessing.synthetic_data import SyntheticData
 
 
@@ -30,15 +30,9 @@ class RackioAI(Singleton):
         super(RackioAI, self).__init__()
         self.loader = TPL()
         self.synthetic_data = SyntheticData()
-        self.data_handler = DataHandler(self._observer)
         self._preprocess_manager = PreprocessManager()
+        self._data_analysis_manager = DataAnalysisManager()
         self.app = None
-
-    def _observer(self, value):
-        """
-
-        """
-        self._data = value
 
     def __call__(self, app):
         """
@@ -48,7 +42,93 @@ class RackioAI(Singleton):
 
     def load(self, filename):
         """
-        filename (str):
+        You can load data in the following extensions:
+
+        * **.tpl:** Is an [OLGA](https://www.petromehras.com/petroleum-software-directory/production-engineering-software/olga-dynamic-multiphase-flow-simulator)
+        extension file.
+        * **.pkl:** Numpy arrays or Pandas.DataFrame saved in pickle format.
+
+        **Parameters**
+
+        * **filename:** (str) Complete path with its extension. If the *filename* is a directory, it will load all the files
+        with that extension in the directory, and if in the directory there are more directories, it will inspect it to look for more
+        files with that extension.
+
+        If the filename is a file with a valid extension, this method will load only that file.
+
+        **return**
+
+        * **data:** (pandas.DataFrame)
+
+        **Example loading a .tpl file**
+
+        ```python
+        >>> import os
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> cwd = os.getcwd()
+        >>> filename = os.path.join(cwd, 'data', 'Leak', 'Leak112.tpl')
+        >>> RackioAI.load(filename)
+        tag       TIME_SERIES  ...     file
+        variable               ... filename
+        unit                S  ...     .tpl
+        0            0.000000  ...  Leak112
+        1            0.502732  ...  Leak112
+        2            1.232772  ...  Leak112
+        3            1.653696  ...  Leak112
+        4            2.200430  ...  Leak112
+        ...               ...  ...      ...
+        3210      1617.966000  ...  Leak112
+        3211      1618.495000  ...  Leak112
+        3212      1619.025000  ...  Leak112
+        3213      1619.554000  ...  Leak112
+        3214      1620.083000  ...  Leak112
+        <BLANKLINE>
+        [3215 rows x 12 columns]
+
+        **Example loading a .tpl file**
+
+        >>> filename = os.path.join(cwd, 'data', 'Leak')
+        >>> RackioAI.load(filename)
+        tag       TIME_SERIES  ...     file
+        variable               ... filename
+        unit                S  ...     .tpl
+        0            0.000000  ...  Leak111
+        1            0.502732  ...  Leak111
+        2            1.232772  ...  Leak111
+        3            1.653696  ...  Leak111
+        4            2.200430  ...  Leak111
+        ...               ...  ...      ...
+        32182     1618.124000  ...  Leak120
+        32183     1618.662000  ...  Leak120
+        32184     1619.200000  ...  Leak120
+        32185     1619.737000  ...  Leak120
+        32186     1620.275000  ...  Leak120
+        <BLANKLINE>
+        [32187 rows x 12 columns]
+
+        **Example loading a .pkl with pandas.dataFrame**
+
+        >>> filename = os.path.join(cwd, 'data', 'pkl_files', 'test_data.pkl')
+        >>> RackioAI.load(filename)
+                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
+        0.000000                        37.83052  ...                352683.3
+        0.502732                        37.83918  ...                353449.8
+        1.232772                        37.83237  ...                353587.3
+        1.653696                        37.80707  ...                353654.8
+        2.200430                        37.76957  ...                353706.8
+        ...                                  ...  ...                     ...
+        383.031800                     169.36700  ...                374582.2
+        383.518200                     169.37650  ...                374575.9
+        384.004500                     169.38550  ...                374572.7
+        384.490900                     169.39400  ...                374573.0
+        384.977200                     169.40170  ...                374576.1
+        <BLANKLINE>
+        [20000 rows x 4 columns]
+
+        ```
         """
         if os.path.isdir(filename) or os.path.isfile(filename):
 
@@ -69,7 +149,7 @@ class RackioAI(Singleton):
             try:
                 self._load_data(filename)
                 data = self.loader.to('dataframe')
-                self.data = data
+                self._data = data
                 return data
 
             except:
@@ -81,7 +161,15 @@ class RackioAI(Singleton):
     @property
     def data(self):
         """
+        Variable when is storaged the loaded data.
 
+        **Parameters**
+
+        None
+
+        **return**
+
+        * **data:** (pandas.DataFrame)
         """
         return self._data
 
@@ -96,9 +184,37 @@ class RackioAI(Singleton):
                 value = pd.DataFrame(value)
 
             self.synthetic_data.data = value
-            self.data_handler.data = value
         else:
             raise TypeError('value must be a pd.DataFrame or np.ndarray')
+
+        self._data = value
+
+    def append_data(self, data_analysis_object):
+        """Append a preprocessing model to the preprocessing manager.
+
+        # Parameters
+        preprocessing_model (Preprocess): a Preprocess object.
+        """
+
+        self._data_analysis_manager.append(data_analysis_object)
+
+    def get_data(self, name):
+        """Returns a RackioAI preprocess model defined by its name.
+
+        # Parameters
+        name (str): a RackioAI preprocess name.
+        """
+
+        return self._data_analysis_manager.get_data(name)
+
+    def serialize_data(self, name):
+        """
+
+        """
+        data = self.get_data(name)
+
+        return data.serialize()
+
 
     def append_preprocess_model(self, preprocess_model):
         """Append a preprocessing model to the preprocessing manager.
@@ -131,7 +247,8 @@ class RackioAI(Singleton):
         Returns a RackioAI Application Summary (dict).
         """
         result = dict()
-        result["preprocessing_manager"] = self._preprocess_manager.summary()
+        result["preprocessing manager"] = self._preprocess_manager.summary()
+        result["data analysis manager"] = self._data_analysis_manager.summary()
 
         return result
 
