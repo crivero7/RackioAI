@@ -37,6 +37,8 @@ class RackioAI(Singleton):
     def __call__(self, app):
         """
 
+        :param app:
+        :return:
         """
         self.app = app
 
@@ -50,13 +52,13 @@ class RackioAI(Singleton):
 
         **Parameters**
 
-        * **filename:** (str) Complete path with its extension. If the *filename* is a directory, it will load all the files
+        * **:param filename:** (str) Complete path with its extension. If the *filename* is a directory, it will load all the files
         with that extension in the directory, and if in the directory there are more directories, it will inspect it to look for more
         files with that extension.
 
         If the filename is a file with a valid extension, this method will load only that file.
 
-        **return**
+        **:return:**
 
         * **data:** (pandas.DataFrame)
 
@@ -167,16 +169,23 @@ class RackioAI(Singleton):
 
         None
 
-        **return**
+        **:return:**
 
         * **data:** (pandas.DataFrame)
+
         """
         return self._data
 
     @data.setter
     def data(self, value):
         """
-        value (pd.DataFrame or np.ndarray):
+        **Parameters**
+
+        * **:param value:** (pd.DataFrame or np.ndarray)
+
+        **:return:**
+
+        None
         """
         if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
@@ -195,92 +204,132 @@ class RackioAI(Singleton):
 
         **Parameters**
 
-        * **data_analysis_object:** (RackioEDA): RackioEDA object.
+        * **:param data_analysis_object:** (RackioEDA): RackioEDA object.
 
-        **return**
+        **:return:**
 
         None
         """
 
         self._data_analysis_manager.append(data_analysis_object)
 
-    def get_data(self, name):
+    def get_object(self, name, _type='EDA', serialize=False):
+        """
+        Get any coupled object as RackioAI attribute like *DataAnalysis* object, *Preprocessing* object and *Model* object
+        by its name
+
+        **Parameters**
+
+        * **:param name:** (str) Object name
+        * **:param _type:** (str) Object type
+            * **'EDA':** refers to a *DataAnalysis* or *RackioEDA* object
+            * **'Preprocessing':** refers to a *Preprocessing* object
+            * **'Model':** refers to a **Model** machine learning or deep learning object
+        * **:param serialize:** (bool) default=False, if is True, you get a serialized object, otherwise you get the object
+
+        **:return:**
+
+        * **object:** (object, serialized dict)
+
+        """
+        if _type.lower()=='eda':
+
+            if serialize:
+
+                return self._serialize_data(name)
+
+            return self._get_data(name)
+
+        elif _type.lower()=='preprocesing':
+
+            if serialize:
+
+                return self._serialize_preprocess()
+
+            return self._get_preprocessing()
+        else:
+            raise TypeError('Is no possible get {} object from RackioAI'.format(_type))
+
+        return
+
+    def _get_data(self, name):
         """
         Returns a RackioEDA object defined by its name.
 
         **Parameters**
 
-        * **name:** (str) RackioEDA name.
+        * **:param name:** (str) RackioEDA name.
 
-        **return**
+        **:return:**
 
         * **data_object:** (RackioEDA) RackioEDA object
         """
 
         return self._data_analysis_manager.get_data(name)
 
-    def serialize_data(self, name):
+    def _serialize_data(self, name):
         """
         serialize RackioEDA
 
         **Parameters**
 
-        * **name:** (str) RackioEDA object name
+        * **:param name:** (str) RackioEDA object name
 
-        **return**
+
+        **:return:**
 
         * **data:** (dict) RackioEDA object serialized
-
         """
+
         data = self.get_data(name)
 
         return data.serialize()
 
 
-    def append_preprocess_model(self, preprocessing_model):
+    def append_preprocessing_model(self, preprocessing_model):
         """
-        Append a Preprocessing object to the data analysis manager.
+         Append a Preprocessing object to the data analysis manager.
 
         **Parameters**
 
-        * **preprocessing_model:** (Preprocessing): Preprocessing object.
+        * **:param preprocessing_model:** (Preprocessing): Preprocessing object.
 
-        **return**
+        **:return:**
 
         None
         """
 
         self._preprocessing_manager.append_preprocessing(preprocessing_model)
 
-    def get_preprocess(self, name):
+    def _get_preprocessing(self, name):
         """
         Returns a Preprocessing object defined by its name.
 
         **Parameters**
 
-        * **name:** (str) Preprocessing name.
+        * **:param name:** (str) Preprocessing name.
 
-        **return**
+        **:return:**
 
         * **preprocessing_model:** (Preprocesing) Preprocessing model
         """
 
         return self._preprocess_manager.get_preprocessing_model(name)
 
-    def serialize_preprocess(self, name):
+    def _serialize_preprocessing(self, name):
         """
         serialize Preprocessing model
 
         **Parameters**
 
-        * **name:** (str) Preprocessing model name
+        * **:param name:** (str) Preprocessing model name
 
-        **return**
+        **:return:**
 
         * **data:** (dict) Preprocessin model serialized
-
         """
-        preprocess = self.get_preprocess(name)
+
+        preprocess = self._get_preprocessing(name)
 
         return preprocess.serialize()
 
@@ -292,12 +341,13 @@ class RackioAI(Singleton):
 
         None
 
-        **return**
+        **:return:**
 
         * **result:** (dict) All defined Managers
         """
+
         result = dict()
-        result["preprocessing manager"] = self._preprocess_manager.summary()
+        result["preprocessing manager"] = self._preprocessing_manager.summary()
         result["data analysis manager"] = self._data_analysis_manager.summary()
 
         return result
@@ -309,14 +359,15 @@ class RackioAI(Singleton):
 
         **Parameters**
 
-        * **obj:** (obj) any persistable object
-        * **filename:** (str) with no extension
-        * **format:** (str) with no dot (.) at the beginning (default='pkl')
+        * **:param obj:** (obj) any persistable object
+        * **:param filename:** (str) with no extension
+        * **:param format:** (str) with no dot (.) at the beginning (default='pkl')
 
-        **return**
+        **:return:**
 
         * obj in the path defined by *filename*
         """
+
         if format.lower()=='pkl':
 
             with open('{}.{}'.format(filename,format), 'wb') as file:
@@ -329,13 +380,14 @@ class RackioAI(Singleton):
 
         **Parameters**
 
-        * **filename:** (str) with no extension
-        * **format:** (str) with no dot (.) at the beginning
+        * **:param filename:** (str) with no extension
+        * **:param format:** (str) with no dot (.) at the beginning
 
-        **return**
+        * **:return:**
 
         * **obj:** (obj)
         """
+
         obj = None
         if format.lower()=='pkl':
 
@@ -361,9 +413,9 @@ class RackioAI(Singleton):
 
         **Parameters**
 
-        * **name:** (str) a folder name or filename in rackio_AI/data
+        * **:param name:** (str) a folder name or filename in rackio_AI/data
 
-        **return**
+        * **:return:**
 
         * **data:** (pandas.DataFrame)
 
