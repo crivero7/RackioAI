@@ -11,7 +11,7 @@ cwd = os.getcwd()
 
 base_path = os.path.join(cwd,'rackio_AI','data')
 
-filename = os.path.join(base_path, 'Leak', 'Leak111.tpl')
+filename = os.path.join(base_path, 'Leak')
 
 RackioAI.load(filename)
 

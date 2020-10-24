@@ -18,6 +18,7 @@ class TPL:
         return: An instance os TPL class
         """
         self.file_extension = ".tpl"
+        self.doc = list()
 
 
     def read(self, filename, specific_file=True):
@@ -31,7 +32,7 @@ class TPL:
 
         else:
 
-            self.doc = self._read_all_files()
+            self.doc = self._read_all_files(filename)
 
         return self.doc
 
@@ -68,11 +69,11 @@ class TPL:
         self.header = pd.MultiIndex.from_tuples(multi_index, names=['tag', 'variable', 'unit'])
         return doc
 
-    def _read_all_files(self):
+    def _read_all_files(self, directory):
         """
 
         """
-        filenames = self.find_files(self.tpl_options.file_extension, self.path_filename)
+        filenames = self.find_files(self.tpl_options.file_extension, directory)
 
         doc = self._read_files(filenames)
 

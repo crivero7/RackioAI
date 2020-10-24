@@ -1,4 +1,5 @@
 import os
+import glob
 from rackio_AI.readers.tpl import TPL
 
 
@@ -13,19 +14,7 @@ class Reader:
 
         :param filename:
         """
-
-        # if os.path.isfile(filename):
-        #
-        #     (path_filename , file_extension) = os.path.splitext(filename)
-        #
-        #     self.filename = filename
-        #     self.path_filename = path_filename
-        #
-        # elif os.path.isdir(filename):
-        #
-        #     self.path_filename = filename
-        #     self.filename = None
-        #     self.doc = list()
+        pass
 
     def read(self, filename):
         """
@@ -41,8 +30,26 @@ class Reader:
 
         elif os.path.isdir(filename):
 
-            extension_files = self.get_extension_files()
+            if self.extension_files(filename, ext='.tpl'):
 
-            if '.tpl' in extension_files:
+                self.tpl.read(filename, specific_file=False)
 
-                self.tpl.read(filename)
+    def extension_files(self, root_directory, ext='.tpl'):
+        """
+        ...Description here...
+        * **:param root_directory:**
+
+        **:return:**
+
+        * **extension_files:** (list['str'])
+        """
+
+        files = [f for f in glob.glob(root_directory + "**/*{}".format(ext), recursive=True)]
+
+        if files:
+
+            return True
+
+        else:
+
+            return False

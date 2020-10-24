@@ -12,7 +12,7 @@ filename = os.path.join(cwd, 'rackio_AI', 'data', 'Leak','Leak112.tpl')
 
 RackioAI.load(filename)
 
-df = RackioAI.loader.to('dataframe')
+df = RackioAI.reader.tpl.to('dataframe')
 print(' ')
 print('----------------------------------------------------------------------------------------')
 print('DATAFRAME BEFORE PERSISTING')

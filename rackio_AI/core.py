@@ -97,19 +97,19 @@ class RackioAI(Singleton):
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak111
-        1            0.502732  ...  Leak111
-        2            1.232772  ...  Leak111
-        3            1.653696  ...  Leak111
-        4            2.200430  ...  Leak111
+        0            0.000000  ...  Leak112
+        1            0.502732  ...  Leak112
+        2            1.232772  ...  Leak112
+        3            1.653696  ...  Leak112
+        4            2.200430  ...  Leak112
         ...               ...  ...      ...
-        32182     1618.124000  ...  Leak120
-        32183     1618.662000  ...  Leak120
-        32184     1619.200000  ...  Leak120
-        32185     1619.737000  ...  Leak120
-        32186     1620.275000  ...  Leak120
+        35397     1618.124000  ...  Leak120
+        35398     1618.662000  ...  Leak120
+        35399     1619.200000  ...  Leak120
+        35400     1619.737000  ...  Leak120
+        35401     1620.275000  ...  Leak120
         <BLANKLINE>
-        [32187 rows x 12 columns]
+        [35402 rows x 12 columns]
 
         **Example loading a .pkl with pandas.dataFrame**
 
@@ -430,19 +430,20 @@ class RackioAI(Singleton):
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak111
-        1            0.502732  ...  Leak111
-        2            1.232772  ...  Leak111
-        3            1.653696  ...  Leak111
-        4            2.200430  ...  Leak111
+        0            0.000000  ...  Leak112
+        1            0.502732  ...  Leak112
+        2            1.232772  ...  Leak112
+        3            1.653696  ...  Leak112
+        4            2.200430  ...  Leak112
         ...               ...  ...      ...
-        32182     1618.124000  ...  Leak120
-        32183     1618.662000  ...  Leak120
-        32184     1619.200000  ...  Leak120
-        32185     1619.737000  ...  Leak120
-        32186     1620.275000  ...  Leak120
+        67584     1618.124000  ...  Leak120
+        67585     1618.662000  ...  Leak120
+        67586     1619.200000  ...  Leak120
+        67587     1619.737000  ...  Leak120
+        67588     1620.275000  ...  Leak120
         <BLANKLINE>
-        [32187 rows x 12 columns]
+        [67589 rows x 12 columns]
+
         >>> RackioAI.load_test_data('Leak', 'Leak111.tpl') # Load test data from a file in Leak Folder
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -469,7 +470,7 @@ class RackioAI(Singleton):
         cwd = os.getcwd()
         filename = os.path.join(cwd, 'rackio_AI', 'data', *name)
         self._load_data(filename)
-        data = self.reader.to('dataframe')
+        data = self.reader.tpl.to('dataframe')
 
         return data
 
