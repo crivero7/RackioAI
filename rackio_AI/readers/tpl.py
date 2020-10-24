@@ -206,7 +206,7 @@ class TPL:
         df.to_csv(os.path.join(kwargs['path'], kwargs['filename']))
 
     @staticmethod
-    def coerce_df_columns_to_numeric(df, column_list):
+    def _coerce_df_columns_to_numeric(df, column_list):
 
         df[column_list] = df[column_list].apply(pd.to_numeric, errors='coerce')
         return df
@@ -236,7 +236,7 @@ class TPL:
             df = pd.DataFrame(data, columns=self.header)
             change = [key for key in columns if key != 'file']
 
-            df = self.coerce_df_columns_to_numeric(df, change)
+            df = self._coerce_df_columns_to_numeric(df, change)
             return df
 
         else:

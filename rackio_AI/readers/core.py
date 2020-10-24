@@ -3,8 +3,10 @@ import glob
 from rackio_AI.readers.tpl import TPL
 
 
-
 class Reader:
+    """
+    ...Documentation here...
+    """
 
     tpl = TPL()
 
@@ -12,27 +14,46 @@ class Reader:
     def __init__(self):
         """
 
-        :param filename:
         """
         pass
 
     def read(self, filename):
         """
+        ...Documentation here...
+
+        **Parameters**
+
+        * **:param filename:**
+
+        **:return:**
 
         """
         (_, file_extension) = os.path.splitext(filename)
+        specific_file = True
 
         if os.path.isfile(filename):
 
             (_, file_extension) = os.path.splitext(filename)
-            reader = getattr(self, file_extension.replace('.',''))
-            reader.read(filename)
+
+            if file_extension=='.tpl':
+
+                tpl_file = True
 
         elif os.path.isdir(filename):
 
+            specific_file = False
+
             if self.extension_files(filename, ext='.tpl'):
 
-                self.tpl.read(filename, specific_file=False)
+                tpl_file = True
+
+        if tpl_file:
+
+            self.tpl.read(filename, specific_file=specific_file)
+
+        else:
+
+            raise KeyError('format file is not available to be loaded')
 
     def extension_files(self, root_directory, ext='.tpl'):
         """
