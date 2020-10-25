@@ -14,8 +14,9 @@ nav:
     - QuickStart: 'quick_start.md'
     - API Reference:
       - RackioAI: 'api_core.md'
-      - Data Loaders:
-        - TPL Reader: 'api_rackio_loader_core.md'
+      - Readers:
+        - Reader: 'api_reader_core.md'
+        - TPL: 'api_reader_tpl.md'
       - Data Analysis:
         - RackioEDA: 'api_data_analysis_core.md'
       - Preprocessing:

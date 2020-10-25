@@ -7,9 +7,7 @@ class Reader:
     """
     ...Documentation here...
     """
-
     tpl = TPL()
-
 
     def __init__(self):
         """
@@ -55,14 +53,19 @@ class Reader:
 
             raise KeyError('format file is not available to be loaded')
 
-    def extension_files(self, root_directory, ext='.tpl'):
+    @staticmethod
+    def extension_files(root_directory, ext='.tpl'):
         """
         ...Description here...
+
+        **Parameters**
+
         * **:param root_directory:**
+        * **:param ext** (str) default='.tpl'
 
         **:return:**
 
-        * **extension_files:** (list['str'])
+        * **bool**
         """
 
         files = [f for f in glob.glob(root_directory + "**/*{}".format(ext), recursive=True)]
