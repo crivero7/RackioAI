@@ -1,4 +1,4 @@
-::: rackio_AI.readers.Reader
+::: rackio_AI.Reader
     :docstring:
     :members: read
     :members: extension_files

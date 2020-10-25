@@ -33,6 +33,7 @@ class RackioAI(Singleton):
         self._preprocessing_manager = PreprocessManager()
         self._data_analysis_manager = DataAnalysisManager()
         self.app = None
+        self._data = None
 
     def __call__(self, app):
         """

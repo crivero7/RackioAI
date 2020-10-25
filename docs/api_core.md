@@ -1,4 +1,4 @@
-::: rackio_AI.core.RackioAI
+::: rackio_AI.RackioAI
     :docstring:
     :members: data
     :members: load

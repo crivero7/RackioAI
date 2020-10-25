@@ -1,4 +1,4 @@
-:::rackio_AI.data_analysis.RackioEDA
+:::rackio_AI.RackioEDA
     :docstring:
     :members: insert_column
     :members: insert_columns

@@ -1,4 +1,4 @@
-    ::: rackio_AI.preprocessing.synthetic_data.SyntheticData
+::: rackio_AI.preprocessing.SyntheticData
     :docstring:
     :members: set_options 
     :members: add_instrument_error

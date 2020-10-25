@@ -1,4 +1,4 @@
-::: rackio_AI.preprocessing.scaler.Scaler
+::: rackio_AI.preprocessing.Scaler
     :docstring:
     :members: __init__
     :members: range

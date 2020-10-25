@@ -1,4 +1,4 @@
-:::rackio_AI.preprocessing.kalman_filter.KalmanFilter
+:::rackio_AI.preprocessing.KalmanFilter
     :docstring:
     :members: set_init_value
     :members: __call__
