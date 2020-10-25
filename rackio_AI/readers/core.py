@@ -85,34 +85,24 @@ class Reader:
         ```
         """
         (_, file_extension) = os.path.splitext(filename)
-        specific_file = True
+        tpl_file =False
 
-        if os.path.isfile(filename):
+        if file_extension=='.tpl':
 
-            (_, file_extension) = os.path.splitext(filename)
+            tpl_file = True
 
-            if file_extension=='.tpl':
+        elif self.check_extension_files(filename, ext='.tpl'):
 
-                tpl_file = True
-
-        elif os.path.isdir(filename):
-
-            specific_file = False
-
-            if self.check_extension_files(filename, ext='.tpl'):
-
-                tpl_file = True
+            tpl_file = True
 
         if tpl_file:
 
-            self.tpl.read(filename, specific_file=specific_file)
+            self.tpl.read(filename)
             data = self.tpl.to('dataframe')
 
-        else:
+            return data
 
-            raise KeyError('format file is not available to be loaded')
-
-        return data
+        return None
 
     @staticmethod
     def check_extension_files(root_directory, ext='.tpl'):
