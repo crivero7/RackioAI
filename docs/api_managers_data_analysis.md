@@ -1,4 +1,4 @@
-::: rackio_AI.managers.data_analysis.DataAnalysisManager
+::: rackio_AI.managers.DataAnalysisManager
     :docstring:
     :members: __init__
     :members: append

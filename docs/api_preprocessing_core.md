@@ -1,4 +1,4 @@
-::: rackio_AI.preprocessing.core.Preprocessing
+::: rackio_AI.Preprocessing
     :docstring:
     :members: __init__
     :members: data

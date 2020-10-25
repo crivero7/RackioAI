@@ -1,4 +1,4 @@
-::: rackio_AI.managers.preprocess.PreprocessManager
+::: rackio_AI.managers.PreprocessManager
     :docstring:
     :members: __init__
     :members: append_preprocessing

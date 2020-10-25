@@ -1,6 +1,5 @@
-from rackio_AI import RackioAI
+from rackio_AI import RackioAI, Preprocessing
 from rackio import Rackio
-from rackio_AI.preprocessing import Preprocessing
 
 app = Rackio()
 

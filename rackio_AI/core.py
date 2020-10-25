@@ -2,10 +2,10 @@ import os, pickle
 import pandas as pd
 import numpy as np
 from rackio_AI._singleton import Singleton
-from rackio_AI.managers.preprocess import PreprocessManager
+from rackio_AI.managers import PreprocessManager
 from rackio_AI.readers import Reader
-from rackio_AI.managers.data_analysis import DataAnalysisManager
-from rackio_AI.preprocessing.synthetic_data import SyntheticData
+from rackio_AI.managers import DataAnalysisManager
+from rackio_AI.preprocessing import SyntheticData
 
 
 class RackioAI(Singleton):

@@ -1,4 +1,4 @@
-::: rackio_AI.managers.models.ModelsManager
+::: rackio_AI.managers.ModelsManager
     :docstring:
     :members: __init__
     :members: append_model

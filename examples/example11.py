@@ -1,5 +1,4 @@
-from rackio_AI.data_analysis import RackioEDA
-from rackio_AI import RackioAI
+from rackio_AI import RackioEDA, RackioAI
 from rackio import Rackio
 
 app = Rackio()

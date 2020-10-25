@@ -1,6 +1,6 @@
+from rackio_AI.core import RackioAI
 from .scaler import Scaler
 from .kalman_filter import KalmanFilter
-from rackio_AI.core import RackioAI
 
 
 class Preprocessing:
