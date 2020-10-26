@@ -1,24 +1,42 @@
+import pandas as pd
+import numpy as np
 from rackio_AI.core import RackioAI
-from .scaler import Scaler
-from .kalman_filter import KalmanFilter
+from rackio_AI.preprocessing import Scaler
+from rackio_AI.preprocessing import KalmanFilter
 
 
 class Preprocessing:
     """
-    Description here
+    This class allows to you do preprocessing to the data in *RackioAI* or *RackioEDA
     """
 
     app = RackioAI()
 
     def __init__(self, name, description, problem_type='regression'):
         """
-        ...Description here...
+        Preprocessing instantiation
 
         **Parameters**
 
-        * **:param name:**
-        * **:param description:**
-        * **:param problem_type:**
+        * **:param name:** (str) Preprocessing model name
+        * **:param description:** (str) Preprocessing model description
+        * **:param problem_type:** (str) Preprocessing model type
+            * *regression*
+            * *classification*
+
+        **:return:**
+
+        * **preprocessing:** (Preprocessing object)
+
+        ## Snippet code
+        ```python
+        >>> from rackio_AI import RackioAI, Preprocessing
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
+
+        ```
         """
         self._data = None
         self._name = name
@@ -28,6 +46,7 @@ class Preprocessing:
         if problem_type.lower() in ['regression', 'classification']:
 
             if problem_type.lower() == 'regression':
+
                 self.preprocess = Regression(name, description)
 
             else:
@@ -40,70 +59,118 @@ class Preprocessing:
     @property
     def data(self):
         """
-        ...Description here...
+        Preprocessing attribute to storage data values
 
-        **:return:**
+        **Parameters**
 
+        * **:param value:** (pandas.DataFrame or np.ndarray)
+
+        * **:return:**
+
+        * **data:** (pandas.DataFrame)
         """
-        return self.app._data
+        return self._data
 
     @data.setter
     def data(self, value):
         """
+        Preprocessing attribute to storage data values
 
-        :param value:
-        :return:
+        **Parameters**
+
+        * **:param value:** (pandas.DataFrame or np.ndarray)
+
+        * **:return:**
+
+        * **data:** (pandas.DataFrame)
         """
-        self.app._data = value
+        if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
+
+            if isinstance(value, np.ndarray):
+                value = pd.DataFrame(value)
+
+            self.synthetic_data.data = value
+        else:
+            raise TypeError('value must be a pd.DataFrame or np.ndarray')
+
+        self._data = value
 
     @property
     def description(self):
         """
-        ...Description here...
+        Preprocessing attribute to storage preprocessing model description
 
         **Parameters**
 
-        None
+        * **:param value:** (str) Preprocessing model description
 
-        **:return:**
+        * **:return:**
 
+        * **description:** (str) Preprocessing model description
         """
         return self._description
 
     @description.setter
     def description(self, value):
         """
-
-        :param value:
-        :return:
-        """
-        self._description = value
-
-    def __call__(self, action, data):
-        """
-        ...Description here...
+        Preprocessing attribute to storage preprocessing model description
 
         **Parameters**
 
-        * **:param action:**
-        * **:param data:**
+        * **:param value:** (str) Preprocessing model description
+
+        * **:return:**
+
+        * **description:** (str) Preprocessing model description
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, Preprocessing
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> preprocess.description
+        'preprocess for data'
+
+        ```
+        """
+        self._description = value
+
+    def __call__(self, action):
+        """
+        Invoker to apply any preprocessing action
+
+        **Parameters**
+
+        * **:param action:** (str) preprocessing to do
+            * *scaler*
+            * *filter*
+            * *split*
 
         **:return:**
 
+        * **data:** (pd.DataFrame) Preprocessed data
+
         """
-        allowed_actions = ["scaler", "prepare", "split"]
+        allowed_actions = ["scaler", "filter", "split"]
 
         if action.lower() in allowed_actions:
 
             todo = getattr(self.preprocess,action.lower())
 
-            todo(data)
+            data = todo(self.data)
+
+            return data
         else:
             raise NotImplementedError("{} method is not implemented in {} class".format(action, self._preprocesssing.get_type().get_name()))
 
+        return
+
     def serialize(self):
         """
-        ...Description here..
+        Serialize preprocessing object
 
         **Parameters**
 
@@ -111,7 +178,20 @@ class Preprocessing:
 
         **:return:**
 
+        * **result:** (dict) keys {"name", "description", "type"}
 
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, Preprocessing
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> preprocess.serialize()
+        {'name': 'Preprocess model name', 'description': 'preprocess for data', 'type': 'regression'}
+
+        ```
         """
         result = {"name": self.get_name(),
                   "description": self.description,
@@ -121,7 +201,7 @@ class Preprocessing:
 
     def get_name(self):
         """
-        ...Description here...
+        Get preprocessing model name
 
         **Parameters**
 
@@ -130,24 +210,37 @@ class Preprocessing:
         **:return:**
 
         * **name:** (str) Preprocessing name
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, Preprocessing
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> preprocess.get_name()
+        'Preprocess model name'
+
+        ```
         """
+
         return self._name
 
 
 class Regression(Preprocessing):
     """
-    ...Description here...
+    This class contains preproccesing action allowed for **Regression** problems
 
     """
 
     def __init__(self, name, description):
         """
-        ...Description here...
+        Initializer Regression object
 
         **Parameters**
 
-        * **:param name:**
-        * **:param description:**
+        * **:param name:** (str) Preprocessing  model's name for regression problem
+        * **:param description:** (str) Preprocessing model's description for regression problem
         """
         self._name = name
         self._description = description
@@ -155,18 +248,22 @@ class Regression(Preprocessing):
 
 class Classification(Preprocessing):
     """
-    ...Description here...
+    This class contains preproccesing action allowed for **Classification** problems
 
     """
 
     def __init__(self, name, description):
         """
-        ...Description here...
+        Initializer Classification object
 
         **Parameters**
 
-        * **:param name:**
-        * **:param description:**
+        * **:param name:** (str) Preprocessing model's name for classification problem
+        * **:param description:** (str) Preprocessing model's description for classification problem
         """
         self._name = name
         self._description = description
+
+if __name__=="__main__":
+    import doctest
+    doctest.testmod()

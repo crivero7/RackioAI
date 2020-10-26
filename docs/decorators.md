@@ -1,14 +1,14 @@
-::: rackio_AI.decorators.progress_bar
+::: rackio_AI.progress_bar
     :docstring:
 
-::: rackio_AI.decorators.typeCheckedAttribute.Typed
+::: rackio_AI.Typed
     :docstring:
     
-::: rackio_AI.decorators.typeCheckedAttribute.MinMaxLengthString
+::: rackio_AI.MinMaxLengthString
     :docstring:
     
-::: rackio_AI.decorators.typeCheckedAttribute.MinIntegerValue
+::: rackio_AI.MinIntegerValue
     :docstring:
     
-::: rackio_AI.decorators.typeCheckedAttribute.typeassert
+::: rackio_AI.typeassert
     :docstring:

@@ -5,6 +5,7 @@ from rackio_AI._singleton import Singleton
 from rackio_AI.managers import PreprocessManager
 from rackio_AI.readers import Reader
 from rackio_AI.managers import DataAnalysisManager
+from rackio_AI.managers import ModelsManager
 from rackio_AI.preprocessing import SyntheticData
 
 
@@ -32,6 +33,7 @@ class RackioAI(Singleton):
         self.synthetic_data = SyntheticData()
         self._preprocessing_manager = PreprocessManager()
         self._data_analysis_manager = DataAnalysisManager()
+        self._models_manager = ModelsManager()
         self.app = None
         self._data = None
 
@@ -312,7 +314,54 @@ class RackioAI(Singleton):
         None
         """
 
-        self._preprocessing_manager.append_preprocessing(preprocessing_model)
+        self._preprocessing_manager.append(preprocessing_model)
+
+    def get_manager(self, name):
+        """
+         Get a manager by its name.
+
+        **Parameters**
+
+        * **:param name:** (str): Manager object.
+            * *'EDA'*
+            * *'Preprocessing'*
+            * *'Models'*
+
+        **:return:**
+
+        * **result:** (obj) manager object
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioEDA, RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA1 = RackioEDA(name= 'EDA1', description='Object 1 Exploratory Data Analysis')
+        >>> EDA2 = RackioEDA(name= 'EDA2', description='Object 2 Exploratory Data Analysis')
+        >>> RackioAI.append_data(EDA1)
+        >>> RackioAI.append_data(EDA2)
+        >>> eda_manager = RackioAI.get_manager('EDA')
+
+        ```
+        """
+        if name.lower() == 'eda':
+
+            result = self._data_analysis_manager
+        elif name.lower() == 'preprocessing':
+
+            result = self._preprocessing_manager
+
+        elif name.lower() == 'models':
+
+            result = self._models_manager
+
+        if result:
+
+            return result
+
+        return
 
     def _get_preprocessing(self, name):
         """

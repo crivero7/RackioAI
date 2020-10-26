@@ -71,7 +71,6 @@ class KalmanFilter:
 
         ```
         """
-
         f_value = self.filtered_value
         priori_error_estimate = self.posteri_error_estimate + self.alpha
 

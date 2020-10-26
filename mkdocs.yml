@@ -30,10 +30,7 @@ nav:
       - Restful API: 'restful_api.md'
       - Utils:
         - decorators: 'decorators.md'
-      - Managers:
-        - Data Analysis: 'api_managers_data_analysis.md'
-        - Models: 'api_managers_models.md'
-        - Preprocess: 'api_managers_preprocess.md'
+      - Managers: 'api_managers_core.md'
     - User Guide: 'user_guide.md'
     - Contributing: 'contributing.md'
 
