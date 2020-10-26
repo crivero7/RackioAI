@@ -2,7 +2,8 @@
 
 **RackioAI** is a [Rackio](https://github.com/rack-io/rackio-framework) extension for Artificial Intelligence (AI) models.
 
-The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) as a *Leak Detection System* and *Virtual Analyzer* project in **Intelcon System C.A** and [MCL Control S.A](http://mclcontrol.com/) respectively as a workaround to development and deployment *Deep Learning* models faster way.
+The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) as a *Leak Detection System* and *Virtual Analyzer*
+ project at **Intelcon System C.A** and [MCL Control S.A](http://mclcontrol.com/) respectively as a workaround to development and deployment *Deep Learning* models faster way.
 
 # Installation
 
@@ -18,7 +19,7 @@ The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) 
 * pandas (1.1.3)
 * tqdm (4.50.2)
 * Pillow (8.0.0)
-* Rackio (0.9.7)
+* Rackio (0.9.8)
 
 ___
 
@@ -45,9 +46,7 @@ see the following snippet code
 ```python
 from rackio import Rackio
 from rackio_AI import RackioAI
-
 app = Rackio()
-
 RackioAI(app)
 ```
 Now, you can get access to **RackioAI** methods and attributes.
@@ -58,7 +57,7 @@ You can check the latest sources with the command:
 
 `git clone https://github.com/crivero7/RackioAI.git`
 ___
-## Documentation (in progress...)
+## Documentation
 
 The RackioAI documentation can be found in [Read the Docs](https://rackioai.readthedocs.io/en/latest/)
 
