@@ -299,6 +299,7 @@ class SyntheticData(PrepareData):
         """
         Callback to do anomalies
 
+        ___
         **Parameters**
 
         * **decalibrations:** (int) default=0: decalibration anomalies to add
@@ -318,6 +319,9 @@ class SyntheticData(PrepareData):
         **return:**
 
         * **data:** (np.array, pd.DataFrame): data with anomalies
+        ___
+
+        ## Snippet code
 
         ```python
         >>> import os

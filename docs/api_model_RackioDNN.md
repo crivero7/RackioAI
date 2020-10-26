@@ -1,2 +1,2 @@
-::: rackio_AI.models.core.RackioDNN
+::: rackio_AI.RackioDNN
     :docstring:

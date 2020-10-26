@@ -22,7 +22,30 @@ class RackioEDA:
 
     def serialize(self):
         """
+        Serialize RackioEDA object
 
+        ___
+        **Parameters**
+
+        None
+
+        **:return:**
+
+        * **result:** (dict) keys {"name", "description"}
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, RackioEDA
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.serialize()
+        {'name': 'EDA', 'description': 'Object Exploratory Data Analysis'}
+
+        ```
         """
         result = {"name": self.get_name(),
                   "description": self.description}
@@ -34,6 +57,32 @@ class RackioEDA:
 
     @property
     def description(self):
+        """
+        Preprocessing attribute to storage preprocessing model description
+
+        ___
+        **Parameters**
+
+        * **:param value:** (str) RackioEDA model description
+
+        * **:return:**
+
+        * **description:** (str) RackioEDA model description
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, RackioEDA
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.description
+        'Object Exploratory Data Analysis'
+
+        ```
+        """
         return self._description
 
     @description.setter
@@ -47,11 +96,37 @@ class RackioEDA:
     @property
     def data(self):
         """
-        Property getter method
+        Property setter methods
 
-        **return**
+        ___
+        **Parameters**
+
+        * **:param value:** (np.array, pd.DataFrame)
+
+        **:return:**
 
         * **data:** (np.array, pd.DataFrame)
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> import numpy as np
+        >>> import numpy as np
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
+        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.data = df
+        >>> EDA.data
+           One  Two  Three
+        0    1    2      3
+        1    4    5      6
+        2    7    8      9
+
+        ```
         """
         return self._data
 
@@ -96,6 +171,7 @@ class RackioEDA:
         """
         Insert column in any location in **RackioAI.data**
 
+        ___
         **Parameters**
 
         * **:param data:** (np.ndarray or pd.Series) column to insert
@@ -106,6 +182,8 @@ class RackioEDA:
         **:return:**
 
         * **data:** (pandas.DataFrame)
+        ___
+        ## Snippet code
 
         ```python
         >>> import pandas as pd
@@ -140,6 +218,7 @@ class RackioEDA:
         """
         Insert several columns in any location
 
+        ___
         **Parameters**
 
         * **:param data:** (np.ndarray, pd.DataFrame or pd.Series) column to insert
@@ -150,6 +229,9 @@ class RackioEDA:
         **:return:**
 
         * **data:** (pandas.DataFrame)
+
+        ___
+        ## Snippet code
 
         ```python
         >>> import pandas as pd
@@ -186,6 +268,7 @@ class RackioEDA:
         """
         This method allows to you remove one or several columns in the data
 
+        ___
         **Parameters**
 
         * **:param args:** (str) column name or column names to remove from the data
@@ -193,6 +276,8 @@ class RackioEDA:
         **:return:**
 
         * **data:** (pandas.DataFrame)
+        ___
+        ##Snippet code
 
         ```python
         >>> import pandas as pd
@@ -221,6 +306,7 @@ class RackioEDA:
         """
         This method allows to you rename one or several column names in the data
 
+        ___
         **Parameters**
 
         * **:param kwargs:** (dict) column name or column names to remove from the data
@@ -229,6 +315,8 @@ class RackioEDA:
 
         * **data:** (pandas.DataFrame)
 
+        ___
+        ## Snippet code
         ```python
         >>> import pandas as pd
         >>> import numpy as np
@@ -261,6 +349,7 @@ class RackioEDA:
         """
         This method allows to you rename one or several column names in the data
 
+        ___
         **Parameters**
 
         * **:param data:** (pandas.DataFrame) to change in *self.data*
@@ -270,6 +359,8 @@ class RackioEDA:
 
         * **data:** (pandas.DataFrame)
 
+        ___
+        ## Snippet code
         ```python
         >>> import pandas as pd
         >>> import numpy as np

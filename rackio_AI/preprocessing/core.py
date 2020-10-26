@@ -16,6 +16,7 @@ class Preprocessing:
         """
         Preprocessing instantiation
 
+        ___
         **Parameters**
 
         * **:param name:** (str) Preprocessing model name
@@ -27,6 +28,8 @@ class Preprocessing:
         **:return:**
 
         * **preprocessing:** (Preprocessing object)
+
+        ___
 
         ## Snippet code
         ```python
@@ -100,6 +103,7 @@ class Preprocessing:
         """
         Preprocessing attribute to storage preprocessing model description
 
+        ___
         **Parameters**
 
         * **:param value:** (str) Preprocessing model description
@@ -107,21 +111,8 @@ class Preprocessing:
         * **:return:**
 
         * **description:** (str) Preprocessing model description
-        """
-        return self._description
 
-    @description.setter
-    def description(self, value):
-        """
-        Preprocessing attribute to storage preprocessing model description
-
-        **Parameters**
-
-        * **:param value:** (str) Preprocessing model description
-
-        * **:return:**
-
-        * **description:** (str) Preprocessing model description
+        ___
 
         ## Snippet code
 
@@ -135,6 +126,13 @@ class Preprocessing:
         'preprocess for data'
 
         ```
+        """
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        """
+
         """
         self._description = value
 
@@ -172,6 +170,7 @@ class Preprocessing:
         """
         Serialize preprocessing object
 
+        ___
         **Parameters**
 
         None
@@ -180,6 +179,7 @@ class Preprocessing:
 
         * **result:** (dict) keys {"name", "description", "type"}
 
+        ___
         ## Snippet code
 
         ```python
@@ -203,6 +203,7 @@ class Preprocessing:
         """
         Get preprocessing model name
 
+        ___
         **Parameters**
 
         None
@@ -210,6 +211,8 @@ class Preprocessing:
         **:return:**
 
         * **name:** (str) Preprocessing name
+
+        ___
         ## Snippet code
 
         ```python

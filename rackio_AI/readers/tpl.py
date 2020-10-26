@@ -27,6 +27,7 @@ class TPL:
         """
         Read .tpl files
 
+        ___
         **Paramaters**
 
         * **:param name:** (str) if *name* is a directory, it reads all .tpl files in that directory.
@@ -35,8 +36,10 @@ class TPL:
         **:return:**
 
         * **doc:** (list[dict]) tpl file reaformated in dictionaries
+        ___
 
         ## Snippet code
+        
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -74,6 +77,7 @@ class TPL:
         """
         Read only one .tpl file
 
+        ___
         **Parameters**
 
         **:param filename:** (str) tpl filename
@@ -82,7 +86,10 @@ class TPL:
 
         * **doc:** (dict) .tpl file in a dictionary
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -137,6 +144,7 @@ class TPL:
         """
         Read all .tpl files in a directory
 
+        ___
         **Parameters**
 
         **:param directory:** (str) directory with .tpl files
@@ -145,7 +153,10 @@ class TPL:
 
         * **doc:** (list[dict]) tpl file reformated in dictionaries
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -173,6 +184,7 @@ class TPL:
         """
         Read all .tpl files in a list of filenames
 
+        ___
         **Parameters**
 
         **:param filenames:** list['str'] filenames list
@@ -181,7 +193,10 @@ class TPL:
 
         * **doc:** (list[dict]) tpl file reformated in dictionaries
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -207,6 +222,7 @@ class TPL:
         Get time profile section separated by key word  in tpl_options.split_expression, for OLGA .tpl files this key is
         CATALOG
 
+        ___
         **Parameters**
 
         * **filename:** (str)
@@ -217,7 +233,10 @@ class TPL:
             * **data_header_section:** list['str'] .tpl file header section
             * **data:** (np.ndarray) data section
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -251,6 +270,7 @@ class TPL:
         """
         Get header section tag description of .tpl file
 
+        ___
         **Parameters**
 
         * **data_header_section:** list['str'] .tpl file header section
@@ -259,7 +279,10 @@ class TPL:
 
         * **header_section:** list('str') each item in the list is tag variable summary in .tpl files
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -292,7 +315,6 @@ class TPL:
         **:return:**
 
         * **data:** (np.ndarray)
-
         """
         rows = len(data)
         new_data = list()
@@ -311,6 +333,7 @@ class TPL:
         """
         find all *:param extension:* files in *path*
 
+        ___
         **Parameters**
 
         * **:param extension:** (str)
@@ -319,6 +342,8 @@ class TPL:
         **:return:**
 
         * **files:** (list['str'])
+
+        ___
 
         ## Snippet code
 

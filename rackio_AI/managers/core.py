@@ -4,6 +4,8 @@ class Manager:
         """
         Append **RackioEDA**, **Preprocessing** or **RackioDNN** object to the manager
 
+        ___
+
         **Parameters**
 
         * **:param obj:** (RackioEDA, Preprocessing, RackioDNN) object
@@ -11,6 +13,8 @@ class Manager:
         **:return:**
 
         None
+
+        ___
 
         ## Snippet code
 
@@ -43,6 +47,7 @@ class Manager:
         """
         Get a **RackioEDA**, **Preprocessing** or **RackioDNN** object by name
 
+        ___
         **Parameters**
 
         * **:param name:** (str) If name is not given yo get all RackioEDA objects in the manager
@@ -50,6 +55,8 @@ class Manager:
         **:return:**
 
         * **obj:** **RackioEDA**, **Preprocessing** or **RackioDNN** object or object list
+
+        ___
 
         ## Snippet code
 
@@ -89,6 +96,7 @@ class Manager:
         """
         Get all **RackioEDA**, **Preprocessing** or **RackioDNN** object names in the manager
 
+        ___
         **Parameters**
 
         None
@@ -96,6 +104,7 @@ class Manager:
         **:return:**
 
         * **result:** (list['str'])
+        ___
 
         ## Snippet code
 
@@ -125,6 +134,7 @@ class Manager:
         """
         Get all **RackioEDA**, **Preprocessing** or **RackioDNN** object descriptions in the manager
 
+        ___
         **Parameters**
 
         None
@@ -132,6 +142,7 @@ class Manager:
         **:return:**
 
         * **result:** (list['str'])
+        ___
 
         ## Snippet code
 
@@ -161,6 +172,7 @@ class Manager:
         """
         Get **RackioEDA**, **Preprocessing** or **RackioDNN** Summary
 
+        ___
         **Parameters**
 
         None
@@ -169,6 +181,7 @@ class Manager:
 
         * **result:** (dict) key values {'length', 'names', 'descriptions'}
 
+        ___
         ## Snippet code
 
         ```python

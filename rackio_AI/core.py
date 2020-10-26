@@ -53,6 +53,7 @@ class RackioAI(Singleton):
         extension file.
         * **.pkl:** Numpy arrays or Pandas.DataFrame saved in pickle format.
 
+        ___
         **Parameters**
 
         * **:param filename:** (str) Complete path with its extension. If the *filename* is a directory, it will load all the files
@@ -65,7 +66,8 @@ class RackioAI(Singleton):
 
         * **data:** (pandas.DataFrame)
 
-        **Example loading a .tpl file**
+        ___
+        ## Snippet code
 
         ```python
         >>> import os
@@ -213,26 +215,41 @@ class RackioAI(Singleton):
 
         self._data = value
 
-    def append_data(self, data_analysis_object):
+    def append_data(self, eda_object):
         """
         Append a RackioEDA object to the data analysis manager.
 
+        ___
         **Parameters**
 
-        * **:param data_analysis_object:** (RackioEDA): RackioEDA object.
+        * **:param eda_object:** (RackioEDA): RackioEDA object.
 
         **:return:**
 
         None
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioEDA, RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> RackioAI.append_data(EDA)
+
+        ```
         """
 
-        self._data_analysis_manager.append(data_analysis_object)
+        self._data_analysis_manager.append(eda_object)
 
     def get_object(self, name, _type='EDA', serialize=False):
         """
-        Get any coupled object as RackioAI attribute like *DataAnalysis* object, *Preprocessing* object and *Model* object
+        Get any coupled object as RackioAI attribute like *RackioEDA* object, *Preprocessing* object and *RackioDNN* object
         by its name
 
+        ___
         **Parameters**
 
         * **:param name:** (str) Object name
@@ -245,6 +262,18 @@ class RackioAI(Singleton):
         **:return:**
 
         * **object:** (object, serialized dict)
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioEDA, RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA1 = RackioEDA(name='EDA1', description='Object 1 Exploratory Data Analysis')
+        >>> RackioAI.append_data(EDA1)
+        >>> eda_object = RackioAI.get_object('EDA1', _type='EDA')
 
         """
         if _type.lower()=='eda':
@@ -280,7 +309,7 @@ class RackioAI(Singleton):
         * **data_object:** (RackioEDA) RackioEDA object
         """
 
-        return self._data_analysis_manager.get_data(name)
+        return self._data_analysis_manager.get(name)
 
     def _serialize_data(self, name):
         """
@@ -305,6 +334,7 @@ class RackioAI(Singleton):
         """
          Append a Preprocessing object to the data analysis manager.
 
+        ___
         **Parameters**
 
         * **:param preprocessing_model:** (Preprocessing): Preprocessing object.
@@ -312,6 +342,21 @@ class RackioAI(Singleton):
         **:return:**
 
         None
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import Preprocessing, RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> preprocess1 = Preprocessing(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
+        >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
+        >>> RackioAI.append_preprocessing_model(preprocess1)
+        >>> RackioAI.append_preprocessing_model(preprocess2)
+
+        ```
         """
 
         self._preprocessing_manager.append(preprocessing_model)
@@ -320,6 +365,7 @@ class RackioAI(Singleton):
         """
          Get a manager by its name.
 
+        ___
         **Parameters**
 
         * **:param name:** (str): Manager object.
@@ -331,6 +377,7 @@ class RackioAI(Singleton):
 
         * **result:** (obj) manager object
 
+        ___
         ## Snippet code
 
         ```python
@@ -338,10 +385,10 @@ class RackioAI(Singleton):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> EDA1 = RackioEDA(name= 'EDA1', description='Object 1 Exploratory Data Analysis')
         >>> EDA2 = RackioEDA(name= 'EDA2', description='Object 2 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA1)
+        >>> EDA3 = RackioEDA(name= 'EDA3', description='Object 3 Exploratory Data Analysis')
         >>> RackioAI.append_data(EDA2)
+        >>> RackioAI.append_data(EDA3)
         >>> eda_manager = RackioAI.get_manager('EDA')
 
         ```
@@ -399,6 +446,7 @@ class RackioAI(Singleton):
         """
         Get a RackioAI summary.
 
+        ___
         **Parameters**
 
         None
@@ -406,6 +454,23 @@ class RackioAI(Singleton):
         **:return:**
 
         * **result:** (dict) All defined Managers
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioEDA, RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA4 = RackioEDA(name= 'EDA4', description='Object 4 Exploratory Data Analysis')
+        >>> EDA5 = RackioEDA(name= 'EDA5', description='Object 5 Exploratory Data Analysis')
+        >>> RackioAI.append_data(EDA4)
+        >>> RackioAI.append_data(EDA5)
+        >>> eda_manager = RackioAI.get_manager('EDA')
+        >>> eda_summary = eda_manager.summary()
+
+        ```
         """
 
         result = dict()
@@ -419,6 +484,7 @@ class RackioAI(Singleton):
         """
         Method to persist any object
 
+        ___
         **Parameters**
 
         * **:param obj:** (obj) any persistable object
@@ -440,6 +506,7 @@ class RackioAI(Singleton):
         """
         load any saved object with RackioAI's save method
 
+        ___
         **Parameters**
 
         * **:param filename:** (str) with no extension
@@ -473,6 +540,7 @@ class RackioAI(Singleton):
 
         *test_data* allows to you an specific file or all files in the previous folders
 
+        ___
         **Parameters**
 
         * **:param name:** (str) a folder name or filename in rackio_AI/data
@@ -480,8 +548,9 @@ class RackioAI(Singleton):
         * **:return:**
 
         * **data:** (pandas.DataFrame)
+        ___
 
-        #**Example**
+        ## Snippet code
 
         ```python
         >>> from rackio_AI import RackioAI

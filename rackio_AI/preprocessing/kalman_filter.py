@@ -20,8 +20,9 @@ class KalmanFilter:
 
     def set_init_value(self, value):
         """
-        set init value for the Kalman filter
+        Set init value for the Kalman filter
 
+        ___
         **Parameters**
 
         * **:param value:** (float)
@@ -29,6 +30,10 @@ class KalmanFilter:
         * **:return:**
 
         None
+
+        ___
+
+        ## Snippet code
 
         ```python
         >>> import numpy as np

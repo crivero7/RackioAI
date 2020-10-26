@@ -1,20 +1,29 @@
+# Manager
+
 ::: rackio_AI.Manager
     :docstring:
-    :members: __init__
     :members: append
-    :members: get_data
+    :members: get
     :members: get_names
-    :members: get_types
     :members: get_descriptions
     :members: summary
-   
+___
+
+# Data Analysis 
+
 ::: rackio_AI.DataAnalysisManager
     :docstring:
-    
+___
+
+# Preprocessing
+
 ::: rackio_AI.PreprocessManager
     :docstring:
     :members: get_types
     :members: summary
-    
-::: rackio_AI.Models
+____
+
+# Models
+
+::: rackio_AI.ModelsManager
     :docstring:

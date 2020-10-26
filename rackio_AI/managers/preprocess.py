@@ -14,6 +14,7 @@ class PreprocessManager(Manager):
         """
         Get all Preprocessing object types in the manager
 
+        ___
         **Parameters**
 
         None
@@ -22,6 +23,7 @@ class PreprocessManager(Manager):
 
         * **result:** (list['str']) Preprocessing object types
 
+        ___
         ## Snippet code
 
         ```python

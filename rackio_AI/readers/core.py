@@ -5,8 +5,8 @@ from rackio_AI.readers.tpl import TPL
 
 class Reader:
     """
-        In all data analysis projects you must load data from different file extensions, so, the **Readers** class has that
-        software intention, read different file extensions and convert them into a *pandas.DataFrame* or *np.ndarray* to add
+        In all data analysis projects you must load data from different file extensions, so, the **Reader** class has that
+        software intention, it read different file extensions and convert them into a *pandas.DataFrame* or *np.ndarray* to add
         them to your project structure in **RackioAI**
 
         So far, you only can *.tpl* files. This file extensions are proper of [OLGA](https://www.software.slb.com/products/olga)
@@ -23,8 +23,9 @@ class Reader:
 
     def read(self, filename):
         """
-        read data supported by RackioAI in pandas.DataFrame
+        Read data supported by RackioAI in pandas.DataFrame
 
+        ___
         **Parameters**
 
         * **:param filename:** (str) Can be a directory or a filename with its extension
@@ -33,7 +34,10 @@ class Reader:
 
         * **data:** (pandas.DataFrame)
 
-        # Snippet code
+        ___
+
+        ## Snippet code
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
@@ -42,7 +46,10 @@ class Reader:
         >>> RackioAI(app)
         >>> cwd = os.getcwd()
 
+        ```
         ## An especific file
+
+        ```python
         >>> filename = os.path.join(cwd, 'data', 'Leak','Leak112.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
@@ -62,7 +69,11 @@ class Reader:
         <BLANKLINE>
         [3215 rows x 12 columns]
 
+        ```
+
         ## A directory
+
+        ```python
         >>> directory = os.path.join(cwd, 'data', 'Leak')
         >>> RackioAI.load(directory)
         tag       TIME_SERIES  ...     file
@@ -109,6 +120,7 @@ class Reader:
         """
         This is an utility method which you can check if in any directory exist files with *:param ext* extension
 
+        ___
         **Parameters**
 
         * **:param root_directory:** (str) directory to look for files
@@ -118,7 +130,10 @@ class Reader:
 
         * **bool**: If True, exist *ext* in root_directory}
 
+        ___
+
         ## Snippet code
+
         ```python
         >>> os.chdir('..')
         >>> cwd = os.getcwd()
