@@ -39,7 +39,7 @@ class TPL:
         ___
 
         ## Snippet code
-        
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
