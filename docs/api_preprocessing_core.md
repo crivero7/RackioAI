@@ -7,10 +7,10 @@
     :members: serialize
     :members: get_name
 
-::: rackio_AI.preprocessing.core.Regression
+::: rackio_AI.preprocessing.Regression
     :docstring:
     :members: __init__
     
-::: rackio_AI.preprocessing.core.Classification
+::: rackio_AI.preprocessing.Classification
     :docstring:
     :members: __init__

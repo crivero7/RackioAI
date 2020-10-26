@@ -275,6 +275,7 @@ class RackioAI(Singleton):
         >>> RackioAI.append_data(EDA1)
         >>> eda_object = RackioAI.get_object('EDA1', _type='EDA')
 
+        ```
         """
         if _type.lower()=='eda':
 
@@ -504,7 +505,7 @@ class RackioAI(Singleton):
     @staticmethod
     def load_obj(filename, format='pkl'):
         """
-        load any saved object with RackioAI's save method
+        load any saved object with RackioAI's save_obj method
 
         ___
         **Parameters**

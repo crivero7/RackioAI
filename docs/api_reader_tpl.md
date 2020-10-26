@@ -1,4 +1,4 @@
-::: rackio_AI.readers.tpl.TPL
+::: rackio_AI.TPL
     :docstring:
     :members: __init__
     :members: read
