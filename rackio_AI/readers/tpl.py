@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from rackio_AI.decorators.progress_bar import progressBar
 from rackio_AI.readers.options import TPLOptions
+from rackio.utils import log_detailed
 
 
 class TPL:
@@ -252,10 +253,15 @@ class TPL:
 
         ```
         """
-        with open(filename, 'r') as file:
+        try:
+            with open(filename, 'r') as file:
 
-            file = file.read()
+                file = file.read()
+        
+        except:
 
+            raise FileNotFoundError("filename {}: not found".format(filename))
+        
         sections = file.split("{} \n".format(self.tpl_options.split_expression))
 
         self.tpl_options.header_line_numbers = int(sections[1].split('\n')[0])

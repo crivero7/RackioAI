@@ -145,36 +145,25 @@ class RackioAI(Singleton):
                     with open(filename, 'rb') as file:
 
                         data = pickle.load(file)
+
+                    self.data = data
+                    
+                    return data
+
                 except:
 
-                    try:
+                    with open(filename, 'rb') as file:
 
-                        with open(filename, 'rb') as file:
+                        data = pd.read_pickle(file)
 
-                            data = pd.read_pickle(file)
-
-                    except:
-
-                        raise ImportError('{} is not possible loaded it'.format(filename))
-
-                self.data = data
-
-                return data
-
-            try:
+                    self.data = data
+                    
+                    return data
 
                 data = self._load_data(filename)
                 self._data = data
 
                 return data
-
-            except:
-
-                raise ImportError('{} is not possible loaded because is no a .tpl file'.format(filename))
-
-        else:
-
-            raise TypeError('You can only load .tpl or .pkl files')
 
     @property
     def data(self):
