@@ -75,7 +75,7 @@ class RackioAI(Singleton):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> filename = os.path.join('data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join('data', 'Leak', 'Leak212.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -147,7 +147,7 @@ class RackioAI(Singleton):
                         data = pickle.load(file)
 
                     self.data = data
-                    
+
                     return data
 
                 except:
@@ -157,13 +157,17 @@ class RackioAI(Singleton):
                         data = pd.read_pickle(file)
 
                     self.data = data
-                    
+
                     return data
 
-                data = self._load_data(filename)
-                self._data = data
+            data = self._load_data(filename)
+            self._data = data
 
-                return data
+            return data
+
+        else:
+
+            raise FileNotFoundError('{} not found'.format(filename))
 
     @property
     def data(self):

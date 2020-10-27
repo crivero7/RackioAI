@@ -50,7 +50,7 @@ class Reader:
         ## An especific file
 
         ```python
-        >>> filename = os.path.join('..','data', 'Leak')
+        >>> filename = os.path.join('..','data', 'Leak', 'Leak211.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -61,13 +61,13 @@ class Reader:
         3            1.653696  ...  Leak111
         4            2.200430  ...  Leak111
         ...               ...  ...      ...
-        32182     1618.124000  ...  Leak120
-        32183     1618.662000  ...  Leak120
-        32184     1619.200000  ...  Leak120
-        32185     1619.737000  ...  Leak120
-        32186     1620.275000  ...  Leak120
+        3214      1618.327000  ...  Leak111
+        3215      1618.849000  ...  Leak111
+        3216      1619.370000  ...  Leak111
+        3217      1619.892000  ...  Leak111
+        3218      1620.413000  ...  Leak111
         <BLANKLINE>
-        [32187 rows x 12 columns]
+        [3219 rows x 12 columns]
 
         ```
 
@@ -85,13 +85,13 @@ class Reader:
         3            1.653696  ...  Leak111
         4            2.200430  ...  Leak111
         ...               ...  ...      ...
-        64369     1618.124000  ...  Leak120
-        64370     1618.662000  ...  Leak120
-        64371     1619.200000  ...  Leak120
-        64372     1619.737000  ...  Leak120
-        64373     1620.275000  ...  Leak120
+        35401     1618.124000  ...  Leak120
+        35402     1618.662000  ...  Leak120
+        35403     1619.200000  ...  Leak120
+        35404     1619.737000  ...  Leak120
+        35405     1620.275000  ...  Leak120
         <BLANKLINE>
-        [64374 rows x 12 columns]
+        [35406 rows x 12 columns]
 
         ```
         """
@@ -107,13 +107,14 @@ class Reader:
             tpl_file = True
 
         if tpl_file:
+            try:
+                self.tpl.read(filename)
+                data = self.tpl.to('dataframe')
 
-            self.tpl.read(filename)
-            data = self.tpl.to('dataframe')
+            except:
+                raise FileNotFoundError('{} is not found'.format(filename))
 
             return data
-
-        return None
 
     @staticmethod
     def check_extension_files(root_directory, ext='.tpl'):

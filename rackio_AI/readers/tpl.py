@@ -3,17 +3,12 @@ import numpy as np
 import pandas as pd
 from rackio_AI.decorators.progress_bar import progressBar
 from rackio_AI.readers.options import TPLOptions
-from rackio.utils import log_detailed
+from rackio_AI.decorators import raise_error
 
 
 class TPL:
     """
     **TPL** class allows to you load into RackioAI .tpl files in pandas.DataFrame format.
-    ```python
-    >>> import os
-    >>> os.chdir('..')
-
-    ```
     """
 
     tpl_options = TPLOptions()
@@ -47,10 +42,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> name = os.path.join(cwd, 'data', 'Leak','Leak112.tpl')
+        >>> name = os.path.join('..', 'data', 'Leak','Leak112.tpl')
         >>> RackioAI.reader.tpl.read(name)
         [{'TIME_SERIES': {'variable': '', 'unit': 'S', 'data': array([0.000000e+00, 5.027318e-01, 1.232772e+00, ..., 1.619025e+03,
                1.619554e+03, 1.620083e+03])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([568097.3, 568098.2, 568783.2, ..., 569343. , 569343.2, 569343.4])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.76985, -41.76985, -41.76967, ..., -41.29723, -41.2967 ,
@@ -97,10 +91,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> name = os.path.join(cwd, 'data', 'Leak','Leak112.tpl')
+        >>> name = os.path.join('..', 'data', 'Leak','Leak112.tpl')
         >>> RackioAI.reader.tpl._read_file(name)
         {'TIME_SERIES': {'variable': '', 'unit': 'S', 'data': array([0.000000e+00, 5.027318e-01, 1.232772e+00, ..., 1.619025e+03,
                1.619554e+03, 1.620083e+03])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([568097.3, 568098.2, 568783.2, ..., 569343. , 569343.2, 569343.4])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.76985, -41.76985, -41.76967, ..., -41.29723, -41.2967 ,
@@ -164,10 +157,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> directory = os.path.join(cwd, 'data', 'Leak')
+        >>> directory = os.path.join('..', 'data', 'Leak')
         >>> data = RackioAI.reader.tpl._read_all_files(directory)
 
         ```
@@ -204,10 +196,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## A directory
-        >>> directory = os.path.join(cwd, 'data', 'Leak')
+        >>> directory = os.path.join('..', 'data', 'Leak')
         >>> filenames = RackioAI.reader.tpl.find_files(RackioAI.reader.tpl.tpl_options.file_extension, directory)
         >>> data = RackioAI.reader.tpl._read_files(filenames)
 
@@ -218,6 +209,7 @@ class TPL:
 
         return self.doc
 
+    @raise_error
     def _get_section_from(self, filename):
         """
         Get time profile section separated by key word  in tpl_options.split_expression, for OLGA .tpl files this key is
@@ -244,23 +236,17 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> filename = os.path.join(cwd, 'data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join('..', 'data', 'Leak', 'Leak112.tpl')
         >>> data = RackioAI.load(filename)
         >>> (data_header_section, data) = RackioAI.reader.tpl._get_section_from(filename)
 
         ```
         """
-        try:
-            with open(filename, 'r') as file:
+        with open(filename, 'r') as file:
 
-                file = file.read()
-        
-        except:
-
-            raise FileNotFoundError("filename {}: not found".format(filename))
+            file = file.read()
         
         sections = file.split("{} \n".format(self.tpl_options.split_expression))
 
@@ -295,10 +281,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> filename = os.path.join(cwd, 'data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join('..', 'data', 'Leak', 'Leak112.tpl')
         >>> data = RackioAI.load(filename)
         >>> (data_header_section, data) = RackioAI.reader.tpl._get_section_from(filename)
         >>> RackioAI.reader.tpl._get_header_section(data_header_section)
@@ -360,10 +345,9 @@ class TPL:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ## An especific file
-        >>> path = os.path.join(cwd, 'data')
+        >>> path = os.path.join('..', 'data')
         >>> filenames = TPL.find_files('.tpl', path)
 
         ```
