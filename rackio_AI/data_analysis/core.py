@@ -87,11 +87,8 @@ class RackioEDA:
 
     @description.setter
     def description(self, value):
+        
         self._description = value
-
-    def get_name(self):
-
-        return self._name
 
     @property
     def data(self):

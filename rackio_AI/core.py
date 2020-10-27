@@ -75,8 +75,7 @@ class RackioAI(Singleton):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
-        >>> filename = os.path.join(cwd, 'data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join('data', 'Leak', 'Leak112.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -97,7 +96,7 @@ class RackioAI(Singleton):
 
         **Example loading a .tpl file**
 
-        >>> filename = os.path.join(cwd, 'data', 'Leak')
+        >>> filename = os.path.join('data', 'Leak')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -118,7 +117,7 @@ class RackioAI(Singleton):
 
         **Example loading a .pkl with pandas.dataFrame**
 
-        >>> filename = os.path.join(cwd, 'data', 'pkl_files', 'test_data.pkl')
+        >>> filename = os.path.join('data', 'pkl_files', 'test_data.pkl')
         >>> RackioAI.load(filename)
                     Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
         0.000000                        37.83052  ...                352683.3
@@ -289,9 +288,9 @@ class RackioAI(Singleton):
 
             if serialize:
 
-                return self._serialize_preprocess()
+                return self._serialize_preprocessing(name)
 
-            return self._get_preprocessing()
+            return self._get_preprocessing(name)
         else:
             raise TypeError('Is no possible get {} object from RackioAI'.format(_type))
 
@@ -326,7 +325,7 @@ class RackioAI(Singleton):
         * **data:** (dict) RackioEDA object serialized
         """
 
-        data = self.get_data(name)
+        data = self.get_object(name, _type='EDA')
 
         return data.serialize()
 
@@ -424,7 +423,7 @@ class RackioAI(Singleton):
         * **preprocessing_model:** (Preprocesing) Preprocessing model
         """
 
-        return self._preprocess_manager.get_preprocessing_model(name)
+        return self._preprocessing_manager.get(name)
 
     def _serialize_preprocessing(self, name):
         """
@@ -526,7 +525,7 @@ class RackioAI(Singleton):
 
         return obj
 
-    def load_test_data(self, *name):
+    def load_test_data(self, name):
         """
         Load RackioAI test data contained in folder data
 
@@ -558,7 +557,8 @@ class RackioAI(Singleton):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> RackioAI.load_test_data('Leak') # Load test data fron a folder
+        >>> directory = os.path.join('data', 'Leak')
+        >>> RackioAI.load_test_data(directory) # Load test data fron a folder
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
@@ -576,7 +576,8 @@ class RackioAI(Singleton):
         <BLANKLINE>
         [67589 rows x 12 columns]
 
-        >>> RackioAI.load_test_data('Leak', 'Leak111.tpl') # Load test data from a file in Leak Folder
+        >>> filename = os.path.join('data', 'Leak', 'Leak111.tpl')
+        >>> RackioAI.load_test_data(filename) # Load test data from a file in Leak Folder
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
@@ -596,12 +597,8 @@ class RackioAI(Singleton):
 
         ```
         """
-        if not os.getcwd().split(os.path.sep)[-1]=='RackioAI':
-            os.chdir('..')
 
-        cwd = os.getcwd()
-        filename = os.path.join(cwd, 'rackio_AI', 'data', *name)
-        data = self._load_data(filename)
+        data = self._load_data(name)
 
         return data
 

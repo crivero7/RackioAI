@@ -50,48 +50,48 @@ class Reader:
         ## An especific file
 
         ```python
-        >>> filename = os.path.join(cwd, 'data', 'Leak','Leak112.tpl')
+        >>> filename = os.path.join('..','data', 'Leak')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak112
-        1            0.502732  ...  Leak112
-        2            1.232772  ...  Leak112
-        3            1.653696  ...  Leak112
-        4            2.200430  ...  Leak112
+        0            0.000000  ...  Leak111
+        1            0.502732  ...  Leak111
+        2            1.232772  ...  Leak111
+        3            1.653696  ...  Leak111
+        4            2.200430  ...  Leak111
         ...               ...  ...      ...
-        3210      1617.966000  ...  Leak112
-        3211      1618.495000  ...  Leak112
-        3212      1619.025000  ...  Leak112
-        3213      1619.554000  ...  Leak112
-        3214      1620.083000  ...  Leak112
+        32182     1618.124000  ...  Leak120
+        32183     1618.662000  ...  Leak120
+        32184     1619.200000  ...  Leak120
+        32185     1619.737000  ...  Leak120
+        32186     1620.275000  ...  Leak120
         <BLANKLINE>
-        [3215 rows x 12 columns]
+        [32187 rows x 12 columns]
 
         ```
 
         ## A directory
 
         ```python
-        >>> directory = os.path.join(cwd, 'data', 'Leak')
+        >>> directory = os.path.join('..','data', 'Leak')
         >>> RackioAI.load(directory)
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak112
-        1            0.502732  ...  Leak112
-        2            1.232772  ...  Leak112
-        3            1.653696  ...  Leak112
-        4            2.200430  ...  Leak112
+        0            0.000000  ...  Leak111
+        1            0.502732  ...  Leak111
+        2            1.232772  ...  Leak111
+        3            1.653696  ...  Leak111
+        4            2.200430  ...  Leak111
         ...               ...  ...      ...
-        35397     1618.124000  ...  Leak120
-        35398     1618.662000  ...  Leak120
-        35399     1619.200000  ...  Leak120
-        35400     1619.737000  ...  Leak120
-        35401     1620.275000  ...  Leak120
+        64369     1618.124000  ...  Leak120
+        64370     1618.662000  ...  Leak120
+        64371     1619.200000  ...  Leak120
+        64372     1619.737000  ...  Leak120
+        64373     1620.275000  ...  Leak120
         <BLANKLINE>
-        [35402 rows x 12 columns]
+        [64374 rows x 12 columns]
 
         ```
         """
@@ -135,9 +135,7 @@ class Reader:
         ## Snippet code
 
         ```python
-        >>> os.chdir('..')
-        >>> cwd = os.getcwd()
-        >>> directory = os.path.join(cwd, 'data', 'Leak')
+        >>> directory = os.path.join('..','data', 'Leak')
         >>> Reader.check_extension_files(directory)
         True
 
