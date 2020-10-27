@@ -1,4 +1,5 @@
 import functools
+from .core import decorator
 
 class Typed:
     """
@@ -183,35 +184,24 @@ def typeassert(**kwargs):
         return cls
     return decorate
 
-
-def checkOptions(function=None, **kwargs):
+@decorator
+def check_instrument_options(func, args, options):
     """
-    ...Description here...
-
-    **Parameters**
-
-    * **:param function:**
-    * **:param kwargs:**
-
-    **:return:**
 
     """
-    def decorator(function):
-        @functools.wraps(function)
-        def wrap(*args, **options):
-            defaultOptions = function(*args, **options)
-            options = {key: options[key] if key in options.keys() else defaultOptions[key] for key in defaultOptions.keys()}
-            lengthOfEachOption = [len(options[option]) for option in options]
-            # verificar cantidad de sensores
-            lengthOfEachOption.append(args[-1]._data.shape[-1])
-            if not all([x==lengthOfEachOption[0] for x in lengthOfEachOption]):
-                raise ValueError('{} must be the same length that data sensor'.format(options.keys()))
-            return options
-        return wrap
-    if function is None:
-        return decorator
-    else:
-        return decorator(function)
+    options = func(*args, **options)
+
+    lengthOfEachOption = [len(options[option]) for option in options]
+
+    # verificar cantidad de sensores
+    lengthOfEachOption.append(args[-1]._data.shape[-1])
+
+    if not all([x == lengthOfEachOption[0] for x in lengthOfEachOption]):
+
+        raise ValueError('{} must be the same length that data sensor'.format(options.keys()))
+
+    return options
+
 
 def typeMinMaxValue(**kwargs):
     """

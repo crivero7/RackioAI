@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from rackio_AI.decorators import typeCheckedAttribute
+from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options, check_default_options
 from rackio_AI.preprocessing.synthetic_data_base import PrepareData
 
 
@@ -330,9 +330,7 @@ class SyntheticData(PrepareData):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> os.chdir('..')
-        >>> cwd = os.getcwd()
-        >>> filename = os.path.join(cwd,'data','pkl_files', 'test_data.pkl')
+        >>> filename = os.path.join('..','data','pkl_files', 'test_data.pkl')
         >>> RackioAI.load(filename)
                     Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
         0.000000                        37.83052  ...                352683.3
@@ -421,7 +419,8 @@ class SyntheticData(PrepareData):
         return np.array([np.round(data[:, count] * (10 **str(value)[::-1].find('.'))) / (10 **str(value)[::-1].find('.'))
                 for count, value in enumerate(self.dead_band)])
 
-    @typeCheckedAttribute.checkOptions
+    @check_default_options
+    @check_instrument_options
     def _check_options(self, **options):
         """
         This method allows to you check user options, if the option is not passed by the user, then this function set it
@@ -446,9 +445,9 @@ class SyntheticData(PrepareData):
         # Default parameters instrumentation definition
         default_options = {key:np.zeros(sensors_numbers) for key in data_type_synthetic_data if key != '_data'}
 
-        options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
+        #options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
 
-        return options
+        return default_options
 
     def _add_dead_band(self):
         """

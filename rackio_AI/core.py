@@ -75,7 +75,7 @@ class RackioAI(Singleton):
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> filename = os.path.join('data', 'Leak', 'Leak212.tpl')
+        >>> filename = os.path.join('data', 'Leak', 'Leak112.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
