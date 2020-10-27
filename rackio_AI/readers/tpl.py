@@ -1,9 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
-from rackio_AI.decorators.progress_bar import progress_bar
+from easy_deco import progress_bar, raise_error
 from rackio_AI.readers.options import TPLOptions
-from rackio_AI.decorators import raise_error
 
 
 class TPL:

@@ -1,4 +1,3 @@
-import functools
 from .core import decorator
 
 class Typed:
@@ -187,7 +186,7 @@ def typeassert(**kwargs):
 @decorator
 def check_instrument_options(func, args, options):
     """
-
+    ...Descriptions here...
     """
     options = func(*args, **options)
 

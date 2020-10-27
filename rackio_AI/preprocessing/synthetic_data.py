@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options, check_default_options
+from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options
+from easy_deco import check_default_options
 from rackio_AI.preprocessing.synthetic_data_base import PrepareData
 
 

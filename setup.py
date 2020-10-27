@@ -24,9 +24,9 @@ setuptools.setup(
         'tensorflow==2.3.0',
         'matplotlib==3.3.2',
         'pandas==1.1.3',
-        'tqdm==4.50.2',
         'Pillow==8.0.0',
         'Rackio==0.9.8',
+        'easy-deco'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
