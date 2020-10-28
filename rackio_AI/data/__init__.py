@@ -1,0 +1,1 @@
+from .get_pathname_data import get_directory

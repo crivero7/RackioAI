@@ -71,11 +71,11 @@ class RackioAI(Singleton):
 
         ```python
         >>> import os
-        >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import RackioAI, get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> filename = os.path.join('data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak112.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
