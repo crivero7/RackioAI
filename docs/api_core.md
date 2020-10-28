@@ -1,6 +1,5 @@
 ::: rackio_AI.RackioAI
     :docstring:
-    :members: data
     :members: load
     :members: append_data
     :members: get_object
