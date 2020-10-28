@@ -41,16 +41,16 @@ class Reader:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI.data import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> cwd = os.getcwd()
 
         ```
         ## An especific file
 
         ```python
-        >>> filename = os.path.join('..','data', 'Leak', 'Leak211.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak111.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -74,7 +74,7 @@ class Reader:
         ## A directory
 
         ```python
-        >>> directory = os.path.join('..','data', 'Leak')
+        >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load(directory)
         tag       TIME_SERIES  ...     file
         variable               ... filename

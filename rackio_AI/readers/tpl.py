@@ -38,12 +38,13 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI.data import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> name = os.path.join('..', 'data', 'Leak','Leak112.tpl')
+        >>> name = os.path.join(get_directory('Leak'), 'Leak112.tpl')
         >>> RackioAI.reader.tpl.read(name)
         [{'TIME_SERIES': {'variable': '', 'unit': 'S', 'data': array([0.000000e+00, 5.027318e-01, 1.232772e+00, ..., 1.619025e+03,
                1.619554e+03, 1.620083e+03])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([568097.3, 568098.2, 568783.2, ..., 569343. , 569343.2, 569343.4])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.76985, -41.76985, -41.76967, ..., -41.29723, -41.2967 ,
@@ -87,18 +88,19 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> name = os.path.join('..', 'data', 'Leak','Leak112.tpl')
+        >>> name = os.path.join(get_directory('Leak'), 'Leak111.tpl')
         >>> RackioAI.reader.tpl._read_file(name)
-        {'TIME_SERIES': {'variable': '', 'unit': 'S', 'data': array([0.000000e+00, 5.027318e-01, 1.232772e+00, ..., 1.619025e+03,
-               1.619554e+03, 1.620083e+03])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([568097.3, 568098.2, 568783.2, ..., 569343. , 569343.2, 569343.4])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.76985, -41.76985, -41.76967, ..., -41.29723, -41.2967 ,
-               -41.29618])}, 'GT_BOUNDARY_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Total_mass_flow', 'unit': 'KG/S', 'data': array([37.83052, 37.83918, 37.83237, ..., 36.98497, 36.98411, 36.98326])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([352683.3, 353449.8, 353587.3, ..., 353604.7, 353604.8, 353604.9])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.81919, -41.81898, -41.81895, ..., -40.89744, -40.89744,
-               -40.89743])}, 'GT_BOUNDARY_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Total_mass_flow', 'unit': 'KG/S', 'data': array([37.83052, 37.70243, 37.67011, ..., 36.96315, 36.96231, 36.96148])}, 'PUMPSPEED_PUMP_PUMP': {'variable': 'Pump_speed', 'unit': 'RPM', 'data': array([1300., 1300., 1300., ..., 1300., 1300., 1300.])}, 'GTLEAK_LEAK_FUGA': {'variable': 'Leakage_total_mass_flow_rate', 'unit': 'KG/S', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'CONTR_CONTROLLER_CONTROL_BOMBA': {'variable': 'Controller_output', 'unit': '', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'CONTR_CONTROLLER_CONTROL_FUGA': {'variable': 'Controller_output', 'unit': '', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'file': {'variable': 'file', 'unit': '.tpl', 'data': array(['Leak112', 'Leak112', 'Leak112', ..., 'Leak112', 'Leak112',
-               'Leak112'], dtype='<U7')}}
+        {'TIME_SERIES': {'variable': '', 'unit': 'S', 'data': array([0.000000e+00, 5.027318e-01, 1.232772e+00, ..., 1.619370e+03,
+               1.619892e+03, 1.620413e+03])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([568097.3, 568098.2, 568783.2, ..., 569341.5, 569341.7, 569341.9])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.76985, -41.76985, -41.76967, ..., -41.2957 , -41.29513,
+               -41.29456])}, 'GT_BOUNDARY_BRANCH_TUBERIA_PIPE_Pipe60_NR_1': {'variable': 'Total_mass_flow', 'unit': 'KG/S', 'data': array([37.83052, 37.83918, 37.83237, ..., 36.98472, 36.98392, 36.98313])}, 'PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Pressure', 'unit': 'PA', 'data': array([352683.3, 353449.8, 353587.3, ..., 353602. , 353602.1, 353602.1])}, 'TM_SECTION_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Fluid_temperature', 'unit': 'C', 'data': array([-41.81919, -41.81898, -41.81895, ..., -40.90041, -40.9004 ,
+               -40.90039])}, 'GT_BOUNDARY_BRANCH_TUBERIA_PIPE_Pipe151_NR_1': {'variable': 'Total_mass_flow', 'unit': 'KG/S', 'data': array([37.83052, 37.70243, 37.67011, ..., 36.96286, 36.96208, 36.96132])}, 'PUMPSPEED_PUMP_PUMP': {'variable': 'Pump_speed', 'unit': 'RPM', 'data': array([1300., 1300., 1300., ..., 1300., 1300., 1300.])}, 'GTLEAK_LEAK_FUGA': {'variable': 'Leakage_total_mass_flow_rate', 'unit': 'KG/S', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'CONTR_CONTROLLER_CONTROL_BOMBA': {'variable': 'Controller_output', 'unit': '', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'CONTR_CONTROLLER_CONTROL_FUGA': {'variable': 'Controller_output', 'unit': '', 'data': array([0., 0., 0., ..., 0., 0., 0.])}, 'file': {'variable': 'file', 'unit': '.tpl', 'data': array(['Leak111', 'Leak111', 'Leak111', ..., 'Leak111', 'Leak111',
+               'Leak111'], dtype='<U7')}}
 
         ```
         """
@@ -153,12 +155,13 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> directory = os.path.join('..', 'data', 'Leak')
+        >>> directory = os.path.join(get_directory('Leak'))
         >>> data = RackioAI.reader.tpl._read_all_files(directory)
 
         ```
@@ -192,12 +195,13 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## A directory
-        >>> directory = os.path.join('..', 'data', 'Leak')
+        >>> directory = os.path.join(get_directory('Leak'))
         >>> filenames = RackioAI.reader.tpl.find_files(RackioAI.reader.tpl.tpl_options.file_extension, directory)
         >>> data = RackioAI.reader.tpl._read_files(filenames)
 
@@ -232,12 +236,13 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> filename = os.path.join('..', 'data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak112.tpl')
         >>> data = RackioAI.load(filename)
         >>> (data_header_section, data) = RackioAI.reader.tpl._get_section_from(filename)
 
@@ -277,12 +282,13 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> filename = os.path.join('..', 'data', 'Leak', 'Leak112.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak112.tpl')
         >>> data = RackioAI.load(filename)
         >>> (data_header_section, data) = RackioAI.reader.tpl._get_section_from(filename)
         >>> RackioAI.reader.tpl._get_header_section(data_header_section)
@@ -340,13 +346,14 @@ class TPL:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio_AI.readers.tpl import TPL
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
 
         ## An especific file
-        >>> path = os.path.join('..', 'data')
+        >>> path = os.path.join(get_directory('Leak'))
         >>> filenames = TPL.find_files('.tpl', path)
 
         ```

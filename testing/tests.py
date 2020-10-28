@@ -1,7 +1,8 @@
 import unittest
 import os
 import pandas as pd
-from rackio_AI import RackioAI, get_directory
+from rackio_AI import RackioAI
+from rackio_AI.data import get_directory
 from rackio import Rackio
 
 class LoadDataTestCase(unittest.TestCase):

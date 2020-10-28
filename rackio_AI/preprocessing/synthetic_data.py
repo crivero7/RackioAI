@@ -328,10 +328,11 @@ class SyntheticData(PrepareData):
         >>> import os
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> filename = os.path.join('..','data','pkl_files', 'test_data.pkl')
+        >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
         >>> RackioAI.load(filename)
                     Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
         0.000000                        37.83052  ...                352683.3

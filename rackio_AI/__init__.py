@@ -6,7 +6,7 @@ from .data_analysis import *
 from .readers import *
 from ._singleton import Singleton
 from .core import *
-from .data import get_directory
+from .data import *
 
 
 RackioAI = RackioAI()
