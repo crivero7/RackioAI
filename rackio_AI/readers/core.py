@@ -40,8 +40,7 @@ class Reader:
 
         ```python
         >>> import os
-        >>> from rackio_AI import RackioAI
-        >>> from rackio_AI.data import get_directory
+        >>> from rackio_AI import RackioAI, get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
@@ -50,22 +49,22 @@ class Reader:
         ## An especific file
 
         ```python
-        >>> filename = os.path.join(get_directory('Leak'), 'Leak111.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak111
-        1            0.502732  ...  Leak111
-        2            1.232772  ...  Leak111
-        3            1.653696  ...  Leak111
-        4            2.200430  ...  Leak111
+        0            0.000000  ...   Leak01
+        1            0.502732  ...   Leak01
+        2            1.232772  ...   Leak01
+        3            1.653696  ...   Leak01
+        4            2.200430  ...   Leak01
         ...               ...  ...      ...
-        3214      1618.327000  ...  Leak111
-        3215      1618.849000  ...  Leak111
-        3216      1619.370000  ...  Leak111
-        3217      1619.892000  ...  Leak111
-        3218      1620.413000  ...  Leak111
+        3214      1618.327000  ...   Leak01
+        3215      1618.849000  ...   Leak01
+        3216      1619.370000  ...   Leak01
+        3217      1619.892000  ...   Leak01
+        3218      1620.413000  ...   Leak01
         <BLANKLINE>
         [3219 rows x 12 columns]
 
@@ -79,19 +78,19 @@ class Reader:
         tag       TIME_SERIES  ...     file
         variable               ... filename
         unit                S  ...     .tpl
-        0            0.000000  ...  Leak111
-        1            0.502732  ...  Leak111
-        2            1.232772  ...  Leak111
-        3            1.653696  ...  Leak111
-        4            2.200430  ...  Leak111
+        0            0.000000  ...   Leak01
+        1            0.502732  ...   Leak01
+        2            1.232772  ...   Leak01
+        3            1.653696  ...   Leak01
+        4            2.200430  ...   Leak01
         ...               ...  ...      ...
-        35401     1618.124000  ...  Leak120
-        35402     1618.662000  ...  Leak120
-        35403     1619.200000  ...  Leak120
-        35404     1619.737000  ...  Leak120
-        35405     1620.275000  ...  Leak120
+        9648      1617.966000  ...   Leak02
+        9649      1618.495000  ...   Leak02
+        9650      1619.025000  ...   Leak02
+        9651      1619.554000  ...   Leak02
+        9652      1620.083000  ...   Leak02
         <BLANKLINE>
-        [35406 rows x 12 columns]
+        [9653 rows x 12 columns]
 
         ```
         """
@@ -136,7 +135,8 @@ class Reader:
         ## Snippet code
 
         ```python
-        >>> directory = os.path.join('..','data', 'Leak')
+        >>> from rackio_AI import get_directory
+        >>> directory = os.path.join(get_directory('Leak'))
         >>> Reader.check_extension_files(directory)
         True
 
