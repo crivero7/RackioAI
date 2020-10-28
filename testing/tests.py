@@ -1,7 +1,7 @@
 import unittest
 import os
 import pandas as pd
-from rackio_AI import RackioAI
+from rackio_AI import RackioAI, get_directory
 from rackio import Rackio
 
 class LoadDataTestCase(unittest.TestCase):
@@ -12,10 +12,10 @@ class LoadDataTestCase(unittest.TestCase):
         :return:
         """
         self.app = Rackio()
-        self.tpl_filename = os.path.join('..', 'rackio_ai', 'data', 'Leak', 'Leak112.tpl')
-        self.pkl_filename = os.path.join('..', 'rackio_ai', 'data', 'pkl_files', 'test_data.pkl')
-        self.tpl_filename_not_found = os.path.join('..', 'rackio_ai', 'data', 'Leak', 'Leak212.tpl')
-        self.pkl_filename_not_found = os.path.join('..', 'rackio_ai', 'data', 'pkl_files', 'Leak212.pkl')
+        self.tpl_filename = os.path.join(get_directory('Leak'), 'Leak112.tpl')
+        self.pkl_filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
+        self.tpl_filename_not_found = os.path.join(get_directory('Leak'), 'Leak212.tpl')
+        self.pkl_filename_not_found = os.path.join(get_directory('pkl_files'), 'Leak212.tpl')
         self.no_valid_pkl_file = os.path.join('..', 'rackio_ai', 'data', 'pkl_files', 'no_valid_RackioAI_file.pkl')
 
     def testLoadTPL(self):
