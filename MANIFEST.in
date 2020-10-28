@@ -1,0 +1,2 @@
+recursive-include rackio_AI/data/Leak/*.tpl
+recursive-include rackio_AI/data/pkl_files/*.pkl
