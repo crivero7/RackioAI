@@ -96,7 +96,7 @@ class RackioAI(Singleton):
 
         **Example loading a .tpl file**
 
-        >>> filename = os.path.join('data', 'Leak')
+        >>> filename = os.path.join(get_directory('Leak'))
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -117,7 +117,7 @@ class RackioAI(Singleton):
 
         **Example loading a .pkl with pandas.dataFrame**
 
-        >>> filename = os.path.join('data', 'pkl_files', 'test_data.pkl')
+        >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
         >>> RackioAI.load(filename)
                     Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
         0.000000                        37.83052  ...                352683.3
@@ -546,11 +546,11 @@ class RackioAI(Singleton):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI
+        >>> from rackio_AI import RackioAI, get_directory
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> directory = os.path.join('data', 'Leak')
+        >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load_test_data(directory) # Load test data fron a folder
         tag       TIME_SERIES  ...     file
         variable               ... filename
@@ -569,7 +569,7 @@ class RackioAI(Singleton):
         <BLANKLINE>
         [67589 rows x 12 columns]
 
-        >>> filename = os.path.join('data', 'Leak', 'Leak111.tpl')
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak111.tpl')
         >>> RackioAI.load_test_data(filename) # Load test data from a file in Leak Folder
         tag       TIME_SERIES  ...     file
         variable               ... filename
