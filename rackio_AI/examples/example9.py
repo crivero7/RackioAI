@@ -10,7 +10,7 @@ app = Rackio()
 RackioAI(app)
 
 "Filename definition where is the data"
-os.chdir('..')
+os.chdir('../..')
 cwd = os.getcwd()
 filename = os.path.join(cwd,'rackio_AI','data','pkl_files', 'test_data.pkl')
 

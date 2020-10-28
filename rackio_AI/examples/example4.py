@@ -6,7 +6,7 @@ app = Rackio()
 
 RackioAI(app)
 
-os.chdir('..')
+os.chdir('../..')
 cwd = os.getcwd()
 
 base_path = os.path.join(cwd,'rackio_AI','data')
