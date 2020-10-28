@@ -1,4 +1,4 @@
-from .core import decorator
+from easy_deco import decorator
 
 class Typed:
     """

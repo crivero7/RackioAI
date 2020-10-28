@@ -9,6 +9,7 @@ class LoadDataTestCase(unittest.TestCase):
     def setUp(self):
         """
 
+        :return:
         """
         self.app = Rackio()
         self.tpl_filename = os.path.join('..', 'rackio_ai', 'data', 'Leak', 'Leak112.tpl')
@@ -20,17 +21,24 @@ class LoadDataTestCase(unittest.TestCase):
     def testLoadTPL(self):
         """
 
+        :return:
         """
         RackioAI(self.app)
         self.assertTrue(isinstance(RackioAI.load(self.tpl_filename), pd.DataFrame)==True)
 
     def testLoadDataFrameInPickle(self):
+        """
 
+        :return:
+        """
         RackioAI(self.app)
         self.assertTrue(isinstance(RackioAI.load(self.pkl_filename), pd.DataFrame)==True)
 
     def testLoadFileNotFound(self):
+        """
 
+        :return:
+        """
         RackioAI(self.app)
         with self.assertRaises(FileNotFoundError):
             RackioAI.load(self.tpl_filename_not_found)
@@ -39,6 +47,10 @@ class LoadDataTestCase(unittest.TestCase):
             RackioAI.load(self.pkl_filename_not_found)
 
     def testLoadNoValidPickleToRackioAI(self):
+        """
+
+        :return:
+        """
         RackioAI(self.app)
         with self.assertRaises(ModuleNotFoundError):
             RackioAI.load(self.no_valid_pkl_file)
