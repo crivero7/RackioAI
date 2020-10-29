@@ -421,7 +421,7 @@ class SyntheticData(PrepareData):
         return np.array([np.round(data[:, count] * (10 **str(value)[::-1].find('.'))) / (10 **str(value)[::-1].find('.'))
                 for count, value in enumerate(self.dead_band)])
 
-    @check_default_options
+
     @check_instrument_options
     def _check_options(self, **options):
         """
@@ -447,9 +447,9 @@ class SyntheticData(PrepareData):
         # Default parameters instrumentation definition
         default_options = {key:np.zeros(sensors_numbers) for key in data_type_synthetic_data if key != '_data'}
 
-        #options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
+        options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options.keys()}
 
-        return default_options
+        return options
 
     def _add_dead_band(self):
         """
