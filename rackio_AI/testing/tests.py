@@ -13,7 +13,7 @@ class LoadDataTestCase(unittest.TestCase):
         :return:
         """
         self.app = Rackio()
-        self.tpl_filename = os.path.join(get_directory('Leak'), 'Leak112.tpl')
+        self.tpl_filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         self.pkl_filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
         self.tpl_filename_not_found = os.path.join(get_directory('Leak'), 'Leak212.tpl')
         self.pkl_filename_not_found = os.path.join(get_directory('pkl_files'), 'Leak212.tpl')
