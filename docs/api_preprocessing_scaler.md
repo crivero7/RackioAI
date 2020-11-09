@@ -3,4 +3,4 @@
     :members: __init__
     :members: range
     :members: __call__
-    :members: apply_inverse
+    :members: get_inverse
