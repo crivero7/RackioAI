@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
-from rackio_AI.preprocessing import Scaler
-from rackio_AI.preprocessing import KalmanFilter
+from rackio_AI.preprocessing import Scaler, Splitter, KalmanFilter
 
 
 class Preprocessing:
@@ -58,6 +57,7 @@ class Preprocessing:
 
         self.scaler = Scaler()
         self.kalman_filter = KalmanFilter()
+        self.splitter = Splitter()
 
     @property
     def data(self):
