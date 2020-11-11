@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 
 
+ONE_SPLIT = 1
+TWO_SPLIT = 2
+
 class Splitter:
     """
     This is a *RackioAI* preprocessing class to split the data to create a Deep learning model
@@ -31,13 +34,13 @@ class Splitter:
         >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
         >>> print(preprocess.splitter)
         Splitter Object
-        {'train_size': 0.7, 'test_size': 0.3, 'validation_size': 0, 'random_state': None, 'shuffle': True, 'stratify': None}
+        {'train_size': None, 'test_size': None, 'validation_size': None, 'random_state': None, 'shuffle': True, 'stratify': None}
 
         ```
         """
-        self.default_options = {'train_size': 0.7,
-                                'test_size': 0.3,
-                                'validation_size': 0,
+        self.default_options = {'train_size': None,
+                                'test_size': None,
+                                'validation_size': None,
                                 'random_state': None,
                                 'shuffle': True,
                                 'stratify': None}
@@ -151,85 +154,104 @@ class Splitter:
         [4, 9]
 
         ```
-
-        ## Snippet code 4
-        ```python
-        >>> X_train, X_test, y_train, y_test = preprocess.splitter.split(X, y, train_size=0.7, test_size=0.3, random_state=0)
-        >>> X_train
-        array([[18, 19],
-               [ 2,  3],
-               [12, 13],
-               [14, 15],
-               [ 6,  7],
-               [ 0,  1],
-               [10, 11]])
-        >>> X_test
-        array([[ 4,  5],
-               [16, 17],
-               [ 8,  9]])
-        >>> y_train
-        [9, 1, 6, 7, 3, 0, 5]
-        >>> y_test
-        [2, 8, 4]
-
-        ```
         """
-
         data = [array.values if isinstance(array, pd.DataFrame) else array for array in arrays]
 
-        self.options = {key: options[key] if key in list(options.keys()) else self.default_options[key] for key in list(self.default_options.keys())}
+        # Check default options
+        default_options = {key: options[key] if key in list(options.keys()) else self.default_options[key] for key in list(self.default_options.keys())}
 
-        self._check_split_sizes()
+        # remove validation_size key to be used in train_test_split method from scikit-learn
+        self.validation_size = default_options.pop('validation_size')
 
-        validation_size = self.options.pop('validation_size')
-        self.options['test_size'] += validation_size
+        # check if is necessary to do train-test-validation split
+        lst = [default_options['train_size'], default_options['test_size'], self.validation_size]
+
+        #if lst.count(None) <= 1 or (default_options['train_size'] + default_options['test_size'] < 1):
+        if default_options['train_size'] and default_options['test_size'] and self.validation_size==None and \
+                (default_options['train_size'] + default_options['test_size'] < 1) or \
+                (default_options['train_size'] and default_options['test_size'] and self.validation_size):
+
+            #default_options, _ = self._check_split_sizes(**default_options)
+
+            return self._split(TWO_SPLIT, *data, **default_options)
+
+
+        return self._split(ONE_SPLIT, *data, **default_options)
+
+
+    def _split(self, flag, *data, **default_options):
+        """
+        splitter manager to do one_split or two_split
+        :param flag:
+        :param data:
+        :param default_options:
+        :return:
+        """
+        if flag==ONE_SPLIT:
+
+            return self._one_split(*data, **default_options)
+
+        elif flag==TWO_SPLIT:
+
+            return self._two_splits(*data, **default_options)
+
+        return
+
+    def _one_split(self, *data, **default_options):
+        """
+        Split data in train and test datasets
+        :return:
+        """
+        default_options['test_size'] = None
+
+        return TTS(*data, **default_options)
+
+    def _two_splits(self, *data, **default_options):
+        """
+        Split data in train-test and validation datasets
+        """
+        test_size = default_options['test_size']
+
+        validation_size = 1 - default_options['train_size'] - test_size
+
+        default_options['test_size'] = None
+
         # First split
-        X_train, X_test, y_train, y_test = TTS(*data, **self.options)
-        if validation_size == 0:
+        X_train, X_test, y_train, y_test = TTS(*data, **default_options)
 
-            return X_train, X_test, y_train, y_test
-        # Redefining split sizes
-        self.options['test_size'] -= validation_size
-        test_size = self.options['test_size']
-
-        self.options['train_size'] = test_size / (test_size + validation_size)
-
-        self.options['test_size'] = 1 - self.options['train_size']
+        default_options['train_size'] = test_size / (test_size + validation_size)
 
         # Second split
-        X_test, X_validation, y_test, y_validation= TTS(X_test, y_test, **self.options)
+        X_test, X_validation, y_test, y_validation = TTS(X_test, y_test, **default_options)
 
-        return X_train, X_test, X_validation, y_train, y_test, y_validation
+        return [X_train, X_test, X_validation, y_train, y_test, y_validation]
 
-    def _split_sequence(self):
+    def _check_split_sizes(self, **options):
         """
-
+        Normalize proportion if their sum is not 1.0
         """
-        pass
+        train_size = options['train_size']
+        if not train_size:
 
-    def _check_split_sizes(self):
-        """
+            train_size = 0.0
 
-        """
-        train_size = self.options['train_size']
-        test_size = self.options['test_size']
-        validation_size = self.options['validation_size']
+        test_size = options['test_size']
+        if not test_size:
 
-        if validation_size == 0 and train_size + test_size < 1:
+            test_size = 0.0
 
-            self.options['validation_size'] = 1 - train_size - test_size
+        validation_size = self.validation_size
+        if not validation_size:
 
-            return True
+            validation_size = 0.0
 
-        elif validation_size != 0 and validation_size + train_size + test_size != 1:
+        if train_size!=None and test_size!=None and validation_size !=None:
 
-            self.options['train_size'] = train_size / (train_size + test_size + validation_size)
-            self.options['test_size'] = test_size / (train_size + test_size + validation_size)
-            self.options['validation_size'] = validation_size / (train_size + test_size + validation_size)
+            options['train_size'] = train_size / (train_size + test_size + validation_size)
+            options['test_size'] = test_size / (train_size + test_size + validation_size)
+            validation_size = validation_size / (train_size + test_size + validation_size)
 
-            return True
-
-
+            return options, validation_size
 
     def __str__(self):
         """

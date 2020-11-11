@@ -18,7 +18,7 @@ example9: "Using KalmanFilter in RackioAI"                                      
 
 example10: "Loading Leak test data"                                                                                 done
 
-example11: "Scaling data"    class Scaler
+example11: "Scaling data"    class Scaler                                                                           done
 
 example12: "Splitting data"  class Splitter
 
