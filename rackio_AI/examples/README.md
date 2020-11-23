@@ -28,7 +28,7 @@ runs the following: "Adding preprocessing models"
 
 ## **Example 4**
 
-This module
+The module
 
 > example4.py
 
