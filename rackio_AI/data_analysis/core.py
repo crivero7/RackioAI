@@ -4,7 +4,6 @@ from rackio_AI.core import RackioAI
 
 
 class RackioEDA:
-
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
 
@@ -87,7 +86,7 @@ class RackioEDA:
 
     @description.setter
     def description(self, value):
-        
+
         self._description = value
 
     @property
@@ -393,6 +392,21 @@ class RackioEDA:
 
         return self.data
 
+    def search_loc(self, column_name, *keys, **kwargs):
+        """
+
+        """
+        default_kw = {'join_by': ' '}
+
+        options = {key: kwargs[key] if key in kwargs else default_kw[key] for key in default_kw}
+
+        self.data = self.data[self.data.loc[:, column_name].values == keys]
+        self.data.columns = self.data.columns.map(options['join_by'].join)
+
+        return self.data
+
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
