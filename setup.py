@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="RackioAI",
-    version="0.0.9",
+    version="0.1.0",
     author="Carlos Rivero",
     author_email="cdrr.rivero@gmail.com",
     description="A Rackio extension for AI models development",
@@ -14,18 +14,15 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     license="MIT",
     url="https://github.com/crivero7/RackioAI",
-    package_data={'': ['Leak/*.tpl','pkl_files/*.pkl']},
+    package_data={'': ['Leak/*.tpl', 'pkl_files/*.pkl']},
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        'numpy==1.18.5',
-        'scipy==1.4.1',
+        'seaborn==0.11.0',
         'scikit-learn==0.23.2',
         'tensorflow==2.3.0',
-        'matplotlib==3.3.2',
-        'pandas==1.1.3',
         'Pillow==8.0.0',
-        'Rackio==0.9.8',
+        'Rackio==1.0.2',
         'easy-deco'
     ],
     classifiers=[
