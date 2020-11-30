@@ -155,7 +155,6 @@ class Reader:
         ```
         """
         files = [os.path.join(r, fn) for r, ds, fs in os.walk(root_directory) for fn in fs if fn.endswith(ext)]
-        #files = [f for f in glob.glob(root_directory + "**/*{}".format(ext), recursive=True)]
 
         if files:
 

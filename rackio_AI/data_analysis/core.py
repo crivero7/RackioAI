@@ -394,14 +394,60 @@ class RackioEDA:
 
     def search_loc(self, column_name, *keys, **kwargs):
         """
+        This method allows you to rename one or several column names in the data
 
+        ___
+        **Parameters**
+
+        * **:param column_name:** (str) to change in *self.data*
+        * **:param keys:** (tuple(str)) Positional arguments
+        * **:param join_by:** (str)
+        * **:param logic:** (str)
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
+
+        ___
         """
-        default_kw = {'join_by': ' '}
+        default_kw = {'join_by': None,
+                      'logic': '=='}
 
         options = {key: kwargs[key] if key in kwargs else default_kw[key] for key in default_kw}
+        logics_allowed = ['==', '<', '<=', '>', '>=', '!=']
 
-        self.data = self.data[self.data.loc[:, column_name].values == keys]
-        self.data.columns = self.data.columns.map(options['join_by'].join)
+        if options['logic'] in logics_allowed:
+
+            if options['logic'] in ['==', '=']:
+
+                self.data = self.data[self.data.loc[:, column_name].values == keys]
+
+            elif options['logic'] == '<':
+
+                self.data = self.data[self.data.loc[:, column_name].values < keys]
+
+            elif options['logic'] == '<=':
+
+                self.data = self.data[self.data.loc[:, column_name].values <= keys]
+
+            elif options['logic'] == '>':
+
+                self.data = self.data[self.data.loc[:, column_name].values > keys]
+
+            elif options['logic'] == '>=':
+
+                self.data = self.data[self.data.loc[:, column_name].values >= keys]
+
+            elif options['logic'] == '!=':
+
+                self.data = self.data[self.data.loc[:, column_name].values != keys]
+        else:
+
+            raise IOError('Invalid logic')
+
+        if options['join_by']:
+
+            self.data.columns = self.data.columns.map(options['join_by'].join)
 
         return self.data
 
