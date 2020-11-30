@@ -17,7 +17,6 @@ class TPL:
         self.file_extension = ".tpl"
         self.doc = list()
 
-
     def read(self, name):
         """
         Read .tpl files
@@ -114,7 +113,6 @@ class TPL:
         multi_index = list()
 
         for count, column_name in enumerate(header_section):
-
             column_name = self._clean_column_name(column_name)
 
             (tag, unit, variable_type) = self._get_structure(column_name)
@@ -127,7 +125,7 @@ class TPL:
         data_name = np.array([filename.split(os.path.sep)[-1]] * data.shape[0])
 
         multi_index.append(('file', 'filename', '.tpl'))
-        doc['file'] = {'variable':"file",
+        doc['file'] = {'variable': "file",
                        'unit': ".tpl",
                        'data': data_name}
 
@@ -249,9 +247,8 @@ class TPL:
         ```
         """
         with open(filename, 'r') as file:
-
             file = file.read()
-        
+
         sections = file.split("{} \n".format(self.tpl_options.split_expression))
 
         self.tpl_options.header_line_numbers = int(sections[1].split('\n')[0])
@@ -317,7 +314,7 @@ class TPL:
 
         for count, d in enumerate(data):
 
-            if count == rows -1:
+            if count == rows - 1:
                 break
 
             new_data.append(np.array([float(item) for item in d.split(" ")]))
@@ -365,7 +362,6 @@ class TPL:
             for file in files:
 
                 if file.endswith(extension):
-
                     result.append(os.path.join(root, file))
 
         return result
@@ -383,7 +379,7 @@ class TPL:
 
         """
 
-        return column_name.replace("'", "").replace(":", "").replace(" ", "_").replace("-", "").replace("__","_")
+        return column_name.replace("'", "").replace(":", "").replace(" ", "_").replace("-", "").replace("__", "_")
 
     def _get_tag(self, column_name):
         """
@@ -399,7 +395,6 @@ class TPL:
         tag = column_name[0:column_name.find("(") - 1]
 
         if tag.endswith("_"):
-
             tag = tag[0:-1]
 
         return tag
@@ -428,7 +423,7 @@ class TPL:
         **:return:**
 
         """
-        return column_name[column_name.find(")")+2::]
+        return column_name[column_name.find(")") + 2::]
 
     def _get_structure(self, column_name):
         """
@@ -530,7 +525,7 @@ class TPL:
 
                     attr = getattr(self, key)
 
-                    if key=='file':
+                    if key == 'file':
 
                         attr.extend(data[key]['data'])
 
@@ -556,7 +551,6 @@ class TPL:
             new_data = list()
 
             for count, data in enumerate(self.doc):
-
                 attrs = [data[key]['data'] for key in columns]
                 index_name.append('Case{}'.format(count))
                 new_data.append(pd.DataFrame(np.array(attrs).transpose(), columns=columns))
@@ -603,6 +597,8 @@ class TPL:
 
             raise NameError('{} is not possible convert to {}'.format(type(self).__name__, data_type.lower()))
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

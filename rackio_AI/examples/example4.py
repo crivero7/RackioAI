@@ -6,10 +6,7 @@ app = Rackio()
 
 RackioAI(app)
 
-os.chdir('../..')
-cwd = os.getcwd()
-
-base_path = os.path.join(cwd, 'rackio_AI', 'data')
+base_path = os.path.join('..', 'data')
 
 filename = os.path.join(base_path, 'Leak')
 

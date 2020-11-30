@@ -6,9 +6,7 @@ app = Rackio()
 
 RackioAI(app)
 
-os.chdir('../..')
-cwd = os.getcwd()
-filename = os.path.join(cwd, 'rackio_AI', 'data', 'Leak', 'Leak112.tpl')
+filename = os.path.join('..', 'data')
 
 data = RackioAI.load(filename)
 

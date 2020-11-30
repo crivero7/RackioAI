@@ -95,15 +95,27 @@ class Reader:
         ```
         """
         (_, file_extension) = os.path.splitext(filename)
-        tpl_file =False
+        tpl_file = False
+        filenames = self.check_extension_files(filename, ext='.tpl')
 
-        if file_extension=='.tpl':
+        if filenames:
+            try:
+                self.tpl.read(filename)
+                data = self.tpl.to('dataframe')
+
+            except:
+                raise FileNotFoundError('{} is not found'.format(filename))
+
+            return data
+
+        if file_extension == '.tpl':
 
             tpl_file = True
 
-        elif self.check_extension_files(filename, ext='.tpl'):
+        elif filenames:
 
             tpl_file = True
+            filename = filenames
 
         if tpl_file:
             try:
@@ -142,17 +154,19 @@ class Reader:
 
         ```
         """
-
-        files = [f for f in glob.glob(root_directory + "**/*{}".format(ext), recursive=True)]
+        files = [os.path.join(r, fn) for r, ds, fs in os.walk(root_directory) for fn in fs if fn.endswith(ext)]
+        #files = [f for f in glob.glob(root_directory + "**/*{}".format(ext), recursive=True)]
 
         if files:
 
-            return True
+            return files
 
         else:
 
             return False
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
