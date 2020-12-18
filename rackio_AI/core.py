@@ -1,12 +1,15 @@
-import os, pickle
-import pandas as pd
+import os
+import pickle
+
 import numpy as np
+import pandas as pd
+
 from rackio_AI._singleton import Singleton
-from rackio_AI.managers import PreprocessManager
-from rackio_AI.readers import Reader
 from rackio_AI.managers import DataAnalysisManager
 from rackio_AI.managers import ModelsManager
+from rackio_AI.managers import PreprocessManager
 from rackio_AI.preprocessing import SyntheticData
+from rackio_AI.readers import Reader
 
 
 class RackioAI(Singleton):
@@ -269,18 +272,16 @@ class RackioAI(Singleton):
 
         ```
         """
-        if _type.lower()=='eda':
+        if _type.lower() == 'eda':
 
             if serialize:
-
                 return self._serialize_data(name)
 
             return self._get_data(name)
 
-        elif _type.lower()=='preprocesing':
+        elif _type.lower() == 'preprocesing':
 
             if serialize:
-
                 return self._serialize_preprocessing(name)
 
             return self._get_preprocessing(name)
@@ -321,7 +322,6 @@ class RackioAI(Singleton):
         data = self.get_object(name, _type='EDA')
 
         return data.serialize()
-
 
     def append_preprocessing_model(self, preprocessing_model):
         """
@@ -398,7 +398,6 @@ class RackioAI(Singleton):
             result = self._models_manager
 
         if result:
-
             return result
 
         return
@@ -489,9 +488,8 @@ class RackioAI(Singleton):
         * obj in the path defined by *filename*
         """
 
-        if format.lower()=='pkl':
-
-            with open('{}.{}'.format(filename,format), 'wb') as file:
+        if format.lower() == 'pkl':
+            with open('{}.{}'.format(filename, format), 'wb') as file:
                 pickle.dump(obj, file)
 
     @staticmethod
@@ -511,9 +509,8 @@ class RackioAI(Singleton):
         """
 
         obj = None
-        if format.lower()=='pkl':
-
-            with open('{}.{}'.format(filename,format), 'rb') as file:
+        if format.lower() == 'pkl':
+            with open('{}.{}'.format(filename, format), 'rb') as file:
                 obj = pickle.load(file)
 
         return obj
@@ -601,6 +598,8 @@ class RackioAI(Singleton):
         """
         return self.reader.read(filename)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
