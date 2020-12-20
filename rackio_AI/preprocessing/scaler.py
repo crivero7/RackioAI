@@ -28,7 +28,7 @@ class Scaler:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess model name',description='preprocess for data', problem_type='regression')
         >>> print(preprocess.scaler)
         Scaler Object
         MinMaxScaler()
