@@ -525,17 +525,11 @@ class TPL:
 
                     attr = getattr(self, key)
 
-                    if key == 'file':
-
-                        attr.extend(data[key]['data'])
-
-                    else:
-
-                        attr.extend(data[key]['data'])
+                    attr.extend(data[key]['data'])
 
                     setattr(self, key, attr)
 
-            data = np.array([getattr(self, key) for key in columns], dtype=float).transpose()
+            data = np.array([getattr(self, key) for key in columns]).transpose()
             [delattr(self, key) for key in columns]
 
             df = pd.DataFrame(data, columns=self.header)
