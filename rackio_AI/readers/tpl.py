@@ -535,7 +535,7 @@ class TPL:
 
                     setattr(self, key, attr)
 
-            data = np.array([getattr(self, key) for key in columns]).transpose()
+            data = np.array([getattr(self, key) for key in columns], dtype=float).transpose()
             [delattr(self, key) for key in columns]
 
             df = pd.DataFrame(data, columns=self.header)
