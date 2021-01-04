@@ -28,7 +28,7 @@ class Scaler:
         >>> from rackio import Rackio
         >>> app = Rackio()
         >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess model name',description='preprocess for data', problem_type='regression')
         >>> print(preprocess.scaler)
         Scaler Object
         MinMaxScaler()
@@ -205,7 +205,8 @@ class Scaler:
             if _type.lower() == 'minmax':
 
                 kwargs_default = {'range': (0, 1)}
-                options = {key: kwargs[key] if key in kwargs.keys() else kwargs_default[key] for key in kwargs_default.keys()}
+                options = {key: kwargs[key] if key in kwargs.keys() else kwargs_default[key] for key in
+                           kwargs_default.keys()}
                 self._range = options['range']
                 self._scaler = MinMaxScaler(feature_range=self._range)
 
@@ -214,13 +215,14 @@ class Scaler:
                 self._scaler = StandardScaler()
 
                 if hasattr(self, '_range'):
-
                     delattr(self, '_range')
 
         else:
 
             raise TypeError('scaler {} is not available in class {}'.format(_type, self.__class__.__name__))
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
