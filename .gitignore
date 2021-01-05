@@ -10,6 +10,7 @@ __pycache__/
 .Python
 build/
 .vscode/
+rackio_ai/data/Olga Data Fase 2/
 develop-eggs/
 dist/
 downloads/
