@@ -119,16 +119,12 @@ class TPL:
             (tag, unit, variable_type) = self._get_structure(column_name)
             multi_index.append((tag, variable_type, unit))
             "fill dictionary"
-            doc[tag] = {'variable': variable_type,
-                        'unit': unit,
-                        'data': data[:, count]}
+            doc[tag] = data[:, count]
 
         data_name = np.array([filename.split(os.path.sep)[-1]] * data.shape[0])
 
         multi_index.append(('file', 'filename', '.tpl'))
-        doc['file'] = {'variable': "file",
-                       'unit': ".tpl",
-                       'data': data_name}
+        doc['file'] = data_name
 
         self.header = pd.MultiIndex.from_tuples(multi_index, names=['tag', 'variable', 'unit'])
 
@@ -258,7 +254,7 @@ class TPL:
 
         data = self._get_data(data_header_section[self.tpl_options.header_line_numbers + 2::])
 
-        return (data_header_section, data)
+        return data_header_section, data
 
     def _get_header_section(self, data_header_section):
         """
@@ -298,7 +294,8 @@ class TPL:
 
         return header_section[-1:] + header_section[:-1]
 
-    def _get_data(self, data):
+    @staticmethod
+    def _get_data(data):
         """
         Get time profile section separated by key word  in tpl_options.split_expression, for OLGA .tpl files this key is
         CATALOG
@@ -367,7 +364,8 @@ class TPL:
 
         return result
 
-    def _clean_column_name(self, column_name):
+    @staticmethod
+    def _clean_column_name(column_name):
         """
 
         **Parameters**
@@ -382,7 +380,8 @@ class TPL:
 
         return column_name.replace("'", "").replace(":", "").replace(" ", "_").replace("-", "").replace("__", "_")
 
-    def _get_tag(self, column_name):
+    @staticmethod
+    def _get_tag(column_name):
         """
         ...Documentation here...
 
@@ -400,7 +399,8 @@ class TPL:
 
         return tag
 
-    def _get_unit(self, column_name):
+    @staticmethod
+    def _get_unit(column_name):
         """
         ...Documentation here...
 
@@ -413,7 +413,8 @@ class TPL:
         """
         return column_name[column_name.find("(") + 1:column_name.find(")")]
 
-    def _get_variable_type(self, column_name):
+    @staticmethod
+    def _get_variable_type(column_name):
         """
         ...Documentation here...
 
@@ -443,7 +444,7 @@ class TPL:
 
         variable_type = self._get_variable_type(column_name)
 
-        return (tag, unit, variable_type)
+        return tag, unit, variable_type
 
     def _to_dataframe(self):
         """
@@ -585,6 +586,7 @@ class TPL:
             counter += 1
             print(counter)
             yield pd.DataFrame(map(list, zip(*list(data.values()))), columns=self.header)
+
 
 if __name__ == "__main__":
     import doctest
