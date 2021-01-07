@@ -1,5 +1,4 @@
 import os
-import sys
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
@@ -169,8 +168,8 @@ class TPL:
 
         return doc
 
-    @progress_bar(desc='Loading files...', unit='files')
-    def _read_files(self, filenames, init=0):
+    @progress_bar(desc='Loading files...', unit='files', gen=True)
+    def _read_files(self, filenames):
         """
         Read all .tpl files in a list of filenames
 

@@ -2,9 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options
-from easy_deco import check_default_options
 from rackio_AI.preprocessing.synthetic_data_base import PrepareData
-
 
 data_type_synthetic_data = {'_data': [pd.Series, pd.DataFrame, np.ndarray],
                             'error': [np.ndarray],
@@ -12,6 +10,7 @@ data_type_synthetic_data = {'_data': [pd.Series, pd.DataFrame, np.ndarray],
                             'lower_limit': [np.ndarray],
                             'upper_limit': [np.ndarray],
                             'dead_band': [np.ndarray]}
+
 
 @typeCheckedAttribute.typeassert(**data_type_synthetic_data)
 class SyntheticData(PrepareData):
@@ -27,6 +26,7 @@ class SyntheticData(PrepareData):
     * **Instrument decalibration**
     * **Sensor drift**
     """
+
     def __init__(self):
         """
 
@@ -123,7 +123,8 @@ class SyntheticData(PrepareData):
         # Adding sensibility according to the deadband instrument
         self._add_dead_band()
         # Adding instrument error to all data
-        self.data += (self.repeteability * (2*np.random.random(self.data.shape)-1) + self.accuracy*(2*np.random.random(self.data.shape)-1))* self.span
+        self.data += (self.repeteability * (2 * np.random.random(self.data.shape) - 1) + self.accuracy * (
+                    2 * np.random.random(self.data.shape) - 1)) * self.span
         return self.data
 
     @PrepareData.step
@@ -141,14 +142,14 @@ class SyntheticData(PrepareData):
         * **data:** (np.ndarray) data with instrument decalibration
         """
         bias = -decalibration_factor * self.error - self.repeteability
-        init_position = np.random.randint(self.data.shape[0]-duration, size=(1,self.data.shape[-1]))[0]
+        init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
         decal = (self.repeteability * np.random.random([duration, self.data.shape[-1]]) - bias) * self.span
         for count, pos in enumerate(init_position):
             min = bool(np.random.randint(2))
             if min:
                 self.data[pos:pos + duration, count] -= decal[:, count]
             else:
-                self.data[pos:pos+duration, count] += decal[:, count]
+                self.data[pos:pos + duration, count] += decal[:, count]
 
         return self.data
 
@@ -169,18 +170,18 @@ class SyntheticData(PrepareData):
         init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
         # initial drift value
         drift = np.array([self.data[pos, count] for count, pos in enumerate(init_position)])
-        drift = drift.reshape((1,self.data.shape[-1]))
+        drift = drift.reshape((1, self.data.shape[-1]))
         # Adding sensor drift to the data
-        for k in range(duration-1):
+        for k in range(duration - 1):
             min = bool(np.random.randint(2))
             if min:
                 new_value = drift[k, :] - sensor_drift_factor * self.error * self.span / duration
             else:
-                new_value = drift[k,:] + sensor_drift_factor * self.error * self.span / duration
+                new_value = drift[k, :] + sensor_drift_factor * self.error * self.span / duration
 
             drift = np.append(drift, new_value.reshape([1, self.data.shape[-1]]), axis=0)
         for count, pos in enumerate(init_position):
-            self.data[pos:pos+duration, count] = drift[:,count]
+            self.data[pos:pos + duration, count] = drift[:, count]
 
         return self.data
 
@@ -204,9 +205,9 @@ class SyntheticData(PrepareData):
         error = error_factor * self.error
         accuracy = error - repeteability
         new_value = (repeteability * (2 * np.random.random([duration, self.data.shape[-1]]) - 1) +
-                    accuracy * (2 * np.random.random([duration, self.data.shape[-1]]) - 1)) * self.span
+                     accuracy * (2 * np.random.random([duration, self.data.shape[-1]]) - 1)) * self.span
         for count, pos in enumerate(init_position):
-            self.data[pos:pos+duration, count] +=  new_value[:,count]
+            self.data[pos:pos + duration, count] += new_value[:, count]
 
         return self.data
 
@@ -225,7 +226,7 @@ class SyntheticData(PrepareData):
         """
         init_position = np.random.randint(self.data.shape[0] - duration, size=(1, self.data.shape[-1]))[0]
         for count, pos in enumerate(init_position):
-            self.data[pos:pos+duration, count] = self.data[pos, count]
+            self.data[pos:pos + duration, count] = self.data[pos, count]
 
         return self.data
 
@@ -271,9 +272,9 @@ class SyntheticData(PrepareData):
         for count, pos in enumerate(init_position):
             min = bool(np.random.randint(2))
             if min:
-                self.data[pos:pos+duration, count] = self.lower_limit[count] - anomaly[count]
+                self.data[pos:pos + duration, count] = self.lower_limit[count] - anomaly[count]
             else:
-                self.data[pos:pos+duration, count] = self.upper_limit[count] + anomaly[count]
+                self.data[pos:pos + duration, count] = self.upper_limit[count] + anomaly[count]
 
         return self.data
 
@@ -296,7 +297,8 @@ class SyntheticData(PrepareData):
         if view:
             self.view(columns=options['columns'], ylabel=options['ylabel'], xlabel=options['ylabel'])
 
-    def __call__(self, decalibrations=0, sensor_drift=0, excesive_noise=0, frozen_data=0, outliers=0, out_of_range=0, add_WN=False, **options):
+    def __call__(self, decalibrations=0, sensor_drift=0, excesive_noise=0, frozen_data=0, outliers=0, out_of_range=0,
+                 add_WN=False, **options):
         """
         Callback to do anomalies
 
@@ -418,9 +420,9 @@ class SyntheticData(PrepareData):
 
         * **data:** (np.array): round data applied
         """
-        return np.array([np.round(data[:, count] * (10 **str(value)[::-1].find('.'))) / (10 **str(value)[::-1].find('.'))
-                for count, value in enumerate(self.dead_band)])
-
+        return np.array(
+            [np.round(data[:, count] * (10 ** str(value)[::-1].find('.'))) / (10 ** str(value)[::-1].find('.'))
+             for count, value in enumerate(self.dead_band)])
 
     @check_instrument_options
     def _check_options(self, **options):
@@ -445,9 +447,10 @@ class SyntheticData(PrepareData):
         else:
             sensors_numbers = self._data.shape[-1]
         # Default parameters instrumentation definition
-        default_options = {key:np.zeros(sensors_numbers) for key in data_type_synthetic_data if key != '_data'}
+        default_options = {key: np.zeros(sensors_numbers) for key in data_type_synthetic_data if key != '_data'}
 
-        options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options.keys()}
+        options = {key: options[key] if key in options.keys() else default_options[key] for key in
+                   default_options.keys()}
 
         return options
 
@@ -473,8 +476,9 @@ class SyntheticData(PrepareData):
         decimals = [str(self.dead_band[count])[::-1].find('.') for count in range(self.dead_band.shape[-1])]
         # Applying round
         for count in range(pos_true.shape[-1]):
-            data[1::,:][pos_false[:,count], count] = np.round(data[:-1:,:][pos_false[:,count], count], decimals[count])
-            data[1::,:][pos_true[:,count],count] = np.round(data[1::,:][pos_true[:,count],count], decimals[count])
+            data[1::, :][pos_false[:, count], count] = np.round(data[:-1:, :][pos_false[:, count], count],
+                                                                decimals[count])
+            data[1::, :][pos_true[:, count], count] = np.round(data[1::, :][pos_true[:, count], count], decimals[count])
 
         self.data = data
 
@@ -499,6 +503,8 @@ class SyntheticData(PrepareData):
         plt.xlabel(xlabel)
         plt.show(block=True)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

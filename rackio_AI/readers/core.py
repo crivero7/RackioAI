@@ -1,5 +1,4 @@
 import os
-import glob
 from rackio_AI.readers.tpl import TPL
 
 
