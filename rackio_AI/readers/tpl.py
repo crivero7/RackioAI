@@ -517,25 +517,25 @@ class TPL:
         **:return:**
 
         """
-        columns = self.doc[0].keys()
-
         if flag:
 
             # Making dataframes
             d = self.__making_dataframes(self.doc)
             df = pd.concat(d)
-            change = [key for key in columns if key != 'file']
+            change = [key[0] for key in self.header.values if key[0] != 'file']
             df = self._coerce_df_columns_to_numeric(df, change)
 
-        else:
+            return df
 
+        else:
+            columns = self.doc[0].keys()
             index_name = list()
             new_data = list()
 
             for count, data in enumerate(self.doc):
                 attrs = [data[key]['data'] for key in columns]
                 index_name.append('Case{}'.format(count))
-                new_data.append(pd.DataFrame(np.array(attrs).transpose(), columns=columns))
+                new_data.append(pd.DataFrame(np.array(attrs).transpose(), columns=self.header))
 
             data = pd.Series(new_data)
             data.index = index_name
