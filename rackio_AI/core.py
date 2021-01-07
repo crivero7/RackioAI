@@ -490,7 +490,7 @@ class RackioAI(Singleton):
 
         if format.lower() == 'pkl':
             with open('{}.{}'.format(filename, format), 'wb') as file:
-                pickle.dump(obj, file)
+                pickle.dump(obj, file, protocol=4)
 
     @staticmethod
     def load_obj(filename, format='pkl'):
