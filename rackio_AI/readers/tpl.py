@@ -169,7 +169,7 @@ class TPL:
 
         return doc
 
-    @progress_bar(desc='Loading files...', unit='files')
+    # @progress_bar(desc='Loading files...', unit='files')
     def _read_files(self, filenames, init=0):
         """
         Read all .tpl files in a list of filenames
@@ -584,7 +584,7 @@ class TPL:
 
         """
         for data in doc:
-            
+
             yield pd.DataFrame(map(list, zip(*list(data.values()))), columns=self.header)
 
 
