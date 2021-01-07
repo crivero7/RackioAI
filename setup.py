@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="RackioAI",
-    version="0.1.3",
+    version="0.1.4",
     author="Carlos Rivero",
     author_email="cdrr.rivero@gmail.com",
     description="A Rackio extension for AI models development",
@@ -23,7 +23,7 @@ setuptools.setup(
         'tensorflow==2.3.0',
         'Pillow==8.0.0',
         'Rackio==1.0.2',
-        'easy-deco'
+        'easy-deco==0.0.5'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

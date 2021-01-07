@@ -1,6 +1,6 @@
 seaborn==0.11.0
 scikit-learn==0.23.2
 tensorflow==2.3.0
-easy-deco
+easy-deco==0.0.5
 Pillow==8.0.0
 Rackio==1.0.2
