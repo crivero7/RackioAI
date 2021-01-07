@@ -518,27 +518,11 @@ class TPL:
 
         if flag:
 
-            [setattr(self, key, list()) for key in columns]
-
-            for data in self.doc:
-
-                for key in columns:
-
-                    attr = getattr(self, key)
-
-                    attr.extend(data[key]['data'])
-
-                    setattr(self, key, attr)
-
-            data = np.array([getattr(self, key) for key in columns]).transpose()
-            [delattr(self, key) for key in columns]
-
-            df = pd.DataFrame(data, columns=self.header)
+            # Making dataframes
+            d = self.__making_dataframes(self.doc)
+            df = pd.concat(d)
             change = [key for key in columns if key != 'file']
-
             df = self._coerce_df_columns_to_numeric(df, change)
-
-            return df
 
         else:
 
@@ -592,6 +576,15 @@ class TPL:
 
             raise NameError('{} is not possible convert to {}'.format(type(self).__name__, data_type.lower()))
 
+    def __making_dataframes(self, doc, init=0):
+        """
+
+        """
+        counter = init
+        for data in doc:
+            counter += 1
+            print(counter)
+            yield pd.DataFrame(map(list, zip(*list(data.values()))), columns=self.header)
 
 if __name__ == "__main__":
     import doctest
