@@ -169,7 +169,7 @@ class TPL:
 
         return doc
 
-    # @progress_bar(desc='Loading files...', unit='files')
+    @progress_bar(desc='Loading files...', unit='files')
     def _read_files(self, filenames, init=0):
         """
         Read all .tpl files in a list of filenames
@@ -203,11 +203,7 @@ class TPL:
         ```
         """
 
-        counter = init
-        for filename in filenames:
-            counter += 1
-            print(counter)
-            yield self._read_file(filename)
+        return self._read_file(filenames)
 
     @raise_error
     def _get_section_from(self, filename):
