@@ -7,6 +7,7 @@ from .readers import *
 from ._singleton import Singleton
 from .core import *
 from .data import *
+from .pipeline import *
 
 
 RackioAI = RackioAI()
