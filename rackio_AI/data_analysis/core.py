@@ -626,7 +626,9 @@ class RackioEDA(Pipeline):
 
         self.__do_combinations(combinations_list)
 
-        return pd.concat(self.data).reset_index(drop=True)
+        df = pd.concat(self.data).reset_index(drop=True)
+
+        return df
 
     def add_ls_column(self, df, **kwargs):
         """
