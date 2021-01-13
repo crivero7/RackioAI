@@ -492,6 +492,8 @@ class RackioAI(Singleton):
             with open('{}.{}'.format(filename, format), 'wb') as file:
                 pickle.dump(obj, file, protocol=4)
 
+        return obj
+
     @staticmethod
     def load_obj(filename, format='pkl'):
         """
@@ -598,6 +600,14 @@ class RackioAI(Singleton):
         """
         return self.reader.read(filename)
 
+    def load_json(self, filename):
+        """
+
+        :return:
+        """
+        with open(filename, ) as f:
+
+            return = json.load(f)
 
 if __name__ == "__main__":
     import doctest

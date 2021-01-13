@@ -568,6 +568,66 @@ class RackioEDA(Pipeline):
         
         return df
 
+    @ProgressBar(desc="Creating combinations...", unit="dataset")
+    def __do_combinations(self, combinations):
+        """
+
+        """
+        pos_i, pos_o, lf_lt, lt = combinations
+        df_comb = self.EDA.data.loc[:, ["TIME_SERIES",
+                                        "PT_POSITION_POS{}M".format(pos_i),
+                                        "PT_POSITION_POS{}M".format(pos_o),
+                                        "GT_POSITION_POS{}M".format(pos_i),
+                                        "GT_POSITION_POS{}M".format(pos_o),
+                                        "GTLEAK_LEAK_FUGA",
+                                        "Size"]]
+        df_comb.columns = [("Time", "Time", "S"),
+                           ("P1", "Inlet Pressure", "Pa"),
+                           ("P2", "Outlet Pressure", "Pa"),
+                           ("F1", "Inlet Flow", "Kg/S"),
+                           ("F2", "Outlet Flow", "Kg/S"),
+                           ("Leak", "Leakage Flow Rate", "Kg/S"),
+                           ("Size", "Leak Size", "in")]
+        df_lf_lt = pd.DataFrame([lf_lt] * df_comb.shape[0],
+                                columns=[("Location", "Leakage Location Fraction", "Adim.")])
+
+        df_lt = pd.DataFrame([lt] * df_comb.shape[0],
+                             columns=[("Length", "Pipeline Length", "M")])
+
+        self.data.append(pd.concat([df_comb, df_lf_lt, df_lt], axis=1))
+
+        return self.data
+
+    def do_combinations(self, df, **kwargs):
+        """
+
+        """
+        combinations_list = list()
+        config_sensor_locations = self.app.load_json(kwargs["sensor_locations_path"])
+        sensor_locations = config_sensor_locations["sensor_locations"]
+        lf = config_sensor_locations["leak"]
+
+        for pos_i in sensor_locations:
+
+            if pos_i > lf:
+                break
+
+            for pos_o in sensor_locations:
+
+                if pos_o < lf:
+                    continue
+
+                lt = pos_o - pos_i
+                lf_lt = (lf - pos_i) / lt
+
+                combinations_list.append((pos_i, pos_o, lf_lt, lt))
+        self.EDA.data = df
+        self.__do_combinations(combinations_list)
+
+        df = pd.concat(self.data).reset_index(drop=True)
+
+        return df
+
 if __name__ == "__main__":
     import doctest
 
