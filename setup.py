@@ -23,7 +23,7 @@ setuptools.setup(
         'tensorflow==2.3.0',
         'Pillow==8.0.0',
         'Rackio==1.0.2',
-        'easy-deco==0.0.5'
+        'easy-deco==0.0.7'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

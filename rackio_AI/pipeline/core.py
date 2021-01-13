@@ -31,13 +31,13 @@ class Pipeline(object):
 
         filter_args = list(reversed(class_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
-            _producer = Func(stg, *filter_args[i]["args"], *filter_args[i]["kwargs"])
-            s = Pipeline.stage(stg, t)
+            _filter = Func(stg, *filter_args[i]["args"], **filter_args[i]["kwargs"])
+            s = Pipeline.stage(_filter, t)
             s.__next__() 
             t = s
 
-        _producer = Func(args[0], *class_args[0]["args"], *class_args[0]["kwargs"])
-        p = Pipeline.producer(args[0], t)
+        _producer = Func(args[0], *class_args[0]["args"], **class_args[0]["kwargs"])
+        p = Pipeline.producer(_producer, t)
         p.__next__() 
         self._pipeline = p
 
