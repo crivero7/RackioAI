@@ -455,7 +455,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def create_datetime_index(self, df, label):
+    def set_datetime_index(self, df, label):
         """
 
         """
@@ -554,6 +554,18 @@ class RackioEDA(Pipeline):
         """
         df = df.reset_index(drop=drop)
         self.data = df
+        return df
+
+    def print_report(self, df, info=True, head=True, header=10):
+        """
+        Documentation here
+        """
+        if info:
+            df.info()
+
+        if head:
+            print(df.head(header))
+        
         return df
 
 if __name__ == "__main__":
