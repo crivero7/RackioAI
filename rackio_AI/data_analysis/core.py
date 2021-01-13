@@ -574,13 +574,13 @@ class RackioEDA(Pipeline):
 
         """
         pos_i, pos_o, lf_lt, lt = combinations
-        df_comb = self.EDA.data.loc[:, ["TIME_SERIES",
-                                        "PT_POSITION_POS{}M".format(pos_i),
-                                        "PT_POSITION_POS{}M".format(pos_o),
-                                        "GT_POSITION_POS{}M".format(pos_i),
-                                        "GT_POSITION_POS{}M".format(pos_o),
-                                        "GTLEAK_LEAK_FUGA",
-                                        "Size"]]
+        df_comb = self.data.loc[:, ["TIME_SERIES",
+                                    "PT_POSITION_POS{}M".format(pos_i),
+                                    "PT_POSITION_POS{}M".format(pos_o),
+                                    "GT_POSITION_POS{}M".format(pos_i),
+                                    "GT_POSITION_POS{}M".format(pos_o),
+                                    "GTLEAK_LEAK_FUGA",
+                                    "Size"]]
         df_comb.columns = [("Time", "Time", "S"),
                            ("P1", "Inlet Pressure", "Pa"),
                            ("P2", "Outlet Pressure", "Pa"),
