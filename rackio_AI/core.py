@@ -607,7 +607,7 @@ class RackioAI(Singleton):
         """
         with open(filename, ) as f:
 
-            return = json.load(f)
+            return json.load(f)
 
 if __name__ == "__main__":
     import doctest
