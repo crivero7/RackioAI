@@ -628,6 +628,43 @@ class RackioEDA(Pipeline):
 
         return df
 
+    def add_ls_column(self, df, **kwargs):
+        """
+        Add Leak Size Column
+        """
+        self.start = 0
+        label = kwargs["label"]
+        self.column = df[label].values.tolist()
+        op_label = kwargs["label2"]
+        op = df[op_label].values
+        leak_size = self.app.load_json(kwargs["path_config"])
+        options = {
+            "op": op,
+            "pattern": kwargs["pattern"],
+            "leak_size": leak_size
+            }
+
+        self.__add_ls_column(self.column, **options)
+
+        leak_size = pd.DataFrame(self.leak_size, columns=[kwargs["column_name"]])
+        df = df.drop([op_label, label], axis=1)
+        df = pd.concat([df, leak_size], axis=1)
+
+        return df
+
+    @ProgressBar(desc="Adding Leak Size Column...", unit="row")
+    def __add_ls_column(self, case, **kwargs):
+        """
+
+        """
+        pattern = kwargs["pattern"]
+        leak_size = kwargs["leak_size"]
+        steady_leak = leak_size["size"][str(leak_size["case"][self.__split_str(case, pattern, -1)])]
+        op = kwargs['op'][self.start]
+        self.leak_size.append(steady_leak * op)
+
+        return
+
 if __name__ == "__main__":
     import doctest
 
