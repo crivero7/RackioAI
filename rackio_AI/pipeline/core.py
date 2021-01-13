@@ -1,12 +1,4 @@
-"""
-Pipeline
-(yield) -> receiver
-.send -> producer
-Provide initial state to producer, avoiding globals.
-Stop iteration after a bit.
-Wrap in nice class.
-"""
-
+from easy_deco.core import decorator
 
 class StopPipeline(Exception):
     pass
@@ -29,7 +21,8 @@ class Pipeline(object):
         """
         class_args = kwargs["args"]
         # Class definitions
-        _consumer = Func(args[-1], *class_args[-1]["args"], **class_args[-1]["kwargs"])
+        f = self.sink(args[-1])
+        _consumer = Func(f, *class_args[-1]["args"], **class_args[-1]["kwargs"])
 
         c = Pipeline.consumer(_consumer)
         c.__next__() 
@@ -96,6 +89,16 @@ class Pipeline(object):
             r = (yield)
             f(r)
 
+    @staticmethod
+    def sink(f):
+    
+        def wrapper(*args, **kwargs):
+
+            f(*args, **kwargs)
+
+            raise StopPipeline('Enough!')
+
+        return wrapper
 
 class Func(object):
     """
@@ -116,3 +119,4 @@ class Func(object):
         """
 
         return self._function(data, *self._args, **self._kwargs)
+
