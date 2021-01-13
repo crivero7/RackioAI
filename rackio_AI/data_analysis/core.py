@@ -1,9 +1,12 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
+from ..pipeline import Pipeline
+from easy_deco.progress_bar import ProgressBar
+import datetime
 
 
-class RackioEDA:
+class RackioEDA(Pipeline):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
 
@@ -14,7 +17,8 @@ class RackioEDA:
 
     app = RackioAI()
 
-    def __init__(self, name, description, ):
+    def __init__(self, name, description):
+        super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
         self._data = None
@@ -450,6 +454,98 @@ class RackioEDA:
             self.data.columns = self.data.columns.map(options['join_by'].join)
 
         return self.data
+
+    def create_datetime_index(self, df, label):
+        """
+
+        """
+        self.column = df[label].values.tolist()
+        self.now = datetime.datetime.now
+        self.timedelta = datetime.timedelta
+        self.index = list()
+        self.new_time_column = list()
+        self.delta = list()
+
+        self.__create_datetime_index(self.column)
+
+        df[label] = pd.DataFrame(self.new_time_column, columns=[label])
+        df.index = self.index
+        df.index.name = "Timestamp"
+
+        self.data = df
+        return df
+
+    @ProgressBar(desc="Creating datetime index...", unit="datetime index")
+    def __create_datetime_index(self, column):
+        """
+
+        """
+        if self.start == 0:
+            self.new_time_column.append(column)
+            self.index.append(self.now())
+            self.delta.append(0)
+            self.start += 1
+            return
+
+        self.delta.append(column - self.column[self.start - 1])
+
+        if self.delta[self.start] > 0:
+
+            self.new_time_column.append(self.new_time_column[self.start - 1] + self.delta[self.start])
+            self.index.append(self.index[self.start - 1] + self.timedelta(seconds=self.delta[self.start]))
+            self.start += 1
+
+        else:
+
+            self.new_time_column.append(self.new_time_column[self.start - 1] + self.delta[self.start - 1])
+            self.index.append(self.index[self.start - 1] + self.timedelta(seconds=self.delta[self.start - 1]))
+            self.start += 1
+
+        return
+
+    def resample(self, df, freq, label, reset_index=True):
+        """
+
+        """
+        self.rows_to_delete = list()
+        self.diff = self.start = 0
+        self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
+        options = {"freq": freq}
+        self.__resample(self.column, **options)
+        if reset_index:
+
+            df = df.drop(self.rows_to_delete).reset_index(drop=True)
+
+        else:
+
+            df = df.drop(self.rows_to_delete)
+
+        self.data = df
+        return df
+
+    @ProgressBar(desc="Resampling...", unit="Sampling")
+    def __resample(self, column, **kwargs):
+        """
+
+        """
+        freq = kwargs["freq"]
+
+        if self.start == 0:
+            self.start += 1
+            return
+
+        delta = column - self.column[self.start - 1]
+        self.diff += delta
+
+        if abs(self.diff) < freq:
+            self.rows_to_delete.append(self.start)
+            self.start += 1
+            return
+
+        self.diff = 0
+        self.start += 1
+
+        return
 
 
 if __name__ == "__main__":

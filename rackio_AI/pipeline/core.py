@@ -17,7 +17,13 @@ class Pipeline(object):
     Chain stages together. Assumes the last is the consumer.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        """
+        Documentation here
+        """
+        self._pipeline = None
+
+    def __call__(self, *args, **kwargs):
         """
         Documentation here
         """
