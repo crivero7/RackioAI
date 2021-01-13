@@ -633,6 +633,7 @@ class RackioEDA(Pipeline):
         Add Leak Size Column
         """
         self.start = 0
+        self.leak_size = list()
         label = kwargs["label"]
         self.column = df[label].values.tolist()
         op_label = kwargs["label2"]
@@ -664,6 +665,12 @@ class RackioEDA(Pipeline):
         self.leak_size.append(steady_leak * op)
 
         return
+
+    def __split_str(self, string: str, pattern: str, get_pos: int = 0):
+        """
+        Documentation here
+        """
+        return string.split(pattern)[get_pos]
 
 if __name__ == "__main__":
     import doctest
