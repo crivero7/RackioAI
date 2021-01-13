@@ -465,6 +465,7 @@ class RackioEDA(Pipeline):
         self.index = list()
         self.new_time_column = list()
         self.delta = list()
+        self.start = 0
 
         self.__create_datetime_index(self.column)
 
@@ -547,6 +548,13 @@ class RackioEDA(Pipeline):
 
         return
 
+    def reset_index(self, df, drop=False):
+        """
+        Documentation here
+        """
+        df = df.reset_index(drop=drop)
+        self.data = df
+        return df
 
 if __name__ == "__main__":
     import doctest
