@@ -17,14 +17,26 @@ class Pipeline(object):
     Chain stages together. Assumes the last is the consumer.
     """
 
-    def __init__(self, *args):
-        c = Pipeline.consumer(args[-1])
+    def __init__(self, *args, **kwargs):
+        """
+        Documentation here
+        """
+        class_args = kwargs["class_args"]
+        # Class definitions
+        _consumer = Func(args[-1], *class_args[-1]["args"], **class_args[-1]["kwargs"])
+
+        c = Pipeline.consumer(_consumer)
         c.__next__() 
         t = c
-        for stg in reversed(args[1:-1]):
+
+        filter_args = list(reversed(class_args[1:-1]))
+        for i, stg in enumerate(reversed(args[1:-1])):
+            _producer = Func(stg, *filter_args[i]["args"], *filter_args[i]["kwargs"])
             s = Pipeline.stage(stg, t)
             s.__next__() 
             t = s
+
+        _producer = Func(args[0], *class_args[0]["args"], *class_args[0]["kwargs"])
         p = Pipeline.producer(args[0], t)
         p.__next__() 
         self._pipeline = p
@@ -36,7 +48,7 @@ class Pipeline(object):
             self._pipeline.close()
 
     @staticmethod
-    def producer(f, n, *args, **kwargs):
+    def producer(f, n):
         """
         Producer: only .send (and yield as entry point)
         :param f:
@@ -47,14 +59,14 @@ class Pipeline(object):
         state = (yield)  # get initial state
         while True:
             try:
-                res, state = f(state, *args, **kwargs)
+                res = f(state)
             except StopPipeline:
                 return
 
-            n.send(res, *args, **kwargs)
+            n.send(res)
 
     @staticmethod
-    def stage(f, n, *args, **kwargs):
+    def stage(f, n):
         """
         Stage: both (yield) and .send.
         :param f:
@@ -64,10 +76,10 @@ class Pipeline(object):
 
         while True:
             r = (yield)
-            n.send(f(r, *args, **kwargs))
+            n.send(f(r))
 
     @staticmethod
-    def consumer(f, *args, **kwargs):
+    def consumer(f):
         """
         Consumer: only (yield).
         :param f:
@@ -76,21 +88,25 @@ class Pipeline(object):
 
         while True:
             r = (yield)
-            f(r, *args, **kwargs)
+            f(r)
 
 
-class Filter(object):
+class Func(object):
     """
     Documentation here
     """
 
-    def __init__(self, f, n, *args, **kwargs):
+    def __init__(self, f, *args, **kwargs):
         """
         Documentation here
         """
         self._function = f
-        self._next_function = n
         self._args = args
         self._kwargs = kwargs
 
-    def __call__(self):
+    def __call__(self, data):
+        """
+        Documentation here
+        """
+
+        return self._function(data, *self._args, **self._kwargs)
