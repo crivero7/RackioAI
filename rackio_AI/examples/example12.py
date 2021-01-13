@@ -33,6 +33,25 @@ def consume(x):
     print('Consumed', x)
 
 if __name__ == '__main__':
-    p = Pipeline(produce, _filter, _filter, _filter, consume)
+    class_kw = {
+        "class_args": [
+            {
+            "args": [], "kwargs": {}
+            },
+            {
+            "args": [], "kwargs": {}
+            },
+            {
+            "args": [], "kwargs": {}
+            },
+            {
+            "args": [], "kwargs": {}
+            },
+            {
+            "args": [], "kwargs": {}
+            }
+            ]
+        }
+    p = Pipeline(produce, _filter, _filter, _filter, consume, **class_kw)
     initial_state = 0
     p.start(initial_state)

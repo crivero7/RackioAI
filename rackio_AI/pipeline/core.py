@@ -21,7 +21,7 @@ class Pipeline(object):
         """
         Documentation here
         """
-        class_args = kwargs["class_args"]
+        class_args = kwargs["args"]
         # Class definitions
         _consumer = Func(args[-1], *class_args[-1]["args"], **class_args[-1]["kwargs"])
 
@@ -44,7 +44,7 @@ class Pipeline(object):
     def start(self, initial_state):
         try:
             self._pipeline.send(initial_state)
-        except StopIteration:
+        except StopPipeline:
             self._pipeline.close()
 
     @staticmethod
