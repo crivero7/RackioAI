@@ -594,15 +594,16 @@ class RackioEDA(Pipeline):
         df_lt = pd.DataFrame([lt] * df_comb.shape[0],
                              columns=[("Length", "Pipeline Length", "M")])
 
-        self.data.append(pd.concat([df_comb, df_lf_lt, df_lt], axis=1))
+        self.windows.append(pd.concat([df_comb, df_lf_lt, df_lt], axis=1))
 
-        return self.data
+        return self.windows
 
     def do_combinations(self, df, **kwargs):
         """
 
         """
         combinations_list = list()
+        self.windows = list()
         config_sensor_locations = self.app.load_json(kwargs["sensor_locations_path"])
         sensor_locations = config_sensor_locations["sensor_locations"]
         lf = config_sensor_locations["leak"]
@@ -626,7 +627,7 @@ class RackioEDA(Pipeline):
 
         self.__do_combinations(combinations_list)
 
-        df = pd.concat(self.data).reset_index(drop=True)
+        df = pd.concat(self.windows).reset_index(drop=True)
 
         return df
 
