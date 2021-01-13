@@ -621,12 +621,12 @@ class RackioEDA(Pipeline):
                 lf_lt = (lf - pos_i) / lt
 
                 combinations_list.append((pos_i, pos_o, lf_lt, lt))
-        self.EDA.data = df
+        
+        self.data = df
+
         self.__do_combinations(combinations_list)
 
-        df = pd.concat(self.data).reset_index(drop=True)
-
-        return df
+        return pd.concat(self.data).reset_index(drop=True)
 
     def add_ls_column(self, df, **kwargs):
         """
