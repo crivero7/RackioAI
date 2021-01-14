@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
+from ..utils import Utils
 from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
+from itertools import combinations as Combina
 
 
 class RackioEDA(Pipeline):
@@ -631,6 +633,29 @@ class RackioEDA(Pipeline):
 
         return df
 
+    @ProgressBar(desc="Creating combinations...", unit="dataset")
+    def __combine_columns(self, combinations, **kwargs):
+        """
+        Documentation here
+        """
+        column_names = self.__get_column_names(self.data)
+        break_point = kwargs["breakpoint"]
+        iloc_breakpoint = self.data.columns.get_loc(break_point)
+
+    def combine_columns(self, df, from_columns=[], to_columns=[], **kwargs):
+        """
+        Documentation here
+        breakpoint: column_name
+        breakpoint_loc: (str) "after", "before"
+        """
+        self.start = 0
+        self.data = df
+        comb = Combina(from_columns, len(to_columns))
+        
+        self.__combine_columns(comb, **kwargs)
+
+        return df
+
     def add_ls_column(self, df, **kwargs):
         """
         Add Leak Size Column
@@ -663,17 +688,11 @@ class RackioEDA(Pipeline):
         """
         pattern = kwargs["pattern"]
         leak_size = kwargs["leak_size"]
-        steady_leak = leak_size["size"][str(leak_size["case"][self.__split_str(case, pattern, -1)])]
+        steady_leak = leak_size["size"][str(leak_size["case"][Utils.split_str(case, pattern, -1)])]
         op = kwargs['op'][self.start]
         self.leak_size.append(steady_leak * op)
 
         return
-
-    def __split_str(self, string: str, pattern: str, get_pos: int = 0):
-        """
-        Documentation here
-        """
-        return string.split(pattern)[get_pos]
 
 if __name__ == "__main__":
     import doctest

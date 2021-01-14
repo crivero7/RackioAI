@@ -8,6 +8,7 @@ from ._singleton import Singleton
 from .core import *
 from .data import *
 from .pipeline import *
+from .utils import *
 
 
 RackioAI = RackioAI()
