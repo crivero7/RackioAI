@@ -26,19 +26,19 @@ class Pipeline(object):
         f = self.sink(args[-1])
         _consumer = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
 
-        c = Pipeline.consumer(_consumer)
+        c = self.consumer(_consumer)
         c.__next__() 
         t = c
 
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
             _filter = Func(stg, *filter_args[i]["args"], **filter_args[i]["kwargs"])
-            s = Pipeline.stage(_filter, t)
+            s = self.stage(_filter, t)
             s.__next__() 
             t = s
 
         _producer = Func(args[0], *func_args[0]["args"], **func_args[0]["kwargs"])
-        p = Pipeline.producer(_producer, t)
+        p = self.producer(_producer, t)
         p.__next__() 
         self._pipeline = p
         return self._pipeline
@@ -91,6 +91,7 @@ class Pipeline(object):
         while True:
             r = (yield)
             data = f(r)
+            data.info()
             self.app._data = data
 
     @staticmethod
