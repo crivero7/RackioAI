@@ -479,21 +479,20 @@ class RackioEDA(Pipeline):
         """
 
         """
-        self.column = df[label].values.tolist()
-        self.now = datetime.datetime.now
-        self.timedelta = datetime.timedelta
-        self.index = list()
-        self.new_time_column = list()
-        self.delta = list()
-        self.start = 0
+        self._column = df[label].values.tolist()
+        self._now = datetime.datetime.now
+        self._timedelta = datetime.timedelta
+        self._index = list()
+        self._new_time_column = list()
+        self._delta = list()
+        self._start = 0
 
-        self.__create_datetime_index(self.column)
+        self.__create_datetime_index(self._column)
 
-        df[label] = pd.DataFrame(self.new_time_column, columns=[label])
-        df.index = self.index
+        df[label] = pd.DataFrame(self._new_time_column, columns=[label])
+        df.index = self._index
         df.index.name = "Timestamp"
 
-        self.data = df
         return df
 
     @ProgressBar(desc="Creating datetime index...", unit="datetime index")
@@ -501,26 +500,26 @@ class RackioEDA(Pipeline):
         """
 
         """
-        if self.start == 0:
-            self.new_time_column.append(column)
-            self.index.append(self.now())
-            self.delta.append(0)
-            self.start += 1
+        if self._start == 0:
+            self._new_time_column.append(column)
+            self._index.append(self._now())
+            self._delta.append(0)
+            self._start += 1
             return
 
-        self.delta.append(column - self.column[self.start - 1])
+        self._delta.append(column - self._column[self._start - 1])
 
-        if self.delta[self.start] > 0:
+        if self._delta[self._start] > 0:
 
-            self.new_time_column.append(self.new_time_column[self.start - 1] + self.delta[self.start])
-            self.index.append(self.index[self.start - 1] + self.timedelta(seconds=self.delta[self.start]))
-            self.start += 1
+            self._new_time_column.append(self._new_time_column[self._start - 1] + self._delta[self._start])
+            self._index.append(self._index[self._start - 1] + self._timedelta(seconds=self._delta[self._start]))
+            self._start += 1
 
         else:
 
-            self.new_time_column.append(self.new_time_column[self.start - 1] + self.delta[self.start - 1])
-            self.index.append(self.index[self.start - 1] + self.timedelta(seconds=self.delta[self.start - 1]))
-            self.start += 1
+            self._new_time_column.append(self._new_time_column[self._start - 1] + self._delta[self._start - 1])
+            self._index.append(self._index[self._start - 1] + self._timedelta(seconds=self._delta[self._start - 1]))
+            self._start += 1
 
         return
 
@@ -530,6 +529,7 @@ class RackioEDA(Pipeline):
         """
         self.rows_to_delete = list()
         self.diff = self.start = 0
+        self._index = df.index
         self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
         options = {"freq": freq}
         self.__resample(self.column, **options)
