@@ -39,6 +39,12 @@ class Pipeline(object):
         p.__next__() 
         self._pipeline = p
 
+    def start(self, initial_state):
+        try:
+            self._pipeline.send(initial_state)
+        except StopPipeline:
+            self._pipeline.close()
+
     @staticmethod
     def producer(f, n):
         """
