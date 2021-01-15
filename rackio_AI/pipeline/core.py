@@ -15,27 +15,26 @@ class Pipeline(object):
         """
         self._pipeline = None
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args):
         """
         Documentation here
         """
-        class_args = kwargs["args"]
         # Class definitions
         f = self.sink(args[-1])
-        _consumer = Func(f, *class_args[-1]["args"], **class_args[-1]["kwargs"])
+        _consumer = Func(f, *args[-1]["args"], **args[-1]["kwargs"])
 
         c = Pipeline.consumer(_consumer)
         c.__next__() 
         t = c
 
-        filter_args = list(reversed(class_args[1:-1]))
+        filter_args = list(reversed(args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
             _filter = Func(stg, *filter_args[i]["args"], **filter_args[i]["kwargs"])
             s = Pipeline.stage(_filter, t)
             s.__next__() 
             t = s
 
-        _producer = Func(args[0], *class_args[0]["args"], **class_args[0]["kwargs"])
+        _producer = Func(args[0], *args[0]["args"], **args[0]["kwargs"])
         p = Pipeline.producer(_producer, t)
         p.__next__() 
         self._pipeline = p
