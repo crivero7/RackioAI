@@ -130,7 +130,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        return self._data
+        return self.app._data
 
     @data.setter
     def data(self, value):
@@ -163,11 +163,9 @@ class RackioEDA(Pipeline):
         """
 
         if isinstance(value, np.ndarray):
-            self._data = pd.DataFrame(value)
+            self.app._data = pd.DataFrame(value)
         else:
-            self._data = value
-
-        self.app._data = value
+            self.app._data = value
 
     @staticmethod
     def insert_column(df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
@@ -596,7 +594,7 @@ class RackioEDA(Pipeline):
         """
         Documentation here
         """
-        column_names = self.__get_column_names(self.data)
+        column_names = Utils.get_column_names(self.data)
         break_point = kwargs["breakpoint"]
         iloc_breakpoint = self.data.columns.get_loc(break_point)
 
@@ -614,6 +612,16 @@ class RackioEDA(Pipeline):
 
         return df
 
+
+class Plot:
+    """
+    Documentation here
+    """
+    def __init__(self):
+        """
+        Documentation
+        """
+        pass
 
 if __name__ == "__main__":
     import doctest

@@ -1,4 +1,5 @@
 from easy_deco.core import decorator
+from rackio_AI.core import RackioAI
 
 class StopPipeline(Exception):
     pass
@@ -8,6 +9,8 @@ class Pipeline(object):
     """
     Chain stages together. Assumes the last is the consumer.
     """
+
+    app = RackioAI()
 
     def __init__(self):
         """
@@ -38,6 +41,7 @@ class Pipeline(object):
         p = Pipeline.producer(_producer, t)
         p.__next__() 
         self._pipeline = p
+        return self._pipeline
 
     def start(self, initial_state):
         try:
@@ -86,7 +90,8 @@ class Pipeline(object):
 
         while True:
             r = (yield)
-            f(r)
+            data = f(r)
+            self.app._data = data
 
     @staticmethod
     def sink(f):
