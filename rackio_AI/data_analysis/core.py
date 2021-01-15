@@ -5,7 +5,6 @@ from ..utils import Utils
 from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
-from itertools import combinations as Combina
 
 
 class RackioEDA(Pipeline):
@@ -650,7 +649,7 @@ class RackioEDA(Pipeline):
         """
         self.start = 0
         self.data = df
-        comb = Combina(from_columns, len(to_columns))
+        comb = Utils.get_combinations(df, from_columns, len(to_columns))
         
         self.__combine_columns(comb, **kwargs)
 
