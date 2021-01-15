@@ -274,7 +274,16 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def remove_columns(self, *args):
+    @ProgressBar(desc="Removing columns...", unit="column")
+    def __remove_columns(self, columns):
+        """
+        Documentation here
+        """
+        self.data.pop(columns)
+        
+        return
+
+    def remove_columns(self, df, *args):
         """
         This method allows to you remove one or several columns in the data
 
@@ -307,8 +316,9 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        for column_name in args:
-            self.data.pop(column_name)
+        self.data = df
+
+        self.__remove_columns(args)
 
         return self.data
 
@@ -667,43 +677,6 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def add_ls_column(self, df, name, **kwargs):
-        """
-        Add Leak Size Column
-        """
-        self.start = 0
-        self.size_list = list()
-        label = kwargs["label"]
-        self.column = df[label].values.tolist()
-        op_label = kwargs["label2"]
-        op = df[op_label].values
-        leak_size = self.app.load_json(kwargs["path"])
-        options = {
-            "op": op,
-            "pattern": kwargs["pattern"],
-            "leak_size": leak_size
-            }
-
-        self.__add_ls_column(self.column, **options)
-
-        leak_size = pd.DataFrame(self.size_list, columns=[name])
-        df = df.drop([op_label, label], axis=1)
-        df = pd.concat([df, leak_size], axis=1)
-
-        return df
-
-    @ProgressBar(desc="Adding Leak Size Column...", unit="row")
-    def __add_ls_column(self, case, **kwargs):
-        """
-
-        """
-        pattern = kwargs["pattern"]
-        leak_size = kwargs["leak_size"]
-        steady_leak = leak_size["size"][str(leak_size["case"][Utils.split_str(case, pattern, -1)])]
-        op = kwargs['op'][self.start]
-        self.size_list.append(steady_leak * op)
-
-        return
 
 if __name__ == "__main__":
     import doctest
