@@ -220,7 +220,7 @@ class RackioEDA(Pipeline):
             
             loc = df.shape[-1]
         
-        df = df.insert(loc, column_name, data, allow_duplicates=False)
+        df.insert(loc, column_name, data, allow_duplicates=False)
 
         return df
 
