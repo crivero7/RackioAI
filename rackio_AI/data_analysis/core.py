@@ -5,6 +5,7 @@ from ..utils import Utils
 from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
+from itertools import combinations as Combina
 
 
 class RackioEDA(Pipeline):
@@ -505,7 +506,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    def resample(self, df, freq, label, reset_index=True):
+    def resample(self, df, freq, label):
         """
 
         """
@@ -514,15 +515,9 @@ class RackioEDA(Pipeline):
         self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
         options = {"freq": freq}
         self.__resample(self.column, **options)
-        if reset_index:
-
-            df = df.drop(self.rows_to_delete).reset_index(drop=True)
-
-        else:
-
-            df = df.drop(self.rows_to_delete)
-
+        df = df.drop(self.rows_to_delete)
         self.data = df
+
         return df
 
     @ProgressBar(desc="Resampling...", unit="Sampling")
@@ -549,12 +544,21 @@ class RackioEDA(Pipeline):
 
         return
 
+    @ProgressBar(desc="Reseting index...", unit="index")
+    def __reset_index(self, flag=[0]):
+        """
+        Documentation here
+        """
+        return
+
     def reset_index(self, df, drop=False):
         """
         Documentation here
         """
         df = df.reset_index(drop=drop)
         self.data = df
+        self.__reset_index([0])
+
         return df
 
     def print_report(self, df, info=True, head=True, header=10):
@@ -605,7 +609,7 @@ class RackioEDA(Pipeline):
         """
         combinations_list = list()
         self.windows = list()
-        config_sensor_locations = self.app.load_json(kwargs["sensor_locations_path"])
+        config_sensor_locations = self.app.load_json(kwargs["path"])
         sensor_locations = config_sensor_locations["sensor_locations"]
         lf = config_sensor_locations["leak"]
 
@@ -649,23 +653,23 @@ class RackioEDA(Pipeline):
         """
         self.start = 0
         self.data = df
-        comb = Utils.get_combinations(df, from_columns, len(to_columns))
+        comb = Combina(from_columns, len(to_columns))
         
         self.__combine_columns(comb, **kwargs)
 
         return df
 
-    def add_ls_column(self, df, **kwargs):
+    def add_ls_column(self, df, name, **kwargs):
         """
         Add Leak Size Column
         """
         self.start = 0
-        self.leak_size = list()
+        self.size_list = list()
         label = kwargs["label"]
         self.column = df[label].values.tolist()
         op_label = kwargs["label2"]
         op = df[op_label].values
-        leak_size = self.app.load_json(kwargs["path_config"])
+        leak_size = self.app.load_json(kwargs["path"])
         options = {
             "op": op,
             "pattern": kwargs["pattern"],
@@ -674,7 +678,7 @@ class RackioEDA(Pipeline):
 
         self.__add_ls_column(self.column, **options)
 
-        leak_size = pd.DataFrame(self.leak_size, columns=[kwargs["column_name"]])
+        leak_size = pd.DataFrame(self.size_list, columns=[name])
         df = df.drop([op_label, label], axis=1)
         df = pd.concat([df, leak_size], axis=1)
 
@@ -689,7 +693,7 @@ class RackioEDA(Pipeline):
         leak_size = kwargs["leak_size"]
         steady_leak = leak_size["size"][str(leak_size["case"][Utils.split_str(case, pattern, -1)])]
         op = kwargs['op'][self.start]
-        self.leak_size.append(steady_leak * op)
+        self.size_list.append(steady_leak * op)
 
         return
 
