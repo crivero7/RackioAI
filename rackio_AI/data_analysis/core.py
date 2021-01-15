@@ -169,14 +169,15 @@ class RackioEDA(Pipeline):
 
         self.app._data = value
 
-    def insert_column(self, data, column, loc=None, allow_duplicates=False):
+    @staticmethod
+    def insert_column(df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
         Insert column in any location in **RackioAI.data**
 
         ___
         **Parameters**
 
-        * **:param data:** (np.ndarray or pd.Series) column to insert
+        * **:param data:** (np.ndarray or pd.Series or list) column to be inserted
         * **:param column:** (str) column name to to be added
         * **:param loc:** (int) location where the column will be added, (optional, default=Last position)
         * **:param allow_duplicates:** (bool) (optional, default=False)
@@ -207,14 +208,21 @@ class RackioEDA(Pipeline):
         ```
         """
         if isinstance(data, np.ndarray):
+            
             data = pd.Series(data)
+            
+
+        elif isinstance(data, list):
+
+            data = pd.DataFrame(data, columns=[column_name])
 
         if not loc:
-            loc = self.data.shape[-1]
+            
+            loc = df.shape[-1]
+        
+        df = df.insert(loc, column_name, data, allow_duplicates=False)
 
-        self.data.insert(loc, column, data, allow_duplicates=allow_duplicates)
-
-        return self.data
+        return df
 
     def insert_columns(self, data, columns, locs=[], allow_duplicates=False):
         """

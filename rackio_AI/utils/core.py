@@ -64,3 +64,13 @@ class Utils:
         iterable.pop(loc)
         
         return iterable
+
+class Rule:
+    """
+    Documentation here
+    """
+
+    def __init__(self):
+        """
+        Documentation here
+        """
