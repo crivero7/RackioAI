@@ -10,7 +10,7 @@ import datetime
 from itertools import combinations as Combina
 
 
-class RackioEDA(Pipeline):
+class RackioEDA(Pipeline, metaclass=DecoMeta):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
 
@@ -20,7 +20,6 @@ class RackioEDA(Pipeline):
     """
 
     app = RackioAI()
-    __metaclass__ = DecoMeta
 
     def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
@@ -497,8 +496,6 @@ class RackioEDA(Pipeline):
         df.index.name = "Timestamp"
         self.data = df
 
-        # self.del_temp_prop()
-
         return df
 
     @ProgressBar(desc="Creating datetime index...", unit="datetime index")
@@ -540,8 +537,6 @@ class RackioEDA(Pipeline):
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
         self.data = df
-
-        # self.del_temp_prop()
 
         return df
 
@@ -598,51 +593,6 @@ class RackioEDA(Pipeline):
         
         return df
 
-    @ProgressBar(desc="Creating combinations...", unit="dataset")
-    def __combine_columns(self, combinations, **kwargs):
-        """
-        Documentation here
-        """
-        column_names = Utils.get_column_names(self.data)
-        break_point = kwargs["breakpoint"]
-        iloc_breakpoint = self.data.columns.get_loc(break_point)
-
-    def combine_columns(self, df, from_columns=[], to_columns=[], **kwargs):
-        """
-        Documentation here
-        breakpoint: column_name
-        breakpoint_loc: (str) "after", "before"
-        """
-        self.start = 0
-        self.data = df
-        comb = Combina(from_columns, len(to_columns))
-        
-        self.__combine_columns(comb, **kwargs)
-
-        return df
-
-    # @staticmethod
-    # def del_temp_prop(self, f):
-    #     """
-    #     Documentation here
-    #     """
-    #     def decorated(*a, **kw):
-    #         """
-    #         Documentation here
-    #         """
-    #         attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
-            
-    #         for variable in attributes:
-                
-    #             if variable[0].startswith('_') and variable[0].endswith('_'):
-
-    #                 if not(variable[0].startswith('__') and variable[0].endswith('__')):
-
-    #                     delattr(self, variable[0])
-
-    #         return f(*a, **kw)
-
-    #     return decorated
 
 class Plot:
     """
