@@ -20,13 +20,15 @@ class DecoMeta(type):
             result = func(*args, **kwargs)
             attributes = inspect.getmembers(cls, lambda variable:not(inspect.isroutine(variable)))
                 
-            for variable in attributes:
+            for prop, _ in attributes:
                 
-                if variable[0].startswith('_') and variable[0].endswith('_'):
+                if prop.startswith('_') and prop.endswith('_'):
 
-                    if not(variable[0].startswith('__') and variable[0].endswith('__')):
+                    if not(prop.startswith('__') and prop.endswith('__')):
 
-                        delattr(cls, variable[0])
+                        delattr(cls, prop)
+
+                        print(prop)
             
             return result
 
