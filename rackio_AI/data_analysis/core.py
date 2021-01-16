@@ -527,7 +527,6 @@ class RackioEDA(Pipeline):
         """
         self.rows_to_delete = list()
         self.diff = self.start = 0
-        self._index = df.index
         self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
         options = {"freq": freq}
         self.__resample(self.column, **options)
@@ -551,7 +550,7 @@ class RackioEDA(Pipeline):
         self.diff += delta
 
         if abs(self.diff) < freq:
-            self.rows_to_delete.append(self._index[self.start])
+            self.rows_to_delete.append(self.start)
             self.start += 1
             return
 
