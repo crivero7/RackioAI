@@ -478,18 +478,18 @@ class RackioEDA(Pipeline):
         """
 
         """
-        self._column = df[label].values.tolist()
-        self._now = datetime.datetime.now
-        self._timedelta = datetime.timedelta
-        self._index = list()
-        self._new_time_column = list()
-        self._delta = list()
-        self._start = 0
+        self._column_ = df[label].values.tolist()
+        self._now_ = datetime.datetime.now
+        self._timedelta_ = datetime.timedelta
+        self._index_ = list()
+        self._new_time_column_ = list()
+        self._delta_ = list()
+        self._start_ = 0
 
-        self.__create_datetime_index(self._column)
+        self.__create_datetime_index(self._column_)
 
-        df[label] = pd.DataFrame(self._new_time_column, columns=[label])
-        df.index = self._index
+        df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
+        df.index = self._index_
         df.index.name = "Timestamp"
         self.data = df
 
@@ -500,26 +500,26 @@ class RackioEDA(Pipeline):
         """
 
         """
-        if self._start == 0:
-            self._new_time_column.append(column)
-            self._index.append(self._now())
-            self._delta.append(0)
-            self._start += 1
+        if self._start_ == 0:
+            self._new_time_column_.append(column)
+            self._index_.append(self._now_())
+            self._delta_.append(0)
+            self._start_ += 1
             return
 
-        self._delta.append(column - self._column[self._start - 1])
+        self._delta_.append(column - self._column_[self._start_ - 1])
 
-        if self._delta[self._start] > 0:
+        if self._delta_[self._start_] > 0:
 
-            self._new_time_column.append(self._new_time_column[self._start - 1] + self._delta[self._start])
-            self._index.append(self._index[self._start - 1] + self._timedelta(seconds=self._delta[self._start]))
+            self._new_time_column_.append(self._new_time_column_[self._start_ - 1] + self._delta_[self._start_])
+            self._index_.append(self._index_[self._start_ - 1] + self._timedelta_(seconds=self._delta_[self._start_]))
             self._start += 1
 
         else:
 
-            self._new_time_column.append(self._new_time_column[self._start - 1] + self._delta[self._start - 1])
-            self._index.append(self._index[self._start - 1] + self._timedelta(seconds=self._delta[self._start - 1]))
-            self._start += 1
+            self._new_time_column_.append(self._new_time_column_[self._start_ - 1] + self._delta_[self._start_ - 1])
+            self._index_.append(self._index_[self._start_ - 1] + self._timedelta_(seconds=self._delta_[self._start_ - 1]))
+            self._start_ += 1
 
         return
 
@@ -527,12 +527,12 @@ class RackioEDA(Pipeline):
         """
 
         """
-        self.rows_to_delete = list()
-        self._diff_ = self.start = 0
-        self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
+        self._rows_to_delete_ = list()
+        self._diff_ = self._start_ = 0
+        self._column_ = df.loc[:, label].values.reshape(1, -1).tolist()[0]
         options = {"freq": freq}
-        self.__resample(self.column, **options)
-        df = df.drop(self.rows_to_delete)
+        self.__resample(self._column_, **options)
+        df = df.drop(self._rows_to_delete_)
         self.data = df
 
         return df
@@ -544,20 +544,20 @@ class RackioEDA(Pipeline):
         """
         freq = kwargs["freq"]
 
-        if self.start == 0:
-            self.start += 1
+        if self._start_ == 0:
+            self._start_ += 1
             return
 
-        delta = column - self.column[self.start - 1]
+        delta = column - self._column_[self._start_ - 1]
         self._diff_ += delta
 
         if abs(self._diff_) < freq:
-            self.rows_to_delete.append(self.start)
-            self.start += 1
+            self._rows_to_delete_.append(self._start_)
+            self._start_ += 1
             return
 
         self._diff_ = 0
-        self.start += 1
+        self._start_ += 1
 
         return
 
@@ -613,7 +613,7 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def del_temp_prop(self):
+    def del_temp_prop(self, _print=False):
         """
         Documentation here
         """
@@ -625,8 +625,13 @@ class RackioEDA(Pipeline):
 
                 if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-                    print(variable)
-                    # delattr(variable)
+                    if _print:
+
+                        print(variable)
+                    
+                    else:
+
+                        delattr(variable)
 
 class Plot:
     """
