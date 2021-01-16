@@ -1,4 +1,4 @@
-from ..decorators import cls_temp_props
+from ..decorators import del_temp_props
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -9,7 +9,7 @@ import datetime
 from itertools import combinations as Combina
 
 
-@cls_temp_props
+@del_temp_props
 class RackioEDA(Pipeline):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
