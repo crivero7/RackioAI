@@ -490,6 +490,7 @@ class RackioEDA(Pipeline):
         df[label] = pd.DataFrame(self._new_time_column, columns=[label])
         df.index = self._index
         df.index.name = "Timestamp"
+        self.data = df
 
         return df
 
