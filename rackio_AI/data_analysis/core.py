@@ -1,5 +1,5 @@
 import inspect
-from ..decorators import decorating_meta
+from ..decorators import DecoMeta
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -20,7 +20,7 @@ class RackioEDA(Pipeline):
     """
 
     app = RackioAI()
-    __metaclass__ = decorating_meta(RackioEDA.del_temp_prop)
+    __metaclass__ = DecoMeta
 
     def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
@@ -621,28 +621,28 @@ class RackioEDA(Pipeline):
 
         return df
 
-    @staticmethod
-    def del_temp_prop(self, f):
-        """
-        Documentation here
-        """
-        def decorated(*a, **kw):
-            """
-            Documentation here
-            """
-            attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
+    # @staticmethod
+    # def del_temp_prop(self, f):
+    #     """
+    #     Documentation here
+    #     """
+    #     def decorated(*a, **kw):
+    #         """
+    #         Documentation here
+    #         """
+    #         attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
             
-            for variable in attributes:
+    #         for variable in attributes:
                 
-                if variable[0].startswith('_') and variable[0].endswith('_'):
+    #             if variable[0].startswith('_') and variable[0].endswith('_'):
 
-                    if not(variable[0].startswith('__') and variable[0].endswith('__')):
+    #                 if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-                        delattr(self, variable[0])
+    #                     delattr(self, variable[0])
 
-            return f(*a, **kw)
+    #         return f(*a, **kw)
 
-        return decorated
+    #     return decorated
 
 class Plot:
     """
