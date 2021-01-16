@@ -613,7 +613,7 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def __reset_temporary_variables(self):
+    def del_temp_prop(self):
         """
         Documentation here
         """
