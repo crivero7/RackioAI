@@ -7,6 +7,7 @@ from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
 from itertools import combinations as Combina
+from ..decorators import decorating_meta
 
 
 class RackioEDA(Pipeline):
@@ -19,6 +20,7 @@ class RackioEDA(Pipeline):
     """
 
     app = RackioAI()
+    __metaclass__ = decorating_meta(self.del_temp_prop)
 
     def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
@@ -619,19 +621,27 @@ class RackioEDA(Pipeline):
 
         return df
 
-    # def del_temp_prop(self):
-    #     """
-    #     Documentation here
-    #     """
-    #     attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
-        
-    #     for variable in attributes:
+    def del_temp_prop(self, f):
+        """
+        Documentation here
+        """
+        def decorated(*a, **kw):
+            """
+            Documentation here
+            """
+            attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
             
-    #         if variable[0].startswith('_') and variable[0].endswith('_'):
+            for variable in attributes:
+                
+                if variable[0].startswith('_') and variable[0].endswith('_'):
 
-    #             if not(variable[0].startswith('__') and variable[0].endswith('__')):
+                    if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-    #                 delattr(self, variable[0])
+                        delattr(self, variable[0])
+
+            return f(*a, **kw)
+
+        return decorated
 
 class Plot:
     """
