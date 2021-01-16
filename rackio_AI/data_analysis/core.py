@@ -1,4 +1,4 @@
-import inspect
+from ..decorators import cls_temp_props
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -9,6 +9,7 @@ import datetime
 from itertools import combinations as Combina
 
 
+@cls_temp_props
 class RackioEDA(Pipeline):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
@@ -319,7 +320,7 @@ class RackioEDA(Pipeline):
 
         self.__remove_columns(args)
 
-        self.del_temp_prop()
+        # self.del_temp_prop()
 
         return self.data
 
@@ -495,7 +496,7 @@ class RackioEDA(Pipeline):
         df.index.name = "Timestamp"
         self.data = df
 
-        self.del_temp_prop()
+        # self.del_temp_prop()
 
         return df
 
@@ -539,7 +540,7 @@ class RackioEDA(Pipeline):
         df = df.drop(self._rows_to_delete_)
         self.data = df
 
-        self.del_temp_prop()
+        # self.del_temp_prop()
 
         return df
 
@@ -619,19 +620,19 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def del_temp_prop(self):
-        """
-        Documentation here
-        """
-        attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
+    # def del_temp_prop(self):
+    #     """
+    #     Documentation here
+    #     """
+    #     attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
         
-        for variable in attributes:
+    #     for variable in attributes:
             
-            if variable[0].startswith('_') and variable[0].endswith('_'):
+    #         if variable[0].startswith('_') and variable[0].endswith('_'):
 
-                if not(variable[0].startswith('__') and variable[0].endswith('__')):
+    #             if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-                    delattr(self, variable[0])
+    #                 delattr(self, variable[0])
 
 class Plot:
     """
