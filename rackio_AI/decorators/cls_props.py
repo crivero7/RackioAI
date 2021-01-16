@@ -13,7 +13,7 @@ class DeleteTemporaryProperties(type):
 
                     attrs[attr_name] = cls.deco(attr_value)
 
-        return super(DecoMeta, cls).__new__(cls, name, bases, attrs)
+        return super(DeleteTemporaryProperties, cls).__new__(cls, name, bases, attrs)
 
     @classmethod
     def deco(cls, func):
