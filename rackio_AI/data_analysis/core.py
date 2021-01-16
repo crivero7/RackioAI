@@ -319,6 +319,8 @@ class RackioEDA(Pipeline):
 
         self.__remove_columns(args)
 
+        self.del_temp_prop()
+
         return self.data
 
     def rename_columns(self, **kwargs):
@@ -493,6 +495,8 @@ class RackioEDA(Pipeline):
         df.index.name = "Timestamp"
         self.data = df
 
+        self.del_temp_prop()
+
         return df
 
     @ProgressBar(desc="Creating datetime index...", unit="datetime index")
@@ -534,6 +538,8 @@ class RackioEDA(Pipeline):
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
         self.data = df
+
+        self.del_temp_prop()
 
         return df
 
@@ -613,7 +619,7 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def del_temp_prop(self, _print=False):
+    def del_temp_prop(self):
         """
         Documentation here
         """
@@ -625,13 +631,7 @@ class RackioEDA(Pipeline):
 
                 if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-                    if _print:
-
-                        print(variable)
-                    
-                    else:
-
-                        delattr(variable)
+                    delattr(variable)
 
 class Plot:
     """
