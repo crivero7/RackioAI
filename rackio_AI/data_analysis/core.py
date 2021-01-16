@@ -9,7 +9,6 @@ import datetime
 from itertools import combinations as Combina
 
 
-@del_temp_props
 class RackioEDA(Pipeline):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
