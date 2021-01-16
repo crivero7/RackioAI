@@ -1,5 +1,5 @@
 import inspect
-from ..decorators import DecoMeta
+from ..decorators import DeleteTemporaryProperties
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -10,7 +10,7 @@ import datetime
 from itertools import combinations as Combina
 
 
-class RackioEDA(Pipeline, metaclass=DecoMeta):
+class RackioEDA(Pipeline, metaclass=DeleteTemporaryProperties):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
 
