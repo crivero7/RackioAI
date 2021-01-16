@@ -631,7 +631,7 @@ class RackioEDA(Pipeline):
 
                 if not(variable[0].startswith('__') and variable[0].endswith('__')):
 
-                    delattr(variable)
+                    delattr(self, variable[0])
 
 class Plot:
     """
