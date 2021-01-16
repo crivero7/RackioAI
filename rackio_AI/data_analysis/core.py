@@ -19,7 +19,7 @@ class RackioEDA(Pipeline):
 
     app = RackioAI()
 
-    def __init__(self, name, description):
+    def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
@@ -527,7 +527,7 @@ class RackioEDA(Pipeline):
 
         """
         self.rows_to_delete = list()
-        self.diff = self.start = 0
+        self._diff_ = self.start = 0
         self.column = df.loc[:, label].values.reshape(1, -1).tolist()[0]
         options = {"freq": freq}
         self.__resample(self.column, **options)
@@ -548,14 +548,14 @@ class RackioEDA(Pipeline):
             return
 
         delta = column - self.column[self.start - 1]
-        self.diff += delta
+        self._diff_ += delta
 
-        if abs(self.diff) < freq:
+        if abs(self._diff_) < freq:
             self.rows_to_delete.append(self.start)
             self.start += 1
             return
 
-        self.diff = 0
+        self._diff_ = 0
         self.start += 1
 
         return
@@ -612,6 +612,20 @@ class RackioEDA(Pipeline):
 
         return df
 
+    def __reset_temporary_variables(self):
+        """
+        Documentation here
+        """
+        attributes = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
+        
+        for variable in attributes:
+            
+            if variable[0].startswith('_') and variable[0].endswith('_'):
+
+                if not(variable[0].startswith('__') and variable[0].endswith('__')):
+
+                    print(variable)
+                    # delattr(variable)
 
 class Plot:
     """
