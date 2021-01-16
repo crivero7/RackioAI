@@ -1,4 +1,5 @@
-from ..decorators import del_temp_props
+import inspect
+from ..decorators import decorating_meta
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -7,7 +8,6 @@ from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
 from itertools import combinations as Combina
-from ..decorators import decorating_meta
 
 
 class RackioEDA(Pipeline):
@@ -20,7 +20,7 @@ class RackioEDA(Pipeline):
     """
 
     app = RackioAI()
-    __metaclass__ = decorating_meta(self.del_temp_prop)
+    __metaclass__ = decorating_meta(RackioEDA.del_temp_prop)
 
     def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
@@ -621,6 +621,7 @@ class RackioEDA(Pipeline):
 
         return df
 
+    @staticmethod
     def del_temp_prop(self, f):
         """
         Documentation here
