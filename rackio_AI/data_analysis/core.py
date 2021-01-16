@@ -513,7 +513,7 @@ class RackioEDA(Pipeline):
 
             self._new_time_column_.append(self._new_time_column_[self._start_ - 1] + self._delta_[self._start_])
             self._index_.append(self._index_[self._start_ - 1] + self._timedelta_(seconds=self._delta_[self._start_]))
-            self._start += 1
+            self._start_ += 1
 
         else:
 
