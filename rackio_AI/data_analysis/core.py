@@ -551,7 +551,7 @@ class RackioEDA(Pipeline):
         self.diff += delta
 
         if abs(self.diff) < freq:
-            self.rows_to_delete.append(self.start)
+            self.rows_to_delete.append(self._index[self.start])
             self.start += 1
             return
 

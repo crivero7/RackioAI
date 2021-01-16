@@ -165,6 +165,11 @@ class RackioAI(Singleton):
                     return data
 
             data = self._load_data(filename)
+
+            if data.index.has_duplicates:
+            
+                data = data.reset_index(drop=True)
+                
             self._data = data
 
             return data
