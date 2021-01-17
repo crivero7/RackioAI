@@ -33,15 +33,66 @@ class Pipeline(object):
 
     app = RackioAI()
 
-    def __init__(self):
-        """
-        Documentation here
-        """
-        self._pipeline = None
-
     def __call__(self, func_args, *args):
         """
-        Documentation here
+        Pipeline is too a callable object, so, when the Pipeline is called this function creates the pipeline
+        architecture. Each component in the pipeline (function or method) may need input arguments in addition to its
+        main argument (data to be processed), so, this arguments differents to the main argument must be passed into
+        pipeline as a list of dicts with the following structure.
+
+        ```python
+        func_args = [
+            {
+                "args": [],
+                "kwargs": {},
+            },
+            {
+                "args": [],
+                "kwargs": {},
+            },
+            {
+                "args": [],
+                "kwargs": {},
+            }
+        ]
+        ```
+
+        Each element in func_args represents the input arguments of each component (function or method) in the 
+        pipeline.
+
+        Each component (function or method) are passed into pipeline after the first argument (func_args) in the
+        callable. So, the first element in *func_args* represents the arguments for the first component of the 
+        pipeline
+
+        ___
+
+        **Parameters**
+
+        * **func_args:** (list of dicts) Functions argument of each component in the pipeline
+        * **args:** (function or method) Positional arguments that represents each component in the pipeline.
+
+        **returns**
+
+        * **obj:** The main argument passed into each component.
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import Pipeline
+        >>> import numpy as np
+
+        >>> def load(value): return np.array([value, value, value, value])
+
+        >>> def power(data, value): return data ** value
+
+        >>> def sum(data, value): return data + value
+
+        >>> args = [{"args": [], "kwargs": {}}, {"args": [2], "kwargs": {}}, {"args": [1], "kwargs": {}}, {"args": [-2], "kwargs": {}}]
+        >>> pipeline = Pipeline()
+        >>> pipeline(args, load, power, sum, sum)
+        >>> pipeline.start(2)
+        
+        ```
         """
         # Class definitions
         f = self.sink(args[-1])
@@ -103,8 +154,7 @@ class Pipeline(object):
             r = (yield)
             n.send(f(r))
 
-    @staticmethod
-    def consumer(f):
+    def consumer(self, f):
         """
         Consumer: only (yield).
         :param f:
@@ -114,7 +164,6 @@ class Pipeline(object):
         while True:
             r = (yield)
             data = f(r)
-            data.info()
             self.app._data = data
 
     @staticmethod
@@ -175,3 +224,8 @@ class Func(object):
         """
 
         return self._function(data, *self._args, **self._kwargs)
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()
