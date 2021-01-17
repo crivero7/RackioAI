@@ -98,7 +98,7 @@ class Pipeline(object):
         """
         # Define source component
         f = self.sink(args[-1])
-        f = self.__del_attr(f)
+        f = self.__del_temp_attr(f)
         _sink = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
         c = self.__sink(_sink)
         c.__next__() 
@@ -107,14 +107,14 @@ class Pipeline(object):
         # Define filters component
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
-            f = self.__del_attr(stg)
+            f = self.__del_temp_attr(stg)
             _filter = Func(f, *filter_args[i]["args"], **filter_args[i]["kwargs"])
             s = self.__filter(_filter, t)
             s.__next__() 
             t = s
 
         # Define source component
-        f = self.__del_attr(args[0])
+        f = self.__del_temp_attr(args[0])
         _source = Func(f, *func_args[0]["args"], **func_args[0]["kwargs"])
         p = self.__source(_source, t)
         p.__next__() 
@@ -151,7 +151,7 @@ class Pipeline(object):
         **Parameters**
 
         * **:param f:** (Function or method)
-        * **:param n:**
+        * **:param n:** (generator) Function generate for the following component
 
         **returns**
         
@@ -174,39 +174,56 @@ class Pipeline(object):
     @staticmethod
     def __filter(f, n):
         """
-        Filter component of the pipeline, this component receive a stream data from the previous component, it processes it
-        and it sends to the next component.
+        Filter component of the pipeline, this component receive a stream data from the previous component, 
+        it processes it and it sends to the next component.
 
         **Parameters**
 
         * **:param f:** (Funtion or method)
-        :param n:
-        :return:
+        * **:param n:** (generator) Function generate for the following component
+        
+        **returns**
+        
+        None
         """
-
         while True:
+            
             r = (yield)
             n.send(f(r))
 
     @staticmethod
     def __sink(f):
         """
-        Consumer: only (yield).
-        :param f:
-        :return:
-        """
+        Sink of the pipeline, this component only receive a stream data from the previous component, 
+        it processes it and it finishes the pipeline.
 
+        **Parameters**
+
+        * **:param f:** (Funtion or method)
+        
+        **returns**
+        
+        None
+        """
         while True:
+            
             r = (yield)
-            data = f(r)
-            Pipeline.data = data
+            f(r)
 
     @staticmethod
     def sink(f):
         """
-        Documentation here
+        Sink decorator to stop the pipeline execution
+
+        **Parameters**
+
+        * **:param f:** (Function or method) at the end of the pipeline
+
+        * **returns**
+
+        * **wrapper:** (Decorated function)
         """
-    
+
         def wrapper(*args, **kwargs):
 
             f(*args, **kwargs)
@@ -218,29 +235,39 @@ class Pipeline(object):
     @property
     def data(self):
         """
-        Documentation here
+        This attribute storage the stream data processed in the pipeline
         """
         return self.app._data
 
     @data.setter
     def data(self, value):
         """
-        Documentation here
+        This attribute storage the stream data processed in the pipeline
+
+        Setter property method to send the stream data in the pipeline to RackioAI app
+
+        **Parameters**
+
+        * **:param value:** (obj) stream data processed in the pipeline
         """
         self.app._data = value
 
-    def __del_attr(self, f):
+    def __del_temp_attr(self, f):
         """
-        Documentation here
+        Decorator to delete all temporary attributes generated in each pipeline component
+
+        **Parameters**
+
+        * **:param f:** (Function) function to be decorated
         """
     
         def wrapper(*args, **kwargs):
 
             result = f(*args, **kwargs)
 
-            attrs = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
+            attrs = inspect.getmembers(self, lambda attr:not(inspect.isroutine(attr)))
 
-            for attr, value in attrs:
+            for attr, _ in attrs:
 
                 if attr.startswith('_') and attr.endswith('_'):
                     
@@ -256,20 +283,35 @@ class Pipeline(object):
 
 class Func(object):
     """
-    Documentation here
+    Class decorator to allow pass arguments to each component in te pipeline
+
+    ```python
+    Func(f, *args, **kwargs)
+    ```
+
+    **Parameters**
+
+    * **:param f:** (Function or method) Component of the pipeline
+    * **:param args:** Positional arguments, except the first argument of the component *f* in the pipeline 
+    * **:param kwargs** Keyword arguments for the component *f* in the pipeline
     """
 
     def __init__(self, f, *args, **kwargs):
-        """
-        Documentation here
-        """
         self._function = f
         self._args = args
         self._kwargs = kwargs
 
     def __call__(self, data):
         """
-        Documentation here
+        Callable to execute the processing of each pipeline component
+
+        **Parameters**
+
+        * **:param data:** Data stream through the pipeline
+
+        **returns**
+
+        * **data**: Data stream processed in each pipeline component
         """
 
         return self._function(data, *self._args, **self._kwargs)
