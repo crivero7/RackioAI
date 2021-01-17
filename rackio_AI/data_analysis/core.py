@@ -264,7 +264,7 @@ class RackioEDA(Pipeline):
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
         >>> df2 = [10, 11, 12]
-        >>> EDA.insert_columns(df1, df2, df2.columns.['Four'])
+        >>> EDA.insert_columns(df1, df2, ['Four'])
            One  Two  Three  Four  Five  Six
         0    1    2      3    10    11   12
         1    4    5      6    13    14   15
@@ -279,7 +279,7 @@ class RackioEDA(Pipeline):
 
         if isinstance(data, list):
 
-            data = np.array(data).reshape((1,-1))
+            data = np.array(data).reshape((-1, 1))
 
         elif isinstance(data, pd.DataFrame):
             
