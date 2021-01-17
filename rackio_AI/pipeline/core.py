@@ -22,6 +22,13 @@ class Pipeline(object):
     The Pipe and Filter architecture consists of one or more data sources. The data source is connected to data
     filters via pipes. Filters process the data they receive, passing them to others filters in the pipeline. The
     final data is received at a Data Sink.
+
+    In the following image you can see graphically this architecture style.
+
+    ![Pipe and Filter Architecture](../img/PipeAndFilter.png)
+
+    Pipe and filter are used commonly for applications that perform a lot of data processing such as data analytics,
+    data transformation, metadata extraction, and so on.
     """
 
     app = RackioAI()
