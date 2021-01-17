@@ -665,11 +665,24 @@ class RackioEDA(Pipeline):
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
-        >>> EDA.print_report(df1, info=True, head=True, header=5)
-           One  Two  Three  Four
-        0    1    2      3    10
-        1    4    5      6    11
-        2    7    8      9    12
+        >>> EDA.print_report(df1, info=True, head=True, header=2)
+        <class 'pandas.core.frame.DataFrame'>
+        RangeIndex: 3 entries, 0 to 2
+        Data columns (total 3 columns):
+         #   Column  Non-Null Count  Dtype
+        ---  ------  --------------  -----
+         0   One     3 non-null      int32
+         1   Two     3 non-null      int32
+         2   Three   3 non-null      int32
+        dtypes: int32(3)
+        memory usage: 164.0 bytes
+           One  Two  Three
+        0    1    2      3
+        1    4    5      6
+           One  Two  Three
+        0    1    2      3
+        1    4    5      6
+        2    7    8      9
 
         ```
         """
