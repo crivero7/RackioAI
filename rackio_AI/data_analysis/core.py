@@ -339,7 +339,16 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def rename_columns(self, **kwargs):
+    @ProgressBar(desc="Renaming columns...", unit="column")
+    def __rename_columns(self, columns, **kwargs):
+        """
+        Documentation here
+        """
+        self.data = self.data.rename(columns=kwargs)
+
+        return
+
+    def rename_columns(self, df, **kwargs):
         """
         This method allows to you rename one or several column names in the data
 
@@ -365,12 +374,12 @@ class RackioEDA(Pipeline):
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
         >>> columns_to_rename = {'One': 'one', 'Two': 'two'}
-        >>> EDA.rename_columns(**columns_to_rename)
+        >>> EDA.rename_columns(df1,**columns_to_rename)
            one  two  Three
         0    1    2      3
         1    4    5      6
         2    7    8      9
-        >>> EDA.rename_columns(one='One',Three='three')
+        >>> EDA.rename_columns(df1, one='One',Three='three')
            One  two  three
         0    1    2      3
         1    4    5      6
@@ -378,7 +387,9 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        self.data = self.data.rename(columns=kwargs)
+        self.data = df
+        
+        self.__rename_columns(["Renaming"])
 
         return self.data
 
