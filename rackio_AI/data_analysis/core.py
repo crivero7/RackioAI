@@ -400,17 +400,18 @@ class RackioEDA(Pipeline):
         """
         if column_name in self.data.columns.to_list():
             
-            self.data.loc[:, column_name] = self.data.loc[:, column_name]
+            self.data.loc[:, column_name] = self._data_.loc[:, column_name]
 
         return
 
-    def change_columns(self, df, data, *args):
+    def change_columns(self, df, data, column_names):
         """
-        This method allows to you rename one or several column names in the data
+        This method allows to you change columns data for another columns data in a daaframe
 
         ___
         **Parameters**
 
+        * **:param df:** (pandas.DataFrame)
         * **:param data:** (pandas.DataFrame) to change in *self.data*
         * **:param args:** (str) column or columns names to change
 
@@ -432,7 +433,7 @@ class RackioEDA(Pipeline):
         >>> EDA.data = df1
         >>> data = np.array([[10, 11], [13, 14], [16, 17]])
         >>> columns=['Two','Three']
-        >>> EDA.change_columns(df1, data, *columns)
+        >>> EDA.change_columns(df1, data, columns)
            One  Two  Three
         0    1   10     11
         1    4   13     14
@@ -443,9 +444,9 @@ class RackioEDA(Pipeline):
         # Validate inputs
         if isinstance(data, np.ndarray):
             
-            if data.shape[1] == len(args):
+            if data.shape[1] == len(column_names):
                 
-                data = pd.DataFrame(data, columns=args)
+                data = pd.DataFrame(data, columns=column_names)
 
             else:
                 
@@ -453,14 +454,15 @@ class RackioEDA(Pipeline):
 
         # Changing data
         self.data = df
+        self._data_ = data
 
-        self.__change_columns(args)
+        self.__change_columns(column_names)
 
         return self.data
 
     def search_loc(self, column_name, *keys, **kwargs):
         """
-        This method allows you to rename one or several column names in the data
+        Logical indexing
 
         ___
         **Parameters**
@@ -619,17 +621,67 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def print_report(self, df, info=True, head=True, header=10):
+    @ProgressBar(desc="Printing report...", unit="dataframe")
+    def __print_report(self, iterable):
         """
         Documentation here
         """
-        if info:
-            df.info()
+        if self._info_:
+            
+            self.data.info()
 
-        if head:
-            print(df.head(header))
+        if self._head_:
+            
+            print(self.data.head(self._header_))
+
+        return
+
+    def print_report(self, df: pd.DataFrame, info=True, head=True, header=10):
+        """
+        Print DataFrame report, info and head report
+
+        ___
+        **Parameters**
+
+        * **:param df:** (pd.DataFrame) DataFrame to print report
+        * **:param info:** (bool) get info from DataFrame
+        * **:param head:** (bool) get head from DataFrame
+        * **:param header:** (int) number of first rows to print
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
+
+        ___
+        ## Snippet code
+
+        ```python
+        >>> import pandas as pd
+        >>> import numpy as np
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
+        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.data = df1
+        >>> EDA.print_report(df1, info=True, head=True, header=5)
+           One  Two  Three  Four
+        0    1    2      3    10
+        1    4    5      6    11
+        2    7    8      9    12
+
+        ```
+        """
+
+        self.data = df
+        self._info_ = info
+        self._head_ = head
+        self._header_ = header
         
-        return df
+        self.__print_report(["Printing"])
+        
+        return self.data
 
 
 class Plot:
