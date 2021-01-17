@@ -154,7 +154,8 @@ class Pipeline(object):
             r = (yield)
             n.send(f(r))
 
-    def consumer(self, f):
+    @staticmethod
+    def consumer(f):
         """
         Consumer: only (yield).
         :param f:
@@ -164,7 +165,7 @@ class Pipeline(object):
         while True:
             r = (yield)
             data = f(r)
-            self.app._data = data
+            Pipeline.app._data = data
 
     @staticmethod
     def sink(f):
