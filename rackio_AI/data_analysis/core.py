@@ -10,7 +10,8 @@ import datetime
 
 class RackioEDA(Pipeline):
     """
-    This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
+    Rackio Exploratory Data Analysis (RackioEDA for short) is based on the pipe and filter
+    architecture style
 
     **Attributes**
 

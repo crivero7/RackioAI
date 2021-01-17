@@ -5,7 +5,7 @@ class KalmanFilter:
     **Attributes**
 
     * **alpha:** (float) (default=1.0)
-    * **beta:** (float) (default=0.0)
+    * **beta:** (float) (default=0.0): Uncertainty in measurement
     * **f_value:** (float)
     """
 
