@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib
 from rackio_AI.core import RackioAI
 from ..utils import Utils
 from ..pipeline import Pipeline
@@ -590,7 +591,7 @@ class RackioEDA(Pipeline):
         return df
 
 
-class Plot:
+class Plot(matplotlib):
     """
     Documentation here
     """
