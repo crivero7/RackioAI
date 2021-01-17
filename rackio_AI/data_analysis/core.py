@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
-from ..utils import Utils
-from ..pipeline import Pipeline
+from rackio_AI.utils import Utils
+from rackio_AI.pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
 
@@ -182,7 +182,7 @@ class RackioEDA(Pipeline):
         else:
             self.app._data = value
 
-    def insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
+    def __insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
         Insert column in any location in **RackioAI.data**
 
@@ -197,25 +197,6 @@ class RackioEDA(Pipeline):
         **:return:**
 
         * **data:** (pandas.DataFrame)
-        ___
-        ## Snippet code
-
-        ```python
-        >>> import pandas as pd
-        >>> import numpy as np
-        >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> df2 = pd.DataFrame(np.array([[10], [11], [12]]), columns=['Four'])
-        >>> EDA.insert_column(df2, df2.columns[0])
-           One  Two  Three  Four
-        0    1    2      3    10
-        1    4    5      6    11
-        2    7    8      9    12
 
         ```
         """
@@ -243,11 +224,11 @@ class RackioEDA(Pipeline):
         """
         if not self._locs_:
                 
-            self.data = self.insert_column(self.data, self._data_[:, self._count_], column_name, allow_duplicates=self._allow_duplicates_)
+            self.data = self.__insert_column(self.data, self._data_[:, self._count_], column_name, allow_duplicates=self._allow_duplicates_)
 
         else:
 
-            self.data = self.insert_column(self.data, self._data_[:, self._count_], column_name, self._locs_[self._count_], allow_duplicates=self._allow_duplicates_)
+            self.data = self.__insert_column(self.data, self._data_[:, self._count_], column_name, self._locs_[self._count_], allow_duplicates=self._allow_duplicates_)
 
         self._count_ += 1
 
@@ -282,8 +263,8 @@ class RackioEDA(Pipeline):
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
-        >>> df2 = pd.DataFrame(np.array([[10, 11, 12], [13, 14, 15], [16, 17, 18]]), columns=['Four','Five','Six'])
-        >>> EDA.insert_columns(df2, df2.columns.to_list())
+        >>> df2 = [10, 11, 12]
+        >>> EDA.insert_columns(df1, df2, df2.columns.['Four'])
            One  Two  Three  Four  Five  Six
         0    1    2      3    10    11   12
         1    4    5      6    13    14   15
@@ -296,7 +277,11 @@ class RackioEDA(Pipeline):
         self._allow_duplicates_ = allow_duplicates
         self._count_ = 0
 
-        if isinstance(data, pd.DataFrame):
+        if isinstance(data, list):
+
+            data = np.array(data).reshape((1,-1))
+
+        elif isinstance(data, pd.DataFrame):
             
             data = data.values  # converting to np.ndarray
 
@@ -340,7 +325,7 @@ class RackioEDA(Pipeline):
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
-        >>> EDA.remove_columns('Two', 'Three')
+        >>> EDA.remove_columns(df1, 'Two', 'Three')
            One
         0    1
         1    4
