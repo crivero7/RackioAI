@@ -91,61 +91,95 @@ class Pipeline(object):
         >>> pipeline = Pipeline()
         >>> pipeline(args, load, power, sum, sum)
         >>> pipeline.start(2)
-        
+        >>> pipeline.data
+        array([5, 5, 5, 5], dtype=int32)
+
         ```
         """
-        # Class definitions
+        # Define source component
         f = self.sink(args[-1])
-        _consumer = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
-
-        c = self.consumer(_consumer)
+        f = self.__del_attr(f)
+        _sink = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
+        c = self.__sink(_sink)
         c.__next__() 
         t = c
 
+        # Define filters component
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
-            f = self.del_attr(stg)
+            f = self.__del_attr(stg)
             _filter = Func(f, *filter_args[i]["args"], **filter_args[i]["kwargs"])
-            s = self.stage(_filter, t)
+            s = self.__filter(_filter, t)
             s.__next__() 
             t = s
 
-        f = self.del_attr(args[0])
-        _producer = Func(f, *func_args[0]["args"], **func_args[0]["kwargs"])
-        p = self.producer(_producer, t)
+        # Define source component
+        f = self.__del_attr(args[0])
+        _source = Func(f, *func_args[0]["args"], **func_args[0]["kwargs"])
+        p = self.__source(_source, t)
         p.__next__() 
         self._pipeline = p
-        return self._pipeline
+
+        return 
 
     def start(self, initial_state):
+        """
+        This method starts to run the pipeline architecture
+
+        **Parameters**
+
+        * **initial_state:** First argument of the pipeline's source method
+
+        **returns**
+
+        None
+
+        """
         try:
+            
             self._pipeline.send(initial_state)
+        
         except StopPipeline:
+            
             self._pipeline.close()
 
     @staticmethod
-    def producer(f, n):
+    def __source(f, n):
         """
-        Producer: only .send (and yield as entry point)
-        :param f:
-        :param n:
-        :return:
-        """
+        It's the first component of the pipeline
 
+        **Parameters**
+
+        * **:param f:** (Function or method)
+        * **:param n:**
+
+        **returns**
+        
+        None
+        """
         state = (yield)  # get initial state
+        
         while True:
+            
             try:
+                
                 res = f(state)
+            
             except StopPipeline:
+                
                 return
 
             n.send(res)
 
     @staticmethod
-    def stage(f, n):
+    def __filter(f, n):
         """
-        Stage: both (yield) and .send.
-        :param f:
+        Filter component of the pipeline, this component receive a stream data from the previous component, it processes it
+        and it sends to the next component.
+
+        **Parameters**
+
+        * **:param f:** (Funtion or method)
         :param n:
         :return:
         """
@@ -155,7 +189,7 @@ class Pipeline(object):
             n.send(f(r))
 
     @staticmethod
-    def consumer(f):
+    def __sink(f):
         """
         Consumer: only (yield).
         :param f:
@@ -165,7 +199,7 @@ class Pipeline(object):
         while True:
             r = (yield)
             data = f(r)
-            Pipeline.app._data = data
+            Pipeline.data = data
 
     @staticmethod
     def sink(f):
@@ -181,7 +215,21 @@ class Pipeline(object):
 
         return wrapper
     
-    def del_attr(self, f):
+    @property
+    def data(self):
+        """
+        Documentation here
+        """
+        return self.app._data
+
+    @data.setter
+    def data(self, value):
+        """
+        Documentation here
+        """
+        self.app._data = value
+
+    def __del_attr(self, f):
         """
         Documentation here
         """
