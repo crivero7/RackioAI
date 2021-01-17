@@ -265,10 +265,10 @@ class RackioEDA(Pipeline):
         >>> EDA.data = df1
         >>> df2 = [10, 11, 12]
         >>> EDA.insert_columns(df1, df2, ['Four'])
-           One  Two  Three  Four  Five  Six
-        0    1    2      3    10    11   12
-        1    4    5      6    13    14   15
-        2    7    8      9    16    17   18
+           One  Two  Three  Four
+        0    1    2      3    10
+        1    4    5      6    11
+        2    7    8      9    12
 
         ```
         """
