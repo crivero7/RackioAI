@@ -10,17 +10,32 @@ import datetime
 
 class RackioEDA(Pipeline):
     """
-    Rackio Exploratory Data Analysis (RackioEDA for short) is based on the pipe and filter
-    architecture style
+    Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
+    architecture style, is an ETL framework for data extraction from homogeneous or heterogeneous
+    sources, data transformation by data cleaning and transforming them into a proper storage
+    format/structure for the purposes of querying and analysis; finally, data loading into the 
+    final target database such as an operational data store, a data mart, data lake or a data
+    warehouse.
 
-    **Attributes**
+    This schematic process is shown in the following image:
 
-    * **data:** (pd.DataFrame)
+    ![ETL Process](../img/ETL.jpg)
+
     """
 
     app = RackioAI()
 
     def __init__(self, name="EDA", description="EDA Pipeline"):
+        """
+        **Parameters**
+
+        * **:param name:** (str) RackioEDA object's name
+        * **:param description:** (str) RackioEDA object's description
+
+        **returns**
+
+        * **RackioEDA object**
+        """
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
@@ -221,7 +236,24 @@ class RackioEDA(Pipeline):
 
         return df
 
-    def insert_columns(self, data, columns, locs=[], allow_duplicates=False):
+    @ProgressBar(desc="Inserting columns...", unit="column")
+    def __insert_columns(self, column_name):
+        """
+        Documentation here
+        """
+        if not self._locs_:
+                
+            self.data = self.insert_column(self.data, self._data_[:, self._count_], column_name, allow_duplicates=self._allow_duplicates_)
+
+        else:
+
+            self.data = self.insert_column(self.data, self._data_[:, self._count_], column_name, self._locs_[self._count_], allow_duplicates=self._allow_duplicates_)
+
+        self._count_ += 1
+
+        return
+
+    def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert several columns in any location
 
@@ -259,15 +291,18 @@ class RackioEDA(Pipeline):
 
         ```
         """
+        self.data = df
+        self._locs_ = locs
+        self._allow_duplicates_ = allow_duplicates
+        self._count_ = 0
+
         if isinstance(data, pd.DataFrame):
+            
             data = data.values  # converting to np.ndarray
 
-        for count, column in enumerate(columns):
-            if not locs:
-                self.insert_column(data[:, count], column, allow_duplicates=allow_duplicates)
+        self._data_ = data
 
-            else:
-                self.insert_column(data[:, count], column, locs[count], allow_duplicates=allow_duplicates)
+        self.__insert_columns(column_names)
 
         return self.data
 
