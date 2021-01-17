@@ -379,8 +379,8 @@ class RackioEDA(Pipeline):
         0    1    2      3
         1    4    5      6
         2    7    8      9
-        >>> EDA.rename_columns(df1, one='One',Three='three')
-           One  two  three
+        >>> EDA.rename_columns(df1, One='one',Three='three')
+           one  Two  three
         0    1    2      3
         1    4    5      6
         2    7    8      9
@@ -389,11 +389,22 @@ class RackioEDA(Pipeline):
         """
         self.data = df
         
-        self.__rename_columns(["Renaming"])
+        self.__rename_columns(["Renaming"], **kwargs)
 
         return self.data
 
-    def change_columns(self, data, *args):
+    @ProgressBar(desc="Changing columns...", unit="column")
+    def __change_columns(self, column_name):
+        """
+        Documentation here
+        """
+        if column_name in self.data.columns.to_list():
+            
+            self.data.loc[:, column_name] = self.data.loc[:, column_name]
+
+        return
+
+    def change_columns(self, df, data, *args):
         """
         This method allows to you rename one or several column names in the data
 
@@ -421,7 +432,7 @@ class RackioEDA(Pipeline):
         >>> EDA.data = df1
         >>> data = np.array([[10, 11], [13, 14], [16, 17]])
         >>> columns=['Two','Three']
-        >>> EDA.change_columns(data, *columns)
+        >>> EDA.change_columns(df1, data, *columns)
            One  Two  Three
         0    1   10     11
         1    4   13     14
@@ -431,16 +442,19 @@ class RackioEDA(Pipeline):
         """
         # Validate inputs
         if isinstance(data, np.ndarray):
+            
             if data.shape[1] == len(args):
+                
                 data = pd.DataFrame(data, columns=args)
 
             else:
+                
                 raise ValueError('You must have the same amount of positional arguments as columns in the data')
 
         # Changing data
-        for column in args:
-            if column in self.data:
-                self.data.loc[:, column] = data.loc[:, column]
+        self.data = df
+
+        self.__change_columns(args)
 
         return self.data
 
