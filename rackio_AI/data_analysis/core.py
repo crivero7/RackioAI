@@ -23,8 +23,7 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
-        self._data = None
-
+        
     def serialize(self):
         """
         Serialize RackioEDA object
@@ -317,8 +316,6 @@ class RackioEDA(Pipeline):
 
         self.__remove_columns(args)
 
-        # self.del_temp_prop()
-
         return self.data
 
     def rename_columns(self, **kwargs):
@@ -491,7 +488,6 @@ class RackioEDA(Pipeline):
         df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
         df.index = self._index_
         df.index.name = "Timestamp"
-        # self.data = df
 
         return df
 
@@ -533,7 +529,6 @@ class RackioEDA(Pipeline):
         options = {"freq": freq}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
-        # self.data = df
 
         return df
 
