@@ -1,5 +1,7 @@
 from easy_deco.core import decorator
+import inspect
 from rackio_AI.core import RackioAI
+
 
 class StopPipeline(Exception):
     pass
@@ -32,12 +34,14 @@ class Pipeline(object):
 
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
-            _filter = Func(stg, *filter_args[i]["args"], **filter_args[i]["kwargs"])
+            f = self.del_attr(stg)
+            _filter = Func(f, *filter_args[i]["args"], **filter_args[i]["kwargs"])
             s = self.stage(_filter, t)
             s.__next__() 
             t = s
 
-        _producer = Func(args[0], *func_args[0]["args"], **func_args[0]["kwargs"])
+        f = self.del_attr(args[0])
+        _producer = Func(f, *func_args[0]["args"], **func_args[0]["kwargs"])
         p = self.producer(_producer, t)
         p.__next__() 
         self._pipeline = p
@@ -96,12 +100,40 @@ class Pipeline(object):
 
     @staticmethod
     def sink(f):
+        """
+        Documentation here
+        """
     
         def wrapper(*args, **kwargs):
 
             f(*args, **kwargs)
 
             raise StopPipeline('Enough!')
+
+        return wrapper
+    
+    def del_attr(self, f):
+        """
+        Documentation here
+        """
+    
+        def wrapper(*args, **kwargs):
+
+            result = f(*args, **kwargs)
+
+            attrs = inspect.getmembers(self, lambda variable:not(inspect.isroutine(variable)))
+
+            for attr, value in attrs:
+
+                if attr.startswith('_') and attr.endswith('_'):
+                    
+                    if not(attr.startswith('__')) and not(attr.endswith('__')):
+
+                        delattr(self, attr)
+
+            self.data = result
+
+            return result
 
         return wrapper
 
@@ -124,4 +156,3 @@ class Func(object):
         """
 
         return self._function(data, *self._args, **self._kwargs)
-

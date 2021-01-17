@@ -1,5 +1,3 @@
-import inspect
-from ..decorators import DeleteTemporaryProperties
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
@@ -7,10 +5,9 @@ from ..utils import Utils
 from ..pipeline import Pipeline
 from easy_deco.progress_bar import ProgressBar
 import datetime
-from itertools import combinations as Combina
 
 
-class RackioEDA(Pipeline, metaclass=DeleteTemporaryProperties):
+class RackioEDA(Pipeline):
     """
     This is a **RackioAI** class it allows to you to handle the data embedded in **RackioAI**
 
@@ -169,8 +166,7 @@ class RackioEDA(Pipeline, metaclass=DeleteTemporaryProperties):
         else:
             self.app._data = value
 
-    @staticmethod
-    def insert_column(df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
+    def insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
         Insert column in any location in **RackioAI.data**
 
@@ -494,7 +490,7 @@ class RackioEDA(Pipeline, metaclass=DeleteTemporaryProperties):
         df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
         df.index = self._index_
         df.index.name = "Timestamp"
-        self.data = df
+        # self.data = df
 
         return df
 
@@ -536,7 +532,7 @@ class RackioEDA(Pipeline, metaclass=DeleteTemporaryProperties):
         options = {"freq": freq}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
-        self.data = df
+        # self.data = df
 
         return df
 
