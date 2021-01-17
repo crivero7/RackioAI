@@ -4,12 +4,24 @@ from rackio_AI.core import RackioAI
 
 
 class StopPipeline(Exception):
+    """
+    Documentation here
+    """
     pass
 
 
 class Pipeline(object):
     """
-    Chain stages together. Assumes the last is the consumer.
+    Pipeline is a class based on a simple architectural style called Pipe and Filter, which connects a number
+    of components that process a stream of data, each connected to the next component in the processing pipeline
+    via a Pipe.
+
+    The Pipe and Filter architecture is inspired by the Unix technique of connecting  the output of an application
+    to the input of another via pipes on the shell.
+
+    The Pipe and Filter architecture consists of one or more data sources. The data source is connected to data
+    filters via pipes. Filters process the data they receive, passing them to others filters in the pipeline. The
+    final data is received at a Data Sink.
     """
 
     app = RackioAI()
