@@ -33,7 +33,7 @@ class RackioEDA(Pipeline):
 
     app = RackioAI()
 
-    def __init__(self, name="EDA", description="EDA Pipeline"):
+    def __init__(self, name="", description=""):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description

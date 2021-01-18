@@ -7,7 +7,7 @@ import os
 class CSV:
     """
     The so-called CSV (Comma Separated Values) format is the most common import and export format
-    for spreadsheets and databases.
+    for spreadsheets and databases. It's based on pandas.read_csv
 
     The CSV class implements methods to read and write tabular data in CSV format. It allows programmers
     to say, "write this data in the format preferred by Excel", or "read data from this file which was
@@ -18,16 +18,6 @@ class CSV:
     The CSV class’s reader and writer objects read and write sequences. Programmers can also read and write
     data in dictionary form using the DictReader and DictWriter classes.
     """
-
-    @ProgressBar(desc="Reading csv file...", unit="file")
-    def __read(self, csv_file, **kwargs):
-        """
-        Documentation here
-        """
-            
-        self._df_.append(pd.read_csv(csv_file, **kwargs))
-        
-        return
 
     def read(self, csv_files, _format=None, **csv_options):
         """
@@ -339,6 +329,24 @@ class CSV:
 
         A comma-separated values (csv) file is returned as two-dimensional data structure with labeled axes.
     
+        _______
+        ## Snippet Code
+
+        ```python
+        import os
+        from rackio_AI import CSV
+        >>> csv_obj = CSV()
+        >>> csv_file_path = os.path.join("..","..", "data", "csv")
+        >>> csv_obj.read(csv_file_path, delimiter=";", header=0, index_col=0)
+                    Identifier One-time password Recovery code First name Last name   Department    Location
+        Username
+        booker12          9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
+        grey07            2070            04ap67        lg2070      Laura      Grey        Depot      London
+        johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
+        jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
+        smith79           5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
+        
+        ```
         """
         if os.path.isdir(csv_files):
             
@@ -349,20 +357,28 @@ class CSV:
             filenames = [csv_files]
 
         if not _format:
+            
             default_csv_options = Utils.load_json(os.path.join("json", "csv_options.json"))
             csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
             self._df_ = list()
             self.__read(filenames, **csv_options)
             df = pd.concat(self._df_)
-            return df
         
         elif _format == "hysys":
+            
             df = self.__read_hysys(filenames, **csv_options)
-            return df
+            
+        return df
 
     def __read_hysys(self, csv_files, **csv_options):
         """
-        Documentation here
+        Read a comma-separated-values (csv) file into DataFrame.
+
+        Also supports optionally iterating or breaking of the file into chunks.
+
+        **Parameters**
+
+        Same like read method
         """
         default_csv_options = Utils.load_json(os.path.join("json", "hysys_options.json"))
         csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
@@ -370,21 +386,38 @@ class CSV:
         self.__read(csv_files, **csv_options)
         df = pd.concat(self._df_)
         
+        # Fixing output format for hysys file
         columns = list(df.columns)
         units = list(df.iloc[0,:])
         new_columns = {key: ("{}".format(key),"{}".format(units[i])) for i, key in enumerate(columns)}
-
         df = df.rename(columns=new_columns)
         index_unit = df.index[0]
         df.index.name = ("{}".format(df.index.name),"{}".format(index_unit))
         df = df.drop(index_unit)
 
         return df
+
+    @ProgressBar(desc="Reading csv file...", unit="file")
+    def __read(self, csv_file, **kwargs):
+        """
+        Decorated function to visualize the progress bar during the execution of *read*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param iterable:** (list)
+
+        **returns**
+
+        None
+        """
+            
+        self._df_.append(pd.read_csv(csv_file, **kwargs))
+        
+        return
     
 
 if __name__ == "__main__":
-    csv_obj = CSV()
-    csv_file_path = os.path.join("..","..", "data", "csv", "Maquina 302")
-    df = csv_obj.read(csv_file_path, _format="hysys")
-    df.info()
-    print(df.head(30))
+    import doctest
+
+    doctest.testmod()
