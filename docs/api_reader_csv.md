@@ -1,3 +1,3 @@
 ::: rackio_AI.CSV
     :docstring:
-    :members: reader
+    :members: read
