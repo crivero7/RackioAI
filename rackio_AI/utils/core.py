@@ -1,5 +1,5 @@
-from rackio_AI.core import RackioAI
 from itertools import combinations as Combine
+import os
 
 
 class Utils:
@@ -57,13 +57,63 @@ class Utils:
         return Combine(columns, num)
 
     @staticmethod
-    def remove_row(iterable, loc):
+    def remove_row(df, loc):
         """
         Documentation here
         """
-        iterable.pop(loc)
+        df.pop(loc)
         
-        return iterable
+        return df
+
+    @staticmethod
+    def find_files(extension, path):
+        """
+        find all *:param extension:* files in *path*
+
+        ___
+        **Parameters**
+
+        * **:param extension:** (str)
+        * **:param path:** (str) root path
+
+        **:return:**
+
+        * **files:** (list['str'])
+
+        ___
+
+        ## Snippet code
+
+        ```python
+        >>> import os
+        >>> from rackio_AI import RackioAI, Utils, get_directory
+
+        ## An especific file
+        >>> path = os.path.join(get_directory('Leak'))
+        >>> Utils.find_files('.tpl', path)
+
+        ```
+        """
+        result = list()
+
+        for root, _, files in os.walk(path):
+
+            for file in files:
+
+                if file.endswith(extension):
+                    result.append(os.path.join(root, file))
+
+        return result
+
+    @staticmethod
+    def load_json(filename):
+        """
+
+        :return:
+        """
+        with open(filename, ) as f:
+
+            return json.load(f)
 
 class Rule:
     """

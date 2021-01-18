@@ -606,14 +606,6 @@ class RackioAI(Singleton):
         """
         return self.reader.read(filename)
 
-    def load_json(self, filename):
-        """
-
-        :return:
-        """
-        with open(filename, ) as f:
-
-            return json.load(f)
 
 if __name__ == "__main__":
     import doctest
