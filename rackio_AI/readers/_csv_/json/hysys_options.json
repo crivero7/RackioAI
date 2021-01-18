@@ -40,7 +40,7 @@
     "comment": null,
     "encoding": null,
     "dialect": null,
-    "error_bad_lines": true,
+    "error_bad_lines": false,
     "warn_bad_lines": true,
     "delim_whitespace": false,
     "low_memory": true,

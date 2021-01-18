@@ -340,9 +340,6 @@ class CSV:
                 A comma-separated values (csv) file is returned as two-dimensional data structure with labeled axes.
     
         """
-        default_csv_options = Utils.load_json(os.path.join("json", "csv_options.json"))
-        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
-
         if os.path.isdir(csv_files):
             
             filenames = Utils.find_files(".csv", csv_files)
@@ -352,6 +349,8 @@ class CSV:
             filenames = [csv_files]
 
         if not _format:
+            default_csv_options = Utils.load_json(os.path.join("json", "csv_options.json"))
+            csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
             self._df_ = list()
             self.__read(filenames, **csv_options)
             df = pd.concat(self._df_)
