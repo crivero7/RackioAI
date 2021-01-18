@@ -577,7 +577,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def set_datetime_index(self, df, label, index_name):
+    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-$%D %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
 
@@ -586,6 +586,7 @@ class RackioEDA(Pipeline):
         * **:param df:** (pandas.DataFrame) Dataframe to set the index
         * **:param label:** (str) Column name that represents timeseries
         * **:param index_name:** (str) Index name
+        * **:param start:** (str) datetime in string format "%Y-%m-$%D %H:%M:%S"
 
         **returns**
 
@@ -605,14 +606,23 @@ class RackioEDA(Pipeline):
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
         >>> EDA.set_datetime_index(df1, "Time", "Timestamp")
-          Time  Two  Three
-        0    1   10     11
-        1    4   13     14
-        2    7   16     17
+                                    Time  Two  Three
+        Timestamp
+        2021-01-17 21:08:20.259074   0.5    2      3
+        2021-01-17 21:08:21.259074   1.5    5      6
+        2021-01-17 21:08:22.759074   3.0    8      9
 
         ```
         """
         self._column_ = df[label].values.tolist()
+
+        if isinstance(start, datetime.datetime):
+            
+            self._now_ = start
+        else:
+
+            self._now_ = datetime.strptime(start, format)
+
         self._now_ = datetime.datetime.now
         self._timedelta_ = datetime.timedelta
         self._index_ = list()
@@ -644,7 +654,7 @@ class RackioEDA(Pipeline):
         """
         if self._start_ == 0:
             self._new_time_column_.append(column)
-            self._index_.append(self._now_())
+            self._index_.append(self._now_)quit()
             self._delta_.append(0)
             self._start_ += 1
             return
@@ -693,10 +703,9 @@ class RackioEDA(Pipeline):
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
         >>> EDA.resample(df1, 1, "Time")
-          Time  Two  Three
-        0    1   10     11
-        1    4   13     14
-        2    7   16     17
+           Time  Two  Three
+        0   0.5    2      3
+        2   1.5    8      9
 
         ```
         """
@@ -786,10 +795,11 @@ class RackioEDA(Pipeline):
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
         >>> EDA.reset_index(df1, drop=False)
-          Time  Two  Three
-        0    1   10     11
-        1    4   13     14
-        2    7   16     17
+           index  Time  Two  Three
+        0      0   0.5    2      3
+        1      1   1.0    5      6
+        2      2   1.5    8      9
+        3      3   2.0    8      9
 
         ```
         """
