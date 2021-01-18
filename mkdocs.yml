@@ -18,6 +18,7 @@ nav:
       - Readers:
         - Reader: 'api_reader_core.md'
         - TPL: 'api_reader_tpl.md'
+        - CSV: 'api_reader_csv.md'
       - Data Analysis:
         - RackioEDA: 'api_data_analysis_core.md'
       - Preprocessing:
