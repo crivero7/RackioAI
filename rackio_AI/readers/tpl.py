@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
+from rackio_AI.utils import Utils
 from rackio_AI.readers.options import TPLOptions
 
 
@@ -160,7 +161,7 @@ class TPL:
 
         ```
         """
-        filenames = self.find_files(self.tpl_options.file_extension, directory)
+        filenames = Utils.find_files(self.tpl_options.file_extension, directory)
 
         doc = self._read_files(filenames)
 
@@ -316,50 +317,6 @@ class TPL:
 
         return np.array(new_data)
 
-    @staticmethod
-    def find_files(extension, path):
-        """
-        find all *:param extension:* files in *path*
-
-        ___
-        **Parameters**
-
-        * **:param extension:** (str)
-        * **:param path:** (str) root path
-
-        **:return:**
-
-        * **files:** (list['str'])
-
-        ___
-
-        ## Snippet code
-
-        ```python
-        >>> import os
-        >>> from rackio_AI import RackioAI
-        >>> from rackio_AI import get_directory
-        >>> from rackio_AI.readers.tpl import TPL
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-
-        ## An especific file
-        >>> path = os.path.join(get_directory('Leak'))
-        >>> filenames = TPL.find_files('.tpl', path)
-
-        ```
-        """
-        result = list()
-
-        for root, dirs, files in os.walk(path):
-
-            for file in files:
-
-                if file.endswith(extension):
-                    result.append(os.path.join(root, file))
-
-        return result
 
     @staticmethod
     def _clean_column_name(column_name):

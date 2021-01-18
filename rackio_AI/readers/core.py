@@ -163,6 +163,7 @@ class Reader:
 
             return False
 
+    
 
 if __name__ == "__main__":
     import doctest

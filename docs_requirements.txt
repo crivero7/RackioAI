@@ -1,4 +1,4 @@
 mkdocs==1.1.2
 mkdocs-material==4.4.2
 mkautodoc==0.1.0
-RackioAI
+RackioAI==0.2.1
