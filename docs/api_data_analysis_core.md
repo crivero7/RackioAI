@@ -1,6 +1,5 @@
 :::rackio_AI.RackioEDA
     :docstring:
-    :members: __init__
     :members: serialize
     :members: get_name
     :members: description

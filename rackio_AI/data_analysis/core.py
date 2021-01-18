@@ -21,13 +21,7 @@ class RackioEDA(Pipeline):
 
     ![ETL Process](../img/ETL.jpg)
 
-    """
-
-    app = RackioAI()
-
-    def __init__(self, name="EDA", description="EDA Pipeline"):
-        """
-        **Parameters**
+    **Parameters**
 
         * **:param name:** (str) RackioEDA object's name
         * **:param description:** (str) RackioEDA object's description
@@ -35,7 +29,11 @@ class RackioEDA(Pipeline):
         **returns**
 
         * **RackioEDA object**
-        """
+    """
+
+    app = RackioAI()
+
+    def __init__(self, name="EDA", description="EDA Pipeline"):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
@@ -73,6 +71,28 @@ class RackioEDA(Pipeline):
         return result
 
     def get_name(self):
+        """
+        Get RackioEDA object's name
+
+        **returns**
+
+        * **name:** (str)
+
+        ___
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAI, RackioEDA
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.get_name()
+        'EDA'
+
+        ```
+        """
         return self._name
 
     @property
@@ -220,7 +240,15 @@ class RackioEDA(Pipeline):
     @ProgressBar(desc="Inserting columns...", unit="column")
     def __insert_columns(self, column_name):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during its execution in the pipeline
+
+        **Parameters**
+
+        * **:param column_name:** (list) list of data column to be inserted in DataFrame
+
+        **returns**
+
+        None
         """
         if not self._locs_:
                 
@@ -236,7 +264,7 @@ class RackioEDA(Pipeline):
 
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
-        Insert several columns in any location
+        Insert columns *data* in the dataframe *df* in the location *locs*
 
         ___
         **Parameters**
@@ -292,17 +320,26 @@ class RackioEDA(Pipeline):
         return self.data
 
     @ProgressBar(desc="Removing columns...", unit="column")
-    def __remove_columns(self, columns):
+    def __remove_columns(self, column_name):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during the execution of *remove_colums*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param column_name:** (list) list of data column to be deleted in DataFrame
+
+        **returns**
+
+        None
         """
-        self.data.pop(columns)
+        self.data.pop(column_name)
         
         return
 
     def remove_columns(self, df, *args):
         """
-        This method allows to you remove one or several columns in the data
+        Remove columns in the data by their names
 
         ___
         **Parameters**
@@ -340,9 +377,18 @@ class RackioEDA(Pipeline):
         return self.data
 
     @ProgressBar(desc="Renaming columns...", unit="column")
-    def __rename_columns(self, columns, **kwargs):
+    def __rename_columns(self, column_name, **kwargs):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during the execution of *rename_colums*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param column_name:** (list) list of data column to be deleted in DataFrame
+
+        **returns**
+
+        None
         """
         self.data = self.data.rename(columns=kwargs)
 
@@ -350,11 +396,12 @@ class RackioEDA(Pipeline):
 
     def rename_columns(self, df, **kwargs):
         """
-        This method allows to you rename one or several column names in the data
+        Rename column names in the dataframe *df*
 
         ___
         **Parameters**
 
+        * **:param df:** (pd.DataFrame) dataframe to be renamed
         * **:param kwargs:** (dict) column name or column names to remove from the data
 
         **:return:**
@@ -396,7 +443,16 @@ class RackioEDA(Pipeline):
     @ProgressBar(desc="Changing columns...", unit="column")
     def __change_columns(self, column_name):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during the execution of *change_colums*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param column_name:** (list) list of data column to be deleted in DataFrame
+
+        **returns**
+
+        None
         """
         if column_name in self.data.columns.to_list():
             
@@ -406,21 +462,24 @@ class RackioEDA(Pipeline):
 
     def change_columns(self, df, data, column_names):
         """
-        This method allows to you change columns data for another columns data in a daaframe
+        Change columns in the dataframe *df* for another columns in the dataframe *data*
 
         ___
+
         **Parameters**
 
         * **:param df:** (pandas.DataFrame)
         * **:param data:** (pandas.DataFrame) to change in *self.data*
-        * **:param args:** (str) column or columns names to change
+        * **:param column_names:** (list) column or columns names to change
 
         **:return:**
 
         * **data:** (pandas.DataFrame)
 
         ___
+
         ## Snippet code
+
         ```python
         >>> import pandas as pd
         >>> import numpy as np
@@ -476,7 +535,6 @@ class RackioEDA(Pipeline):
 
         * **data:** (pandas.DataFrame)
 
-        ___
         """
         default_kw = {'join_by': None,
                       'logic': '=='}
@@ -519,9 +577,40 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def set_datetime_index(self, df, label):
+    def set_datetime_index(self, df, label, index_name):
         """
+        Set index in dataframe *df* in datetime format
 
+        **Parameters**
+
+        * **:param df:** (pandas.DataFrame) Dataframe to set the index
+        * **:param label:** (str) Column name that represents timeseries
+        * **:param index_name:** (str) Index name
+
+        **returns**
+
+        **data** (pandas.DataFrame)
+        
+        ___
+
+        ## Snippet code
+
+        ```python
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.data = df1
+        >>> EDA.set_datetime_index(df1, "Time", "Timestamp")
+          Time  Two  Three
+        0    1   10     11
+        1    4   13     14
+        2    7   16     17
+
+        ```
         """
         self._column_ = df[label].values.tolist()
         self._now_ = datetime.datetime.now
@@ -535,14 +624,23 @@ class RackioEDA(Pipeline):
 
         df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
         df.index = self._index_
-        df.index.name = "Timestamp"
+        df.index.name = index_name
 
         return df
 
     @ProgressBar(desc="Creating datetime index...", unit="datetime index")
     def __create_datetime_index(self, column):
         """
+        Decorated function to visualize the progress bar during the execution of *set_datetime_index*
+        method in the pipeline
 
+        **Parameters**
+
+        * **:param column:** (list) list of data column that represents timesries values
+
+        **returns**
+
+        None
         """
         if self._start_ == 0:
             self._new_time_column_.append(column)
@@ -567,14 +665,45 @@ class RackioEDA(Pipeline):
 
         return
 
-    def resample(self, df, freq, label):
+    def resample(self, df, sample_time, label):
         """
+        Resample timeseries column in the dataframe *df*
 
+        **Parameters**
+
+        * **:param df:** (pandas.DataFrame) 
+        * **:param sample_time:** (float or int) new sample time in the dataframe
+        * **:param label:** (str) column name that represents timeseries values
+
+        **returns**
+
+        **data:** (pandas.DataFrame) 
+         
+         ___
+
+        ## Snippet code
+
+        ```python
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.data = df1
+        >>> EDA.resample(df1, 1, "Time")
+          Time  Two  Three
+        0    1   10     11
+        1    4   13     14
+        2    7   16     17
+
+        ```
         """
         self._rows_to_delete_ = list()
         self._diff_ = self._start_ = 0
         self._column_ = df.loc[:, label].values.reshape(1, -1).tolist()[0]
-        options = {"freq": freq}
+        options = {"freq": sample_time}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
 
@@ -583,7 +712,17 @@ class RackioEDA(Pipeline):
     @ProgressBar(desc="Resampling...", unit="Sampling")
     def __resample(self, column, **kwargs):
         """
+        Decorated function to visualize the progress bar during the execution of *resample*
+        method in the pipeline
 
+        **Parameters**
+
+        * **:param column:** (list) list of data column that represents timesries values
+        * **:kwargs freq:** (float or int) new sample time in the dataframe
+
+        **returns**
+
+        None
         """
         freq = kwargs["freq"]
 
@@ -607,13 +746,52 @@ class RackioEDA(Pipeline):
     @ProgressBar(desc="Reseting index...", unit="index")
     def __reset_index(self, flag=[0]):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during the execution of *reset_index*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param flag:** (list)
+
+        **returns**
+
+        None
         """
         return
 
     def reset_index(self, df, drop=False):
         """
-        Documentation here
+        Reset index in the dataframe *df*
+
+        **Parameters**
+
+        * **:param df:** (pandas.DataFrame) 
+        * **:param drop:** (bool) drop index from the dataframe
+
+        **returns**
+
+        **data:** (pandas.DataFrame) 
+         
+         ___
+
+        ## Snippet code
+
+        ```python
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> from rackio import Rackio
+        >>> app = Rackio()
+        >>> RackioAI(app)
+        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> EDA.data = df1
+        >>> EDA.reset_index(df1, drop=False)
+          Time  Two  Three
+        0    1   10     11
+        1    4   13     14
+        2    7   16     17
+
+        ```
         """
         df = df.reset_index(drop=drop)
         self.data = df
@@ -624,7 +802,16 @@ class RackioEDA(Pipeline):
     @ProgressBar(desc="Printing report...", unit="dataframe")
     def __print_report(self, iterable):
         """
-        Documentation here
+        Decorated function to visualize the progress bar during the execution of *print_report*
+        method in the pipeline
+
+        **Parameters**
+
+        * **:param iterable:** (list)
+
+        **returns**
+
+        None
         """
         if self._info_:
             
