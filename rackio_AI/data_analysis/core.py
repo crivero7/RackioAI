@@ -23,12 +23,12 @@ class RackioEDA(Pipeline):
 
     **Parameters**
 
-        * **:param name:** (str) RackioEDA object's name
-        * **:param description:** (str) RackioEDA object's description
+    * **:param name:** (str) RackioEDA object's name
+    * **:param description:** (str) RackioEDA object's description
 
-        **returns**
+    **returns**
 
-        * **RackioEDA object**
+    * **RackioEDA object**
     """
 
     app = RackioAI()
@@ -577,7 +577,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-$%D %H:%M:%S"):
+    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
 
@@ -586,7 +586,8 @@ class RackioEDA(Pipeline):
         * **:param df:** (pandas.DataFrame) Dataframe to set the index
         * **:param label:** (str) Column name that represents timeseries
         * **:param index_name:** (str) Index name
-        * **:param start:** (str) datetime in string format "%Y-%m-$%D %H:%M:%S"
+        * **:param start:** (str) datetime in string format "%Y-%m-$%d %H:%M:%S"
+        * **:param format:** (str) datetime format
 
         **returns**
 
@@ -605,12 +606,12 @@ class RackioEDA(Pipeline):
         >>> df1 = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
-        >>> EDA.set_datetime_index(df1, "Time", "Timestamp")
-                                    Time  Two  Three
+        >>> EDA.set_datetime_index(df1, "Time", "Timestamp", start="2021-01-01 00:00:00")
+                                 Time  Two  Three
         Timestamp
-        2021-01-17 21:08:20.259074   0.5    2      3
-        2021-01-17 21:08:21.259074   1.5    5      6
-        2021-01-17 21:08:22.759074   3.0    8      9
+        2021-01-01 00:00:00.000   0.5    2      3
+        2021-01-01 00:00:01.000   1.5    5      6
+        2021-01-01 00:00:02.500   3.0    8      9
 
         ```
         """
@@ -619,11 +620,11 @@ class RackioEDA(Pipeline):
         if isinstance(start, datetime.datetime):
             
             self._now_ = start
+
         else:
 
-            self._now_ = datetime.strptime(start, format)
+            self._now_ = datetime.datetime.strptime(start, format)
 
-        self._now_ = datetime.datetime.now
         self._timedelta_ = datetime.timedelta
         self._index_ = list()
         self._new_time_column_ = list()
@@ -654,7 +655,7 @@ class RackioEDA(Pipeline):
         """
         if self._start_ == 0:
             self._new_time_column_.append(column)
-            self._index_.append(self._now_)quit()
+            self._index_.append(self._now_)
             self._delta_.append(0)
             self._start_ += 1
             return
