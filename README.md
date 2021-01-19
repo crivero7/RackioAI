@@ -23,27 +23,16 @@ ___
 
 The easiest way to install **RackioAI** is using pip
 > pip install RackioAI
-
-Then, to use it in any python project you can import it using:
-
-```python
-from rackio_AI import RackioAI
+ 
 ```
 
 ## User instantiation
 
-The most important thing you keep in mind is that **RackioAI** is a [Rackio](https://github.com/rack-io/rackio-framework) extension, therefore, to use RackioAI in any project you must do the following steps, respecting the order
-1. import Rackio
-2. import RackioAI
-3. to instantiate Rackio
-4. do **RackioAI** callback with the Rackio object
+To use it in any python project you can import it using:
 
-see the following snippet code
 ```python
-from rackio import Rackio
 from rackio_AI import RackioAI
-app = Rackio()
-RackioAI(app)
+
 ```
 Now, you can get access to **RackioAI** methods and attributes.
 ___

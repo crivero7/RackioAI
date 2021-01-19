@@ -18,9 +18,7 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        'seaborn==0.11.0',
         'scikit-learn',
-        'tensorflow',
         'Pillow==8.0.0',
         'Rackio==1.0.2',
         'easy-deco==0.0.7'
