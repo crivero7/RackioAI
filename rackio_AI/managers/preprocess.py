@@ -1,4 +1,4 @@
-from .core import Manager
+from rackio_AI.managers.core import Manager
 
 class PreprocessManager(Manager):
     """
@@ -8,7 +8,7 @@ class PreprocessManager(Manager):
 
     def __init__(self):
 
-        self._obj = list()
+        super(PreprocessManager, self). __init__()
 
     def get_types(self):
         """
@@ -28,19 +28,15 @@ class PreprocessManager(Manager):
 
         ```python
         >>> from rackio_AI import Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess7 = Preprocessing(name= 'Preprocess7',description='preprocess for data', problem_type='regression')
-        >>> preprocess8 = Preprocessing(name= 'Preprocess8',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess7)
-        >>> RackioAI.append_preprocessing_model(preprocess8)
-        >>> preprocessing_manager = RackioAI.get_manager('Preprocessing')
-        >>> preprocessing_types = preprocessing_manager.get_types()
+        >>> preprocess = Preprocessing(name= 'Preprocess',description='preprocess for data', problem_type='regression')
+        >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> manager.get_types()
+        ['regression', 'classification']
 
         ```
         """
-        return [obj._type for obj in self._obj]
+        return [obj._type for obj in self.obj]
 
     def summary(self):
         """
@@ -57,16 +53,10 @@ class PreprocessManager(Manager):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess11 = Preprocessing(name= 'Preprocess11',description='preprocess for data', problem_type='regression')
-        >>> preprocess12 = Preprocessing(name= 'Preprocess12',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess11)
-        >>> RackioAI.append_preprocessing_model(preprocess12)
-        >>> preprocessing_manager = RackioAI.get_manager('Preprocessing')
-        >>> preprocessing_summary = preprocessing_manager.summary()
+        >>> from rackio_AI import RackioAI
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> manager.summary()
+        {'length': 2, 'names': ['Preprocess', 'Preprocess2'], 'descriptions': ['preprocess for data', 'preprocess for data'], 'types': ['regression', 'classification']}
 
         ```
         """

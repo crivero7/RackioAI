@@ -23,13 +23,10 @@ class Manager:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> EDA1 = RackioEDA(name='EDA1', description='Object 1 Exploratory Data Analysis')
-        >>> EDA2 = RackioEDA(name='EDA2', description='Object 2 Exploratory Data Analysis')
-        >>> preprocess1 = Preprocessing(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
-        >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess1)
-        >>> RackioAI.append_preprocessing_model(preprocess2)
+        >>> from rackio_AI import RackioEDA, Preprocessing
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> preprocess = Preprocessing(name='Preprocess', description='preprocess for data')
+
 
         ```
         """
@@ -60,19 +57,11 @@ class Manager:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> EDA3 = RackioEDA(name='EDA3', description='Object 3 Exploratory Data Analysis')
-        >>> EDA4 = RackioEDA(name='EDA4', description='Object 4 Exploratory Data Analysis')
-        >>> eda_manager = RackioAI.get_manager('EDA')
-        >>> EDA_objs = eda_manager.get()
-        >>> EDA1_obj = eda_manager.get(name='EDA3')
-        >>> preprocess3 = Preprocessing(name= 'Preprocess3',description='preprocess for data', problem_type='regression')
-        >>> preprocess4 = Preprocessing(name= 'Preprocess4',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess3)
-        >>> RackioAI.append_preprocessing_model(preprocess4)
-        >>> preprocessing_manager = RackioAI.get_manager('Preprocessing')
-        >>> preprocessing_objs = preprocessing_manager.get()
-        >>> preprocessing3_obj = preprocessing_manager.get(name='Preprocess3')
+        >>> from rackio_AI import RackioAI
+        >>> manager = RackioAI.get_manager('EDA')
+        >>> EDA = manager.get("EDA")
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> Preprocess = manager.get("Preprocess")
 
         ```
         """
@@ -103,17 +92,13 @@ class Manager:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> EDA5 = RackioEDA(name= 'EDA5', description='Object 5 Exploratory Data Analysis')
-        >>> EDA6 = RackioEDA(name= 'EDA6', description='Object 6 Exploratory Data Analysis')
-        >>> eda_manager = RackioAI.get_manager('EDA')
-        >>> eda_names = eda_manager.get_names()
-        >>> preprocess5 = Preprocessing(name= 'Preprocess5',description='preprocess for data', problem_type='regression')
-        >>> preprocess6 = Preprocessing(name= 'Preprocess6',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess5)
-        >>> RackioAI.append_preprocessing_model(preprocess6)
-        >>> preprocessing_manager = RackioAI.get_manager('Preprocessing')
-        >>> preprocessing_names = preprocessing_manager.get_names()
+        >>> from rackio_AI import RackioAI
+        >>> manager = RackioAI.get_manager('EDA')
+        >>> manager.get_names()
+        ['EDA']
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> manager.get_names()
+        ['Preprocess']
 
         ```
         """
@@ -136,17 +121,13 @@ class Manager:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> EDA7 = RackioEDA(name= 'EDA7', description='Object 7 Exploratory Data Analysis')
-        >>> EDA8 = RackioEDA(name= 'EDA8', description='Object 8 Exploratory Data Analysis')
-        >>> eda_manager = RackioAI.get_manager('EDA')
-        >>> descriptions = eda_manager.get_descriptions()
-        >>> preprocess9 = Preprocessing(name= 'Preprocess9',description='preprocess for data', problem_type='regression')
-        >>> preprocess10 = Preprocessing(name= 'Preprocess10',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess9)
-        >>> RackioAI.append_preprocessing_model(preprocess10)
-        >>> preprocessing_manager = RackioAI.get_manager('Preprocessing')
-        >>> preprocessing_descriptions = preprocessing_manager.get_descriptions()
+        >>> from rackio_AI import RackioAI
+        >>> manager = RackioAI.get_manager('EDA')
+        >>> manager.get_descriptions()
+        ['Object Exploratory Data Analysis']
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> manager.get_descriptions()
+        ['preprocess for data']
 
         ```
         """
@@ -169,11 +150,13 @@ class Manager:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, RackioAI
-        >>> EDA9 = RackioEDA(name='EDA9', description='Object 9 Exploratory Data Analysis')
-        >>> EDA10 = RackioEDA(name='EDA10', description='Object 10 Exploratory Data Analysis')
-        >>> eda_manager = RackioAI.get_manager('EDA')
-        >>> eda_summary = eda_manager.summary()
+        >>> from rackio_AI import RackioAI
+        >>> manager = RackioAI.get_manager('EDA')
+        >>> manager.summary()
+        {'length': 1, 'names': ['EDA'], 'descriptions': ['Object Exploratory Data Analysis']}
+        >>> manager = RackioAI.get_manager('Preprocessing')
+        >>> manager.summary()
+        {'length': 1, 'names': ['Preprocess'], 'descriptions': ['preprocess for data'], 'types': ['regression']}
 
         ```
         """

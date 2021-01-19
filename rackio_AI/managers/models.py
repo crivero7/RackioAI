@@ -7,4 +7,4 @@ class ModelsManager(Manager):
     """
     def __init__(self):
 
-        self._obj = list()
+        super(ModelsManager, self). __init__()

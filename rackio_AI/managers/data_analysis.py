@@ -7,9 +7,4 @@ class DataAnalysisManager(Manager):
     """
     def __init__(self):
 
-        self._obj = list()
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+        super(DataAnalysisManager, self). __init__()

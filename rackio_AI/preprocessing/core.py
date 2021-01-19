@@ -44,6 +44,7 @@ class Preprocessing:
         self._name = name
         self._description = description
         self._type = problem_type
+        self.app.append_preprocessing_model(self)
 
         if problem_type.lower() in ['regression', 'classification']:
 
