@@ -11,16 +11,11 @@ The project was started in 2020 by [Carlos Rivero](https://github.com/crivero7) 
 
 **RackioAI** requieres:
 
-* Python (>=3.8)
-* numpy (1.18.5)
-* scipy (1.4.1)
-* scikit-learn (0.23.2)
-* tensorflow (2.3.0)
-* pandas (1.1.3)
+* Python (>=3.7)
+* scikit-learn
 * easy-deco
 * Pillow (8.0.0)
-* Rackio (0.9.8)
-* matplotlib (3.3.2)
+* Rackio (1.0.2)
 
 ___
 
