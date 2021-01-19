@@ -21,7 +21,8 @@ setuptools.setup(
         'scikit-learn',
         'Pillow==8.0.0',
         'Rackio==1.0.2',
-        'easy-deco==0.0.7'
+        'easy-deco==0.0.7',
+        'seaborn'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

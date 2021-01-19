@@ -27,7 +27,6 @@ class Manager:
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> preprocess = Preprocessing(name='Preprocess', description='preprocess for data')
 
-
         ```
         """
         names = self.get_names()

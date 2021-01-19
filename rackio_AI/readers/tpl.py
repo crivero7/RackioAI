@@ -317,7 +317,6 @@ class TPL:
 
         return np.array(new_data)
 
-
     @staticmethod
     def _clean_column_name(column_name):
         """

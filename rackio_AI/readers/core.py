@@ -1,5 +1,7 @@
 import os
 from rackio_AI.readers.tpl import TPL
+from rackio_AI.readers._csv_.core import CSV
+from rackio_AI.utils import Utils
 
 
 class Reader:
@@ -13,6 +15,7 @@ class Reader:
 
     """
     tpl = TPL()
+    _csv = CSV()
 
     def __init__(self):
         """
@@ -20,7 +23,7 @@ class Reader:
         """
         pass
 
-    def read(self, filename):
+    def read(self, filename, file_type=".tpl"):
         """
         Read data supported by RackioAI in pandas.DataFrame
 
@@ -40,9 +43,6 @@ class Reader:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI, get_directory
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
 
         ```
         ## An especific file
@@ -50,20 +50,20 @@ class Reader:
         ```python
         >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load(filename)
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        3214      1618.327000  ...   Leak01
-        3215      1618.849000  ...   Leak01
-        3216      1619.370000  ...   Leak01
-        3217      1619.892000  ...   Leak01
-        3218      1620.413000  ...   Leak01
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        3214      1618.327000                                   569341.1  ...                           0.0   Leak01
+        3215      1618.849000                                   569341.3  ...                           0.0   Leak01
+        3216      1619.370000                                   569341.5  ...                           0.0   Leak01
+        3217      1619.892000                                   569341.7  ...                           0.0   Leak01
+        3218      1620.413000                                   569341.9  ...                           0.0   Leak01
         <BLANKLINE>
         [3219 rows x 12 columns]
 
@@ -74,28 +74,28 @@ class Reader:
         ```python
         >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load(directory)
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        9648      1617.966000  ...   Leak02
-        9649      1618.495000  ...   Leak02
-        9650      1619.025000  ...   Leak02
-        9651      1619.554000  ...   Leak02
-        9652      1620.083000  ...   Leak02
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        38616     1618.124000                                   569345.4  ...                           0.0  Leak120
+        38617     1618.662000                                   569345.6  ...                           0.0  Leak120
+        38618     1619.200000                                   569345.7  ...                           0.0  Leak120
+        38619     1619.737000                                   569345.8  ...                           0.0  Leak120
+        38620     1620.275000                                   569346.0  ...                           0.0  Leak120
         <BLANKLINE>
-        [9653 rows x 12 columns]
+        [38621 rows x 12 columns]
 
         ```
         """
         (_, file_extension) = os.path.splitext(filename)
         tpl_file = False
-        filenames = self.check_extension_files(filename, ext='.tpl')
+        filenames = Utils.check_extension_files(filename, ext=file_type)
 
         if filenames:
             try:
@@ -126,45 +126,8 @@ class Reader:
 
             return data
 
-    @staticmethod
-    def check_extension_files(root_directory, ext='.tpl'):
-        """
-        This is an utility method which you can check if in any directory exist files with *:param ext* extension
-
-        ___
-        **Parameters**
-
-        * **:param root_directory:** (str) directory to look for files
-        * **:param ext** (str) default='.tpl' extension file to look for
-
-        **:return:**
-
-        * **bool**: If True, exist *ext* in root_directory}
-
-        ___
-
-        ## Snippet code
-
-        ```python
-        >>> from rackio_AI import get_directory
-        >>> directory = os.path.join(get_directory('Leak'))
-        >>> Reader.check_extension_files(directory)
-        True
-
-        ```
-        """
-        files = [os.path.join(r, fn) for r, ds, fs in os.walk(root_directory) for fn in fs if fn.endswith(ext)]
-
-        if files:
-
-            return files
-
-        else:
-
-            return False
 
     
-
 if __name__ == "__main__":
     import doctest
 
