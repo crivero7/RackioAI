@@ -116,8 +116,7 @@ class Utils:
 
             return json.load(f)
 
-        @staticmethod
-    
+    @staticmethod
     def check_extension_files(root_directory, ext='.tpl'):
         """
         This is an utility method which you can check if in any directory exist files with *:param ext* extension
