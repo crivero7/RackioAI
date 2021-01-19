@@ -215,7 +215,7 @@ class CSV:
         An error will be raised if providing this argument with a non-fsspec URL. See the fsspec and backend 
         storage implementation docs for the set of allowed keys and values.
 
-        ### *Returns**
+        ### **Returns**
 
         * **(DataFrame or TextParse)** *
 

@@ -37,6 +37,7 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
+        self.app.append_data(self)
         
     def serialize(self):
         """

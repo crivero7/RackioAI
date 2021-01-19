@@ -9,7 +9,6 @@ from rackio_AI._singleton import Singleton
 from rackio_AI.managers import DataAnalysisManager
 from rackio_AI.managers import ModelsManager
 from rackio_AI.managers import PreprocessManager
-from rackio_AI.preprocessing import SyntheticData
 from rackio_AI.readers import Reader
 
 
@@ -34,7 +33,6 @@ class RackioAI(Singleton):
     def __init__(self):
         super(RackioAI, self).__init__()
         self.reader = Reader()
-        self.synthetic_data = SyntheticData()
         self._preprocessing_manager = PreprocessManager()
         self._data_analysis_manager = DataAnalysisManager()
         self._models_manager = ModelsManager()

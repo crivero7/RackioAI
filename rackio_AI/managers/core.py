@@ -1,5 +1,9 @@
 class Manager:
 
+    def __init__(self):
+
+        self.obj = list()
+
     def append(self, obj):
         """
         Append **RackioEDA**, **Preprocessing** or **RackioDNN** object to the manager
@@ -20,13 +24,8 @@ class Manager:
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA1 = RackioEDA(name= 'EDA1', description='Object 1 Exploratory Data Analysis')
-        >>> EDA2 = RackioEDA(name= 'EDA2', description='Object 2 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA1)
-        >>> RackioAI.append_data(EDA2)
+        >>> EDA1 = RackioEDA(name='EDA1', description='Object 1 Exploratory Data Analysis')
+        >>> EDA2 = RackioEDA(name='EDA2', description='Object 2 Exploratory Data Analysis')
         >>> preprocess1 = Preprocessing(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
         >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
         >>> RackioAI.append_preprocessing_model(preprocess1)
@@ -37,7 +36,7 @@ class Manager:
         names = self.get_names()
         if obj.get_name() not in names:
 
-            self._obj.append(obj)
+            self.obj.append(obj)
 
         else:
 
@@ -62,13 +61,8 @@ class Manager:
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA3 = RackioEDA(name= 'EDA3', description='Object 3 Exploratory Data Analysis')
-        >>> EDA4 = RackioEDA(name= 'EDA4', description='Object 4 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA3)
-        >>> RackioAI.append_data(EDA4)
+        >>> EDA3 = RackioEDA(name='EDA3', description='Object 3 Exploratory Data Analysis')
+        >>> EDA4 = RackioEDA(name='EDA4', description='Object 4 Exploratory Data Analysis')
         >>> eda_manager = RackioAI.get_manager('EDA')
         >>> EDA_objs = eda_manager.get()
         >>> EDA1_obj = eda_manager.get(name='EDA3')
@@ -83,14 +77,14 @@ class Manager:
         ```
         """
         if name:
-            for obj in self._obj:
+            for obj in self.obj:
 
                 if name == obj.get_name():
 
                     return obj
         else:
 
-            return [obj for obj in self._obj]
+            return [obj for obj in self.obj]
 
     def get_names(self):
         """
@@ -110,13 +104,8 @@ class Manager:
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> EDA5 = RackioEDA(name= 'EDA5', description='Object 5 Exploratory Data Analysis')
         >>> EDA6 = RackioEDA(name= 'EDA6', description='Object 6 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA5)
-        >>> RackioAI.append_data(EDA6)
         >>> eda_manager = RackioAI.get_manager('EDA')
         >>> eda_names = eda_manager.get_names()
         >>> preprocess5 = Preprocessing(name= 'Preprocess5',description='preprocess for data', problem_type='regression')
@@ -128,7 +117,7 @@ class Manager:
 
         ```
         """
-        return [obj.get_name() for obj in self._obj]
+        return [obj.get_name() for obj in self.obj]
 
     def get_descriptions(self):
         """
@@ -148,13 +137,8 @@ class Manager:
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> EDA7 = RackioEDA(name= 'EDA7', description='Object 7 Exploratory Data Analysis')
         >>> EDA8 = RackioEDA(name= 'EDA8', description='Object 8 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA7)
-        >>> RackioAI.append_data(EDA8)
         >>> eda_manager = RackioAI.get_manager('EDA')
         >>> descriptions = eda_manager.get_descriptions()
         >>> preprocess9 = Preprocessing(name= 'Preprocess9',description='preprocess for data', problem_type='regression')
@@ -166,7 +150,7 @@ class Manager:
 
         ```
         """
-        return [obj.description for obj in self._obj]
+        return [obj.description for obj in self.obj]
 
     def summary(self):
         """
@@ -186,13 +170,8 @@ class Manager:
 
         ```python
         >>> from rackio_AI import RackioEDA, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA9 = RackioEDA(name= 'EDA9', description='Object 9 Exploratory Data Analysis')
-        >>> EDA10 = RackioEDA(name= 'EDA10', description='Object 10 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA9)
-        >>> RackioAI.append_data(EDA10)
+        >>> EDA9 = RackioEDA(name='EDA9', description='Object 9 Exploratory Data Analysis')
+        >>> EDA10 = RackioEDA(name='EDA10', description='Object 10 Exploratory Data Analysis')
         >>> eda_manager = RackioAI.get_manager('EDA')
         >>> eda_summary = eda_manager.summary()
 
