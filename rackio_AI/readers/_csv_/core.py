@@ -238,17 +238,20 @@ class CSV:
         smith79           5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
         
         ```
-        """  
+        """
+        json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
+        default_csv_options = Utils.load_json(os.path.join(json_dir, "csv_options.json"))
+        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+        _format = csv_options.pop("_format")  
+        
         if not _format:
-            json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
-            default_csv_options = Utils.load_json(os.path.join(json_dir, "csv_options.json"))
-            csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+
             self._df_ = list()
             self.__read(pathname, **csv_options)
             df = pd.concat(self._df_)
         
         elif _format == "hysys":
-            
+
             df = self.__read_hysys(pathname, **csv_options)
             
         return df

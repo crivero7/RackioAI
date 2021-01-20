@@ -46,5 +46,6 @@
     "low_memory": true,
     "memory_map": false,
     "float_precision": null,
-    "storage_options": null
+    "storage_options": null,
+    "_format": null
 }
