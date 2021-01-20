@@ -33,9 +33,6 @@ class Preprocessing:
         ## Snippet code
         ```python
         >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
 
         ```
@@ -119,9 +116,6 @@ class Preprocessing:
 
         ```python
         >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
         >>> preprocess.description
         'preprocess for data'
@@ -185,9 +179,6 @@ class Preprocessing:
 
         ```python
         >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
         >>> preprocess.serialize()
         {'name': 'Preprocess model name', 'description': 'preprocess for data', 'type': 'regression'}
@@ -218,9 +209,6 @@ class Preprocessing:
 
         ```python
         >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
         >>> preprocess.get_name()
         'Preprocess model name'

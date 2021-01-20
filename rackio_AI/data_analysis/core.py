@@ -57,9 +57,6 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI, RackioEDA
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.serialize()
         {'name': 'EDA', 'description': 'Object Exploratory Data Analysis'}
@@ -85,9 +82,6 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI, RackioEDA
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.get_name()
         'EDA'
@@ -115,9 +109,6 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI, RackioEDA
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.description
         'Object Exploratory Data Analysis'
@@ -152,9 +143,6 @@ class RackioEDA(Pipeline):
         >>> import numpy as np
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df
@@ -185,9 +173,6 @@ class RackioEDA(Pipeline):
         >>> import numpy as np
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df
@@ -286,9 +271,6 @@ class RackioEDA(Pipeline):
         >>> import pandas as pd
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -357,9 +339,6 @@ class RackioEDA(Pipeline):
         >>> import pandas as pd
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -415,9 +394,6 @@ class RackioEDA(Pipeline):
         >>> import pandas as pd
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -485,9 +461,6 @@ class RackioEDA(Pipeline):
         >>> import pandas as pd
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -601,9 +574,6 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -698,9 +668,6 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -790,9 +757,6 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1
@@ -858,9 +822,6 @@ class RackioEDA(Pipeline):
         >>> import pandas as pd
         >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
         >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df1

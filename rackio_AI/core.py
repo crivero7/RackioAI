@@ -487,8 +487,11 @@ class RackioAI(Singleton):
         """
 
         obj = None
+        
         if format.lower() == 'pkl':
+            
             with open('{}.{}'.format(filename, format), 'rb') as file:
+                
                 obj = pickle.load(file)
 
         return obj
@@ -569,12 +572,6 @@ class RackioAI(Singleton):
         data = self._load_data(name)
 
         return data
-
-    def _load_data(self, filename):
-        """
-
-        """
-        return self.reader.read(filename)
 
 
 if __name__ == "__main__":
