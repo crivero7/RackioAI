@@ -1,4 +1,6 @@
 recursive-include rackio_AI/data/Leak/*.tpl
 recursive-include rackio_AI/data/pkl_files/*.pkl
-recursive-include rackio_AI/data/csv/*.csv
+recursive-include rackio_AI/data/csv/Hysys/*.csv
+recursive-include rackio_AI/data/csv/standard/*.csv
+recursive-include rackio_AI/data/csv/VMGSim/*.csv
 recursive-include rackio_AI/readers/_csv_/json/*.json

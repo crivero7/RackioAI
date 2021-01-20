@@ -1,6 +1,7 @@
 import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils import Utils
+import rackio_AI
 import os
 
 
@@ -19,7 +20,7 @@ class CSV:
     data in dictionary form using the DictReader and DictWriter classes.
     """
 
-    def read(self, pathname: str, _format=None, **csv_options):
+    def read(self, pathname: str, **csv_options):
         """
         Read a comma-separated-values (csv) file into DataFrame.
 
@@ -250,9 +251,13 @@ class CSV:
             self.__read(pathname, **csv_options)
             df = pd.concat(self._df_)
         
-        elif _format == "hysys":
+        elif _format.lower() == "hysys":
 
             df = self.__read_hysys(pathname, **csv_options)
+
+        elif _format.lower() == "vmgsim":
+
+            df = self.__read_vmgsim(pathname, **csv_options)
             
         return df
 
@@ -268,6 +273,34 @@ class CSV:
         """
         json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
         default_csv_options = Utils.load_json(os.path.join(json_dir, "hysys_options.json"))
+        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+        self._df_ = list()
+        self.__read(csv_files, **csv_options)
+        df = pd.concat(self._df_)
+        
+        # Fixing output format for hysys file
+        columns = list(df.columns)
+        units = list(df.iloc[0,:])
+        new_columns = {key: ("{}".format(key),"{}".format(units[i])) for i, key in enumerate(columns)}
+        df = df.rename(columns=new_columns)
+        index_unit = df.index[0]
+        df.index.name = ("{}".format(df.index.name),"{}".format(index_unit))
+        df = df.drop(index_unit)
+
+        return df
+
+    def __read_vmgsim(self, csv_files, **csv_options):
+        """
+        Read a comma-separated-values (csv) file into DataFrame.
+
+        Also supports optionally iterating or breaking of the file into chunks.
+
+        **Parameters**
+
+        Same like read method
+        """
+        json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
+        default_csv_options = Utils.load_json(os.path.join(json_dir, "vmgsim_options.json"))
         csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
         self._df_ = list()
         self.__read(csv_files, **csv_options)

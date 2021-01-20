@@ -1,5 +1,4 @@
 import os
-import rackio_AI
 from rackio_AI.readers.tpl import TPL
 from rackio_AI.readers._csv_.core import CSV
 from rackio_AI.readers.pkl.core import PKL
@@ -83,7 +82,7 @@ class Reader:
         ### **CSV files**
 
         ```python
-        >>> directory = os.path.join(get_directory('csv'))
+        >>> directory = os.path.join(get_directory('csv'), "standard")
         >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0, index_col=0)
                     Identifier One-time password Recovery code First name Last name   Department    Location
         Username

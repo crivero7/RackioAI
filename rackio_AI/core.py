@@ -113,6 +113,26 @@ class RackioAI(Singleton):
         <BLANKLINE>
         [6434 rows x 12 columns]
 
+        **Example loading a directory with .csv files**
+
+        >>> directory = os.path.join(get_directory('csv'), "Hysys")
+        >>> RackioAI.load(directory, ext=".csv", _format="hysys")
+                          (PIC-118 - PV, [kPa]) (PIC-118 - OP, [%]) (SPRDSHT-1 - Cell Matrix (G-16), []) (UIC-101 - OP, [%])
+        (Time, [seconds])
+        0                               294.769                  42                              37.6105                  10
+        0.3                             294.769                  42                              37.6105                  10
+        0.6                             294.769                  42                              37.6105                  10
+        0.9                             294.769                  42                              37.6105                  10
+        1.1                             294.769                  42                              37.6105                  10
+        ...                                 ...                 ...                                  ...                 ...
+        99.2                            294.769                  42                              37.6105                  10
+        99.4                            294.769                  42                              37.6105                  10
+        99.6                            294.769                  42                              37.6105                  10
+        99.8                            294.769                  42                              37.6105                  10
+        100                             294.769                  42                              37.6105                  10
+        <BLANKLINE>
+        [400 rows x 4 columns]
+
         **Example loading a .pkl with pandas.dataFrame**
 
         >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')

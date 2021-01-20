@@ -1,7 +1,7 @@
 {
     "sep": ",",
     "delimiter": null,
-    "header": 9,
+    "header": 0,
     "names": null,
     "index_col": 0,
     "usecols": null,
@@ -14,7 +14,7 @@
     "true_values": null,
     "false_values": null,
     "skipinitialspace": false,
-    "skiprows": 9,
+    "skiprows": null,
     "skipfooter": 0,
     "nrows": null,
     "na_values": null,
