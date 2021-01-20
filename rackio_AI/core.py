@@ -1,6 +1,4 @@
 import os
-import pickle
-import json
 
 import numpy as np
 import pandas as pd
@@ -77,20 +75,20 @@ class RackioAI(Singleton):
         >>> from rackio_AI import RackioAI, get_directory
         >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load(filename)
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        3214      1618.327000  ...   Leak01
-        3215      1618.849000  ...   Leak01
-        3216      1619.370000  ...   Leak01
-        3217      1619.892000  ...   Leak01
-        3218      1620.413000  ...   Leak01
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        3214      1618.327000                                   569341.1  ...                           0.0   Leak01
+        3215      1618.849000                                   569341.3  ...                           0.0   Leak01
+        3216      1619.370000                                   569341.5  ...                           0.0   Leak01
+        3217      1619.892000                                   569341.7  ...                           0.0   Leak01
+        3218      1620.413000                                   569341.9  ...                           0.0   Leak01
         <BLANKLINE>
         [3219 rows x 12 columns]
 
@@ -98,39 +96,39 @@ class RackioAI(Singleton):
 
         >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load(directory)
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        9648      1617.966000  ...   Leak02
-        9649      1618.495000  ...   Leak02
-        9650      1619.025000  ...   Leak02
-        9651      1619.554000  ...   Leak02
-        9652      1620.083000  ...   Leak02
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        6429      1617.966000                                   569342.5  ...                           0.0   Leak02
+        6430      1618.495000                                   569342.8  ...                           0.0   Leak02
+        6431      1619.025000                                   569343.0  ...                           0.0   Leak02
+        6432      1619.554000                                   569343.2  ...                           0.0   Leak02
+        6433      1620.083000                                   569343.4  ...                           0.0   Leak02
         <BLANKLINE>
-        [9653 rows x 12 columns]
+        [6434 rows x 12 columns]
 
         **Example loading a .pkl with pandas.dataFrame**
 
         >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
         >>> RackioAI.load(filename)
-                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
-        0.000000                        37.83052  ...                352683.3
-        0.502732                        37.83918  ...                353449.8
-        1.232772                        37.83237  ...                353587.3
-        1.653696                        37.80707  ...                353654.8
-        2.200430                        37.76957  ...                353706.8
-        ...                                  ...  ...                     ...
-        383.031800                     169.36700  ...                374582.2
-        383.518200                     169.37650  ...                374575.9
-        384.004500                     169.38550  ...                374572.7
-        384.490900                     169.39400  ...                374573.0
-        384.977200                     169.40170  ...                374576.1
+               Pipe-60 Totalmassflow_(KG/S)  Pipe-151 Totalmassflow_(KG/S)  Pipe-60 Pressure_(PA)  Pipe-151 Pressure_(PA)
+        0                          37.83052                       37.83052               568097.3                352683.3
+        1                          37.83918                       37.70243               568098.2                353449.8
+        2                          37.83237                       37.67011               568783.2                353587.3
+        3                          37.80707                       37.67344               569367.3                353654.8
+        4                          37.76957                       37.69019               569933.5                353706.8
+        ...                             ...                            ...                    ...                     ...
+        19995                     169.36700                      169.40910               784411.5                374582.2
+        19996                     169.37650                      169.41690               784381.0                374575.9
+        19997                     169.38550                      169.42340               784363.6                374572.7
+        19998                     169.39400                      169.42930               784362.2                374573.0
+        19999                     169.40170                      169.43530               784374.4                374576.1
         <BLANKLINE>
         [20000 rows x 4 columns]
 
@@ -203,28 +201,25 @@ class RackioAI(Singleton):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
+        >>> from rackio_AI import RackioEDA, Preprocessing
         >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA)
+        >>> Preprocess = Preprocessing(name="Preprocess", description="Preprocesing object")
 
         ```
         """
         if "RackioEDA" in str(type(obj)):
         
-            self._data_analysis_manager.append(eda_object)
+            self._data_analysis_manager.append(obj)
         
         elif "Preprocessing" in str(type(obj)):
 
-            self._preprocessing_manager.append(preprocessing_model)
+            self._preprocessing_manager.append(obj)
 
         elif "RackioDNN" in str(type(obj)):
 
             pass
 
-    def get_object(self, name, _type='EDA', serialize=False):
+    def get(self, name, _type='EDA', serialize=False):
         """
         Get any coupled object as RackioAI attribute like *RackioEDA* object, *Preprocessing* object and *RackioDNN* object
         by its name
@@ -247,66 +242,37 @@ class RackioAI(Singleton):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA1 = RackioEDA(name='EDA1', description='Object 1 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA1)
-        >>> eda_object = RackioAI.get_object('EDA1', _type='EDA')
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get("EDA", _type="EDA")
+        >>> Preprocess = RackioAI.get("Preprocess", _type="Preprocessing")
 
         ```
         """
         if _type.lower() == 'eda':
 
-            if serialize:
-                return self._serialize_data(name)
-
-            return self._get_data(name)
-
-        elif _type.lower() == 'preprocesing':
+            data = self._data_analysis_manager.get(name)
 
             if serialize:
-                return self._serialize_preprocessing(name)
+                
+                return data.serialize()
 
-            return self._get_preprocessing(name)
+            return data
+
+        elif _type.lower() == 'preprocessing':
+
+            preprocess = self._preprocessing_manager.get(name)
+
+            if serialize:
+
+                return preprocess.serialize()
+
+            return preprocess
+        
         else:
-            raise TypeError('Is no possible get {} object from RackioAI'.format(_type))
+            
+            raise TypeError('Is not possible get {} object from RackioAI'.format(_type))
 
         return
-
-    def _get_data(self, name):
-        """
-        Returns a RackioEDA object defined by its name.
-
-        **Parameters**
-
-        * **:param name:** (str) RackioEDA name.
-
-        **:return:**
-
-        * **data_object:** (RackioEDA) RackioEDA object
-        """
-
-        return self._data_analysis_manager.get(name)
-
-    def _serialize_data(self, name):
-        """
-        serialize RackioEDA
-
-        **Parameters**
-
-        * **:param name:** (str) RackioEDA object name
-
-
-        **:return:**
-
-        * **data:** (dict) RackioEDA object serialized
-        """
-
-        data = self.get_object(name, _type='EDA')
-
-        return data.serialize()
 
     def get_manager(self, name):
         """
@@ -328,21 +294,16 @@ class RackioAI(Singleton):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA2 = RackioEDA(name= 'EDA2', description='Object 2 Exploratory Data Analysis')
-        >>> EDA3 = RackioEDA(name= 'EDA3', description='Object 3 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA2)
-        >>> RackioAI.append_data(EDA3)
-        >>> eda_manager = RackioAI.get_manager('EDA')
+        >>> from rackio_AI import RackioAI
+        >>> eda_manager = RackioAI.get_manager("EDA")
+        >>> preprocessing_manager = RackioAI.get_manager("Preprocessing")
 
         ```
         """
         if name.lower() == 'eda':
 
             result = self._data_analysis_manager
+
         elif name.lower() == 'preprocessing':
 
             result = self._preprocessing_manager
@@ -352,41 +313,10 @@ class RackioAI(Singleton):
             result = self._models_manager
 
         if result:
+
             return result
 
         return
-
-    def _get_preprocessing(self, name):
-        """
-        Returns a Preprocessing object defined by its name.
-
-        **Parameters**
-
-        * **:param name:** (str) Preprocessing name.
-
-        **:return:**
-
-        * **preprocessing_model:** (Preprocesing) Preprocessing model
-        """
-
-        return self._preprocessing_manager.get(name)
-
-    def _serialize_preprocessing(self, name):
-        """
-        serialize Preprocessing model
-
-        **Parameters**
-
-        * **:param name:** (str) Preprocessing model name
-
-        **:return:**
-
-        * **data:** (dict) Preprocessin model serialized
-        """
-
-        preprocess = self._get_preprocessing(name)
-
-        return preprocess.serialize()
 
     def summary(self):
         """
@@ -405,20 +335,12 @@ class RackioAI(Singleton):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> EDA4 = RackioEDA(name= 'EDA4', description='Object 4 Exploratory Data Analysis')
-        >>> EDA5 = RackioEDA(name= 'EDA5', description='Object 5 Exploratory Data Analysis')
-        >>> RackioAI.append_data(EDA4)
-        >>> RackioAI.append_data(EDA5)
-        >>> eda_manager = RackioAI.get_manager('EDA')
-        >>> eda_summary = eda_manager.summary()
+        >>> from rackio_AI import RackioAI
+        >>> RackioAI.summary()
+        {'preprocessing manager': {'length': 1, 'names': ['Preprocess'], 'descriptions': ['Preprocesing object'], 'types': ['regression']}, 'data analysis manager': {'length': 1, 'names': ['EDA'], 'descriptions': ['Object Exploratory Data Analysis']}}
 
         ```
         """
-
         result = dict()
         result["preprocessing manager"] = self._preprocessing_manager.summary()
         result["data analysis manager"] = self._data_analysis_manager.summary()
@@ -443,34 +365,10 @@ class RackioAI(Singleton):
         """
 
         if format.lower() == 'pkl':
+
             with open('{}.{}'.format(filename, format), 'wb') as file:
+
                 pickle.dump(obj, file, protocol=4)
-
-        return obj
-
-    @staticmethod
-    def load_obj(filename, format='pkl'):
-        """
-        load any saved object with RackioAI's save_obj method
-
-        ___
-        **Parameters**
-
-        * **:param filename:** (str) with no extension
-        * **:param format:** (str) with no dot (.) at the beginning
-
-        * **:return:**
-
-        * **obj:** (obj)
-        """
-
-        obj = None
-        
-        if format.lower() == 'pkl':
-            
-            with open('{}.{}'.format(filename, format), 'rb') as file:
-                
-                obj = pickle.load(file)
 
         return obj
 
@@ -503,51 +401,48 @@ class RackioAI(Singleton):
 
         ```python
         >>> from rackio_AI import RackioAI, get_directory
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load_test_data(directory) # Load test data fron a folder
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        16082     1617.966000  ...   Leak02
-        16083     1618.495000  ...   Leak02
-        16084     1619.025000  ...   Leak02
-        16085     1619.554000  ...   Leak02
-        16086     1620.083000  ...   Leak02
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        6429      1617.966000                                   569342.5  ...                           0.0   Leak02
+        6430      1618.495000                                   569342.8  ...                           0.0   Leak02
+        6431      1619.025000                                   569343.0  ...                           0.0   Leak02
+        6432      1619.554000                                   569343.2  ...                           0.0   Leak02
+        6433      1620.083000                                   569343.4  ...                           0.0   Leak02
         <BLANKLINE>
-        [16087 rows x 12 columns]
+        [6434 rows x 12 columns]
 
         >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load_test_data(filename) # Load test data from a file in Leak Folder
-        tag       TIME_SERIES  ...     file
-        variable               ... filename
-        unit                S  ...     .tpl
-        0            0.000000  ...   Leak01
-        1            0.502732  ...   Leak01
-        2            1.232772  ...   Leak01
-        3            1.653696  ...   Leak01
-        4            2.200430  ...   Leak01
-        ...               ...  ...      ...
-        3214      1618.327000  ...   Leak01
-        3215      1618.849000  ...   Leak01
-        3216      1619.370000  ...   Leak01
-        3217      1619.892000  ...   Leak01
-        3218      1620.413000  ...   Leak01
+        tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                                Pressure  ...             Controller_output filename
+        unit                S                                         PA  ...                                   .tpl
+        0            0.000000                                   568097.3  ...                           0.0   Leak01
+        1            0.502732                                   568098.2  ...                           0.0   Leak01
+        2            1.232772                                   568783.2  ...                           0.0   Leak01
+        3            1.653696                                   569367.3  ...                           0.0   Leak01
+        4            2.200430                                   569933.5  ...                           0.0   Leak01
+        ...               ...                                        ...  ...                           ...      ...
+        3214      1618.327000                                   569341.1  ...                           0.0   Leak01
+        3215      1618.849000                                   569341.3  ...                           0.0   Leak01
+        3216      1619.370000                                   569341.5  ...                           0.0   Leak01
+        3217      1619.892000                                   569341.7  ...                           0.0   Leak01
+        3218      1620.413000                                   569341.9  ...                           0.0   Leak01
         <BLANKLINE>
         [3219 rows x 12 columns]
 
         ```
         """
 
-        data = self._load_data(name)
+        data = self.load(name)
 
         return data
 

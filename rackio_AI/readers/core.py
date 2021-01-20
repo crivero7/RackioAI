@@ -1,6 +1,7 @@
 import os
 from rackio_AI.readers.tpl import TPL
 from rackio_AI.readers._csv_.core import CSV
+from rackio_AI.readers.pkl.core import PKL
 
 
 class Reader:
@@ -15,6 +16,7 @@ class Reader:
     """
     tpl = TPL()
     _csv = CSV()
+    pkl = PKL()
 
     def read(self, filename: str, ext: str=".tpl", **kwargs):
         """
@@ -100,6 +102,12 @@ class Reader:
         elif ext==".csv":
 
             data = self._csv.read(filename, **kwargs)
+
+        elif ext==".pkl":
+            
+            data = self.pkl.read(filename, **kwargs)
+
+            return data
 
         else:
 

@@ -30,6 +30,7 @@ class Manager:
         ```
         """
         names = self.get_names()
+        
         if obj.get_name() not in names:
 
             self.obj.append(obj)

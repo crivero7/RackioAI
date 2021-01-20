@@ -2,7 +2,6 @@ import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils import Utils
 import os
-import rackio_AI
 
 
 class CSV:
@@ -282,7 +281,7 @@ class CSV:
 
         return df
 
-    @ProgressBar(desc="Reading csv file...", unit="file")
+    @ProgressBar(desc="Reading .csv file...", unit="file")
     def __read(self, csv_file, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *read*

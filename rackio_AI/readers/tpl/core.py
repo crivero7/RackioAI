@@ -130,7 +130,7 @@ class TPL:
 
         return doc
 
-    @progress_bar(desc='Loading files...', unit='files', gen=True)
+    @progress_bar(desc='Loading .tpl files...', unit='files', gen=True)
     def __read_files(self, filenames):
         """
         Read all .tpl files in a list of filenames

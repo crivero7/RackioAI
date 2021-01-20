@@ -34,6 +34,13 @@ class RackioEDA(Pipeline):
     app = RackioAI()
 
     def __init__(self, name="", description=""):
+        """
+        ```python
+        >>> from rackio_AI import RackioEDA
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+
+        ```
+        """
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
@@ -56,8 +63,8 @@ class RackioEDA(Pipeline):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, RackioEDA
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
         >>> EDA.serialize()
         {'name': 'EDA', 'description': 'Object Exploratory Data Analysis'}
 
@@ -81,8 +88,8 @@ class RackioEDA(Pipeline):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, RackioEDA
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
         >>> EDA.get_name()
         'EDA'
 
@@ -108,8 +115,8 @@ class RackioEDA(Pipeline):
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, RackioEDA
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
         >>> EDA.description
         'Object Exploratory Data Analysis'
 
@@ -140,11 +147,10 @@ class RackioEDA(Pipeline):
         ## Snippet code
 
         ```python
-        >>> import numpy as np
-        >>> import numpy as np
+        >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.data = df
         >>> EDA.data
            One  Two  Three
@@ -170,10 +176,10 @@ class RackioEDA(Pipeline):
         None
 
         ```python
-        >>> import numpy as np
+        >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.data = df
            One  Two  Three
         0    1    2      3
@@ -268,13 +274,11 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> import pandas as pd
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> df2 = [10, 11, 12]
-        >>> EDA.insert_columns(df1, df2, ['Four'])
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> col = [10, 11, 12]
+        >>> EDA.insert_columns(df, col, ['Four'])
            One  Two  Three  Four
         0    1    2      3    10
         1    4    5      6    11
@@ -336,12 +340,10 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> import pandas as pd
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> EDA.remove_columns(df1, 'Two', 'Three')
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> EDA.remove_columns(df, 'Two', 'Three')
            One
         0    1
         1    4
@@ -391,18 +393,16 @@ class RackioEDA(Pipeline):
         ## Snippet code
         ```python
         >>> import pandas as pd
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> columns_to_rename = {'One': 'one', 'Two': 'two'}
-        >>> EDA.rename_columns(df1,**columns_to_rename)
+        >>> EDA.rename_columns(df, **columns_to_rename)
            one  two  Three
         0    1    2      3
         1    4    5      6
         2    7    8      9
-        >>> EDA.rename_columns(df1, One='one',Three='three')
+        >>> EDA.rename_columns(df, One='one',Three='three')
            one  Two  three
         0    1    2      3
         1    4    5      6
@@ -458,14 +458,12 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> import pandas as pd
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> data = np.array([[10, 11], [13, 14], [16, 17]])
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> data = pd.DataFrame([[10, 11], [13, 14], [16, 17]], columns=['Two','Three'])
         >>> columns=['Two','Three']
-        >>> EDA.change_columns(df1, data, columns)
+        >>> EDA.change_columns(df, data, columns)
            One  Two  Three
         0    1   10     11
         1    4   13     14
@@ -573,10 +571,9 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> EDA.set_datetime_index(df1, "Time", "Timestamp", start="2021-01-01 00:00:00")
+        >>> EDA = RackioAI.get_object("EDA", _type='EDA')
+        >>> df = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA.set_datetime_index(df, "Time", "Timestamp", start="2021-01-01 00:00:00")
                                  Time  Two  Three
         Timestamp
         2021-01-01 00:00:00.000   0.5    2      3
@@ -667,10 +664,9 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> EDA.resample(df1, 1, "Time")
+        >>> EDA = RackioAI.get_object("EDA", _type="EDA")
+        >>> df = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA.resample(df, 1, "Time")
            Time  Two  Three
         0   0.5    2      3
         2   1.5    8      9
@@ -756,10 +752,9 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> EDA.reset_index(df1, drop=False)
+        >>> EDA = RackioAI.get_object("EDA", _type="EDA")
+        >>> df = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA.reset_index(df, drop=False)
            index  Time  Two  Three
         0      0   0.5    2      3
         1      1   1.0    5      6
@@ -819,26 +814,24 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> import pandas as pd
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
-        >>> df1 = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
-        >>> EDA.data = df1
-        >>> EDA.print_report(df1, info=True, head=True, header=2)
+        >>> EDA = RackioAI.get_object("EDA", _type="EDA")
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> EDA.print_report(df, info=True, head=True, header=2)
         <class 'pandas.core.frame.DataFrame'>
         RangeIndex: 3 entries, 0 to 2
         Data columns (total 3 columns):
-         #   Column  Non-Null Count  Dtype
+        #   Column  Non-Null Count  Dtype
         ---  ------  --------------  -----
-         0   One     3 non-null      int32
-         1   Two     3 non-null      int32
-         2   Three   3 non-null      int32
-        dtypes: int32(3)
-        memory usage: 164.0 bytes
-           One  Two  Three
+        0   One     3 non-null      int64
+        1   Two     3 non-null      int64
+        2   Three   3 non-null      int64
+        dtypes: int64(3)
+        memory usage: 200.0 bytes
+        One  Two  Three
         0    1    2      3
         1    4    5      6
-           One  Two  Three
+        One  Two  Three
         0    1    2      3
         1    4    5      6
         2    7    8      9
