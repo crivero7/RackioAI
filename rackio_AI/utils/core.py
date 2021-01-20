@@ -151,6 +151,28 @@ class Utils:
         else:
 
             return False
+
+    @staticmethod
+    def check_path(filename: str, ext: str=".tpl"):
+        """
+        Documentation here
+        """
+        (filename, file_ext) = os.path.splitext(filename)
+        
+        if not file_ext:
+
+            filename = Utils.check_extension_files(filename, ext=ext)
+            file_ext = ext
+            
+            if not filename:
+
+                raise FileNotFoundError("File not found in {} directory with {} extension".format(filename, ext))  
+
+        else:
+             
+            filename = [filename + file_ext]      
+
+        return filename, file_ext
             
 
 class Rule:

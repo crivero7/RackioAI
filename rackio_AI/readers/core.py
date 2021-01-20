@@ -1,7 +1,6 @@
 import os
 from rackio_AI.readers.tpl import TPL
 from rackio_AI.readers._csv_.core import CSV
-from rackio_AI.utils import Utils
 
 
 class Reader:
@@ -23,7 +22,7 @@ class Reader:
         """
         pass
 
-    def read(self, filename, file_type=".tpl"):
+    def read(self, filename: str, ext: str=".tpl", **kwargs):
         """
         Read data supported by RackioAI in pandas.DataFrame
 
@@ -40,14 +39,11 @@ class Reader:
 
         ## Snippet code
 
+        ### **Olga TPL files**
+
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI, get_directory
-
-        ```
-        ## An especific file
-
-        ```python
         >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
@@ -66,12 +62,6 @@ class Reader:
         3218      1620.413000                                   569341.9  ...                           0.0   Leak01
         <BLANKLINE>
         [3219 rows x 12 columns]
-
-        ```
-
-        ## A directory
-
-        ```python
         >>> directory = os.path.join(get_directory('Leak'))
         >>> RackioAI.load(directory)
         tag       TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
@@ -83,51 +73,47 @@ class Reader:
         3            1.653696                                   569367.3  ...                           0.0   Leak01
         4            2.200430                                   569933.5  ...                           0.0   Leak01
         ...               ...                                        ...  ...                           ...      ...
-        38616     1618.124000                                   569345.4  ...                           0.0  Leak120
-        38617     1618.662000                                   569345.6  ...                           0.0  Leak120
-        38618     1619.200000                                   569345.7  ...                           0.0  Leak120
-        38619     1619.737000                                   569345.8  ...                           0.0  Leak120
-        38620     1620.275000                                   569346.0  ...                           0.0  Leak120
+        6429      1617.966000                                   569342.5  ...                           0.0   Leak02
+        6430      1618.495000                                   569342.8  ...                           0.0   Leak02
+        6431      1619.025000                                   569343.0  ...                           0.0   Leak02
+        6432      1619.554000                                   569343.2  ...                           0.0   Leak02
+        6433      1620.083000                                   569343.4  ...                           0.0   Leak02
         <BLANKLINE>
-        [38621 rows x 12 columns]
+        [6434 rows x 12 columns]
 
         ```
+
+        ### **CSV files**
+
+        ```python
+        >>> directory = os.path.join(get_directory('csv'))
+        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0, index_col=0)
+                    Identifier One-time password Recovery code First name Last name   Department    Location
+        Username
+        booker12          9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
+        grey07            2070            04ap67        lg2070      Laura      Grey        Depot      London
+        johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
+        jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
+        smith79           5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
+        
+        ```
         """
-        (_, file_extension) = os.path.splitext(filename)
-        tpl_file = False
-        filenames = Utils.check_extension_files(filename, ext=file_type)
+        if ext==".tpl":
 
-        if filenames:
-            try:
-                self.tpl.read(filename)
-                data = self.tpl.to('dataframe')
+            self.tpl.read(filename)
+            data = self.tpl.to('dataframe')
 
-            except:
-                raise FileNotFoundError('{} is not found'.format(filename))
+        elif ext==".csv":
 
-            return data
+            data = self._csv.read(filename, **kwargs)
 
-        if file_extension == '.tpl':
+        else:
 
-            tpl_file = True
+            raise TypeError("File format not supported")
 
-        elif filenames:
-
-            tpl_file = True
-            filename = filenames
-
-        if tpl_file:
-            try:
-                self.tpl.read(filename)
-                data = self.tpl.to('dataframe')
-
-            except:
-                raise FileNotFoundError('{} is not found'.format(filename))
-
-            return data
+        return data
 
 
-    
 if __name__ == "__main__":
     import doctest
 

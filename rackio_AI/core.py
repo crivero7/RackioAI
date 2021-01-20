@@ -10,6 +10,7 @@ from rackio_AI.managers import DataAnalysisManager
 from rackio_AI.managers import ModelsManager
 from rackio_AI.managers import PreprocessManager
 from rackio_AI.readers import Reader
+from rackio_AI.utils import Utils
 
 
 class RackioAI(Singleton):
@@ -47,7 +48,7 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def load(self, filename):
+    def load(self, filename: str, ext: str=".tpl", **kwargs):
         """
         You can load data in the following extensions:
 
@@ -74,9 +75,6 @@ class RackioAI(Singleton):
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI, get_directory
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
         >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         >>> RackioAI.load(filename)
         tag       TIME_SERIES  ...     file
@@ -138,43 +136,13 @@ class RackioAI(Singleton):
 
         ```
         """
-        if os.path.isdir(filename) or os.path.isfile(filename):
+        filename, ext = Utils.check_path(filename, ext=ext)
 
-            if filename.endswith('.pkl'):
-
-                try:
-
-                    with open(filename, 'rb') as file:
-
-                        data = pickle.load(file)
-
-                    self.data = data
-
-                    return data
-
-                except:
-
-                    with open(filename, 'rb') as file:
-
-                        data = pd.read_pickle(file)
-
-                    self.data = data
-
-                    return data
-
-            data = self._load_data(filename)
-
-            if data.index.has_duplicates:
+        data = self.reader.read(filename, ext=ext, **kwargs)
             
-                data = data.reset_index(drop=True)
-                
-            self._data = data
+        self.data = data
 
-            return data
-
-        else:
-
-            raise FileNotFoundError('{} not found'.format(filename))
+        return self.data
 
     @property
     def data(self):
@@ -206,11 +174,15 @@ class RackioAI(Singleton):
         if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
             if isinstance(value, np.ndarray):
+                
                 value = pd.DataFrame(value)
-
-            self.synthetic_data.data = value
         else:
+
             raise TypeError('value must be a pd.DataFrame or np.ndarray')
+
+        if value.index.has_duplicates:
+        
+            value = value.reset_index(drop=True)
 
         self._data = value
 

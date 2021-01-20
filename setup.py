@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     license="MIT",
     url="https://github.com/crivero7/RackioAI",
-    package_data={'': ['Leak/*.tpl', 'pkl_files/*.pkl', 'csv/*.csv']},
+    package_data={'': ['Leak/*.tpl', 'pkl_files/*.pkl', 'csv/*.csv', 'json/*.json']},
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
