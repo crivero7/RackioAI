@@ -133,6 +133,26 @@ class RackioAI(Singleton):
         <BLANKLINE>
         [400 rows x 4 columns]
 
+        **Example loading a directory with .csv files**
+
+        >>> directory = os.path.join(get_directory('csv'), "VMGSim")
+        >>> RackioAI.load(directory, ext=".csv", _format="vmgsim")
+                  (/Bed-1.In.MoleFlow, kmol/h) (/Bed-1.In.P, kPa)  ... (/Sep3.In.P, kPa) (/Tail_Gas.In.T, C)
+        (time, s)                                                  ...
+        1                          2072.582713        285.9299038  ...       291.4325134                 159
+        2                          2081.622826        286.9027793  ...       292.3627861                 159
+        3                           2085.98973        287.5966429  ...       293.0376745                 159
+        4                          2089.323383        288.1380485  ...       293.5708836                 159
+        5                          2092.214077         288.591646  ...       294.0200778                 159
+        ...                                ...                ...  ...               ...                 ...
+        246                        2003.623198        278.2953017  ...       283.7624531                 159
+        247                        2009.677853        279.0459278  ...       284.4764545                 159
+        248                        2015.969495         279.845969  ...        285.248826                 159
+        249                        2022.138776        280.6500912  ...       286.0335253                 159
+        250                        2028.065198        281.4357787  ...       286.8064745                 159
+        <BLANKLINE>
+        [250 rows x 15 columns]
+
         **Example loading a .pkl with pandas.dataFrame**
 
         >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')

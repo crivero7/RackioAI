@@ -242,13 +242,13 @@ class CSV:
         """
         json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
         default_csv_options = Utils.load_json(os.path.join(json_dir, "csv_options.json"))
-        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+        options = Utils.check_default_kwargs(default_csv_options, csv_options)
         _format = csv_options.pop("_format")  
         
         if not _format:
 
             self._df_ = list()
-            self.__read(pathname, **csv_options)
+            self.__read(pathname, **options)
             df = pd.concat(self._df_)
         
         elif _format.lower() == "hysys":
@@ -273,9 +273,9 @@ class CSV:
         """
         json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
         default_csv_options = Utils.load_json(os.path.join(json_dir, "hysys_options.json"))
-        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+        options = Utils.check_default_kwargs(default_csv_options, csv_options)
         self._df_ = list()
-        self.__read(csv_files, **csv_options)
+        self.__read(csv_files, **options)
         df = pd.concat(self._df_)
         
         # Fixing output format for hysys file
@@ -301,9 +301,9 @@ class CSV:
         """
         json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
         default_csv_options = Utils.load_json(os.path.join(json_dir, "vmgsim_options.json"))
-        csv_options = Utils.check_default_kwargs(default_csv_options, csv_options)
+        options = Utils.check_default_kwargs(default_csv_options, csv_options)
         self._df_ = list()
-        self.__read(csv_files, **csv_options)
+        self.__read(csv_files, **options)
         df = pd.concat(self._df_)
         
         # Fixing output format for hysys file
