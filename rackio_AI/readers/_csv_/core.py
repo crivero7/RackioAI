@@ -226,11 +226,10 @@ class CSV:
         ### **Snippet Code**
 
         ```python
-        import os
-        from rackio_AI import CSV
-        >>> csv_obj = CSV()
-        >>> csv_file_path = os.path.join("..","..", "data", "csv")
-        >>> csv_obj.read(csv_file_path, delimiter=";", header=0, index_col=0)
+        >>> import os
+        >>> from rackio_AI import RackioAI, get_directory
+        >>> directory = os.path.join(get_directory('csv'))
+        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0, index_col=0)
                     Identifier One-time password Recovery code First name Last name   Department    Location
         Username
         booker12          9012            12se74        rb9012     Rachel    Booker        Sales  Manchester

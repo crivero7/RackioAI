@@ -16,12 +16,6 @@ class Reader:
     tpl = TPL()
     _csv = CSV()
 
-    def __init__(self):
-        """
-
-        """
-        pass
-
     def read(self, filename: str, ext: str=".tpl", **kwargs):
         """
         Read data supported by RackioAI in pandas.DataFrame
