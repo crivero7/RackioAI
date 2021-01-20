@@ -37,7 +37,7 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
-        self.app.append_data(self)
+        self.app.append(self)
         
     def serialize(self):
         """
@@ -171,10 +171,9 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> import numpy as np
-        >>> import numpy as np
         >>> from rackio_AI import RackioAI
         >>> df = pd.DataFrame(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), columns=['One', 'Two', 'Three'])
-        >>> EDA = RackioEDA(name= 'EDA', description='Object Exploratory Data Analysis')
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
         >>> EDA.data = df
            One  Two  Three
         0    1    2      3

@@ -1,3 +1,3 @@
 from .core import *
-from .tpl import TPL
+from .tpl import *
 from ._csv_ import *

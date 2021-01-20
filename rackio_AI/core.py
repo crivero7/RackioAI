@@ -186,14 +186,14 @@ class RackioAI(Singleton):
 
         self._data = value
 
-    def append_data(self, eda_object):
+    def append(self, obj):
         """
-        Append a RackioEDA object to the data analysis manager.
+        Append a RackioEDA object to managers.
 
         ___
         **Parameters**
 
-        * **:param eda_object:** (RackioEDA): RackioEDA object.
+        * **:param eda_object:** (RackioEDA, Preprocessing, RackioDNN) objects.
 
         **:return:**
 
@@ -212,8 +212,17 @@ class RackioAI(Singleton):
 
         ```
         """
+        if "RackioEDA" in str(type(obj)):
+        
+            self._data_analysis_manager.append(eda_object)
+        
+        elif "Preprocessing" in str(type(obj)):
 
-        self._data_analysis_manager.append(eda_object)
+            self._preprocessing_manager.append(preprocessing_model)
+
+        elif "RackioDNN" in str(type(obj)):
+
+            pass
 
     def get_object(self, name, _type='EDA', serialize=False):
         """
@@ -298,37 +307,6 @@ class RackioAI(Singleton):
         data = self.get_object(name, _type='EDA')
 
         return data.serialize()
-
-    def append_preprocessing_model(self, preprocessing_model):
-        """
-         Append a Preprocessing object to the data analysis manager.
-
-        ___
-        **Parameters**
-
-        * **:param preprocessing_model:** (Preprocessing): Preprocessing object.
-
-        **:return:**
-
-        None
-
-        ___
-        ## Snippet code
-
-        ```python
-        >>> from rackio_AI import Preprocessing, RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess1 = Preprocessing(name= 'Preprocess1',description='preprocess for data', problem_type='regression')
-        >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
-        >>> RackioAI.append_preprocessing_model(preprocess1)
-        >>> RackioAI.append_preprocessing_model(preprocess2)
-
-        ```
-        """
-
-        self._preprocessing_manager.append(preprocessing_model)
 
     def get_manager(self, name):
         """

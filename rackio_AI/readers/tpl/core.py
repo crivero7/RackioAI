@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
 from rackio_AI.utils import Utils
-from rackio_AI.readers.options import TPLOptions
+from rackio_AI.readers.tpl.options import TPLOptions
 
 
 class TPL:
