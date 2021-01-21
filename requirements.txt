@@ -1,3 +1,7 @@
+pyxlsb==1.0.8
+odfpy==1.4.1
+openpyxl==3.0.6
+xlrd==1.2.0
 seaborn
 scikit-learn
 easy-deco==0.0.7

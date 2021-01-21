@@ -19,6 +19,8 @@ setuptools.setup(
     'csv/Hysys/*.csv', 
     'csv/standard/*.csv',
     'csv/VMGSim/*.csv',
+    'excel/*.xlsx',
+    'excel/*.xls',
     'json/*.json']},
     include_package_data=True,
     packages=setuptools.find_packages(),
@@ -27,7 +29,11 @@ setuptools.setup(
         'Pillow==8.0.0',
         'Rackio==1.0.2',
         'easy-deco==0.0.7',
-        'seaborn'
+        'seaborn',
+        'xlrd==1.2.0',
+        'openpyxl==3.0.6',
+        'odfpy==1.4.1',
+        'pyxlsb==1.0.8'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

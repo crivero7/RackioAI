@@ -3,4 +3,7 @@ recursive-include rackio_AI/data/pkl_files/*.pkl
 recursive-include rackio_AI/data/csv/Hysys/*.csv
 recursive-include rackio_AI/data/csv/standard/*.csv
 recursive-include rackio_AI/data/csv/VMGSim/*.csv
+recursive-include rackio_AI/data/excel/*.xlsx
+recursive-include rackio_AI/data/excel/*.xls
 recursive-include rackio_AI/readers/_csv_/json/*.json
+recursive-include rackio_AI/readers/exl/json/*.json

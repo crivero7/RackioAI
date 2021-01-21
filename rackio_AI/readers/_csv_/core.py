@@ -317,7 +317,7 @@ class CSV:
 
         return df
 
-    @ProgressBar(desc="Reading .csv file...", unit="file")
+    @ProgressBar(desc="Reading .csv files...", unit="file")
     def __read(self, csv_file, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *read*
