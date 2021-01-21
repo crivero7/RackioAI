@@ -7,12 +7,13 @@ from rackio_AI.readers.exl.core import EXL
 
 class Reader:
     """
-        In all data analysis projects you must load data from different file extensions, so, the **Reader** class has that
-        software intention, it read different file extensions and convert them into a *pandas.DataFrame* or *np.ndarray* to add
-        them to your project structure in **RackioAI**
+    In all data analysis projects you must load data from different file extensions, so, the **Reader** class has that
+    software intention, it read different file extensions and convert them into a *pandas.DataFrame* to add them to your 
+    project structure in **RackioAI**
 
-        So far, you only can *.tpl* files. This file extensions are proper of [OLGA](https://www.software.slb.com/products/olga)
-        Dynamic Multiphase Flow Simulator
+    You can read *.tpl*, *.csv*, *excel* files and pickled object as DataFrame.
+    .tpl files extension are proper of [OLGA](https://www.software.slb.com/products/olga) 
+    Dynamic Multiphase Flow Simulator
 
     """
     tpl = TPL()
@@ -20,14 +21,14 @@ class Reader:
     pkl = PKL()
     exl = EXL()
 
-    def read(self, filename: str, ext: str=".tpl", **kwargs):
+    def read(self, pathname: str, ext: str=".tpl", **kwargs):
         """
         Read data supported by RackioAI in pandas.DataFrame
 
         ___
         **Parameters**
 
-        * **:param filename:** (str) Can be a directory or a filename with its extension
+        * **:param pathname:** (str) Can be a directory or a filename
 
         **:return:**
 
@@ -85,35 +86,34 @@ class Reader:
 
         ```python
         >>> directory = os.path.join(get_directory('csv'), "standard")
-        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0, index_col=0)
-                    Identifier One-time password Recovery code First name Last name   Department    Location
-        Username
-        booker12          9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
-        grey07            2070            04ap67        lg2070      Laura      Grey        Depot      London
-        johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
-        jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
-        smith79           5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
+        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0)
+            Username   Identifier One-time password Recovery code First name Last name   Department    Location
+        0   booker12         9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
+        1     grey07         2070            04ap67        lg2070      Laura      Grey        Depot      London
+        2  johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
+        3  jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
+        4    smith79         5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
         
         ```
         """
         if ext==".tpl":
 
-            self.tpl.read(filename)
+            self.tpl.read(pathname)
             data = self.tpl.to('dataframe')
 
         elif ext==".csv":
 
-            data = self._csv.read(filename, **kwargs)
+            data = self._csv.read(pathname, **kwargs)
 
         elif ext==".pkl":
             
-            data = self.pkl.read(filename, **kwargs)
+            data = self.pkl.read(pathname, **kwargs)
 
             return data
 
         elif ext in [".xls", ".xlsx", "xlsm", "xlsb", "odf", "ods", "odt"]:
 
-            data = self.exl.read(filename, **kwargs)
+            data = self.exl.read(pathname, **kwargs)
 
             return data
 

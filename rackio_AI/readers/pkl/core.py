@@ -6,12 +6,16 @@ import rackio_AI
 
 class PKL:
     """
-    Documentation here
+    This format allows to you read faster a DataFrame saved in pkl format
     """
 
     def read(self, pathname: str, **kwargs):
         """
-        Documentation here
+        Read a DataFrame saved with RackioAI's save method as a pkl file
+
+        **Parameters*
+
+        * **:param pathname:** (str) Filename or directory 
         """  
         self._df_ = list()
         self.__read(pathname, **kwargs)
@@ -20,15 +24,9 @@ class PKL:
         return df
 
     @ProgressBar(desc="Reading .pkl files...", unit="file")
-    def __read(self, pathname, **csv_options):
+    def __read(self, pathname, **pkl_options):
         """
-        Read a comma-separated-values (csv) file into DataFrame.
-
-        Also supports optionally iterating or breaking of the file into chunks.
-
-        **Parameters**
-
-        Same like read method
+        Read (pkl) file into DataFrame.
         """
         with open(pathname, 'rb') as f:
                 

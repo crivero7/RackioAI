@@ -3,7 +3,7 @@
     "delimiter": null,
     "header": "infer",
     "names": null,
-    "index_col": 0,
+    "index_col": null,
     "usecols": null,
     "squeeze": false,
     "prefix": null,

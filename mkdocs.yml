@@ -33,6 +33,7 @@ nav:
       - Restful API: 'restful_api.md'
       - Utils:
         - decorators: 'decorators.md'
+        - Utils: 'api_utils_Utils.md'
       - Managers: 'api_managers_core.md'
     - User Guide: 'user_guide.md'
     - Contributing: 'contributing.md'

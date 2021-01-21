@@ -228,22 +228,21 @@ class CSV:
         ```python
         >>> import os
         >>> from rackio_AI import RackioAI, get_directory
-        >>> directory = os.path.join(get_directory('csv'))
-        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0, index_col=0)
-                    Identifier One-time password Recovery code First name Last name   Department    Location
-        Username
-        booker12          9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
-        grey07            2070            04ap67        lg2070      Laura      Grey        Depot      London
-        johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
-        jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
-        smith79           5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
-        
+        >>> directory = os.path.join(get_directory('csv'), "standard")
+        >>> RackioAI.load(directory, ext=".csv", delimiter=";", header=0)
+            Username   Identifier One-time password Recovery code First name Last name   Department    Location
+        0   booker12         9012            12se74        rb9012     Rachel    Booker        Sales  Manchester
+        1     grey07         2070            04ap67        lg2070      Laura      Grey        Depot      London
+        2  johnson81         4081            30no86        cj4081      Craig   Johnson        Depot      London
+        3  jenkins46         9346            14ju73        mj9346       Mary   Jenkins  Engineering  Manchester
+        4    smith79         5079            09ja61        js5079      Jamie     Smith  Engineering  Manchester
+
         ```
         """
         json_dir = os.path.join(rackio_AI.__file__.replace(os.path.join(os.path.sep, '__init__.py'), ''), 'readers', '_csv_', 'json')
         default_csv_options = Utils.load_json(os.path.join(json_dir, "csv_options.json"))
         options = Utils.check_default_kwargs(default_csv_options, csv_options)
-        _format = csv_options.pop("_format")  
+        _format = options.pop("_format")  
         
         if not _format:
 
@@ -284,7 +283,6 @@ class CSV:
         new_columns = {key: ("{}".format(key),"{}".format(units[i])) for i, key in enumerate(columns)}
         df = df.rename(columns=new_columns)
         index_unit = df.index[0]
-        df.index.name = ("{}".format(df.index.name),"{}".format(index_unit))
         df = df.drop(index_unit)
 
         return df
@@ -312,7 +310,6 @@ class CSV:
         new_columns = {key: ("{}".format(key),"{}".format(units[i])) for i, key in enumerate(columns)}
         df = df.rename(columns=new_columns)
         index_unit = df.index[0]
-        df.index.name = ("{}".format(df.index.name),"{}".format(index_unit))
         df = df.drop(index_unit)
 
         return df

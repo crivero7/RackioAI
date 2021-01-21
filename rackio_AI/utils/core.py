@@ -1,123 +1,70 @@
 from itertools import combinations as Combine
 import json
 import os
+import pandas as pd
 
 
 class Utils:
     """
-    Documentation here
+    Encapsulates only static methods useful in any class
     """
 
-    def __init__(self):
-        """
-        Documentation here
-        """
-        pass
-
     @staticmethod
-    def check_default_kwargs(default_kw, kw):
+    def check_default_kwargs(default_kw: dict, kw: dict) -> dict:
         """
-        Documentation here
+        Given any keyword arguments *kw*, check if their keys are in default keyword arguments *default_kw*
+
+        * If any key in *kw* is in *default_kw* replace kw's key value in default_kw's key
+        * Otherwise *default_kw* keeps it key value.
+
+        **Parameters**
+
+        * **:param defult_kw:** (dict) Default keyword arguments.
+        * **:param kw:** (dict) Keyword arguments to check.
+
+        **returns**
+
+        * **kw:** (dict) Keyword arguments checked
         """
         kw = {key: kw[key] if key in kw.keys() else default_kw[key] for key in default_kw.keys()}
         
         return kw
 
     @staticmethod
-    def get_column_names(df, **kwargs):
+    def get_column_names(df: pd.DataFrame) -> list:
         """
-        Documentation here
-        pattern
-        """
-        default_kwargs = {
-            "pattern": None
-        }
+        Get columns names given a dataframe
 
-        kw = Utils.check_default_kwargs(default_kwargs, kwargs)
-
-        if not kw["pattern"]:
-            
-            return df.columns.to_list()
-
-        else: 
-
-            return
-
-    @staticmethod
-    def split_str(string: str, pattern: str, get_pos: int = 0):
-        """
-        Documentation here
-        """
-        return string.split(pattern)[get_pos]
-
-    @staticmethod
-    def get_combinations(columns=[], num=2):
-        """
-        Documentation here
-        """
-        return Combine(columns, num)
-
-    @staticmethod
-    def remove_row(df, loc):
-        """
-        Documentation here
-        """
-        df.pop(loc)
-        
-        return df
-
-    @staticmethod
-    def find_files(extension, path):
-        """
-        find all *:param extension:* files in *path*
-
-        ___
         **Parameters**
 
-        * **:param extension:** (str)
-        * **:param path:** (str) root path
+        * **:param df:** (pd.DataFrame)
 
-        **:return:**
+        **returns**
 
-        * **files:** (list['str'])
-
-        ___
-
-        ## Snippet code
-
-        ```python
-        >>> import os
-        >>> from rackio_AI import RackioAI, Utils, get_directory
-
-        ## An especific file
-        >>> path = os.path.join(get_directory('Leak'))
-        >>> Utils.find_files('.tpl', path)
-
-        ```
-        """
-        result = list()
-
-        for root, _, files in os.walk(path):
-
-            for file in files:
-
-                if file.endswith(extension):
-                    result.append(os.path.join(root, file))
-
-        return result
+        **column_names** (list)
+        """            
+        return df.columns.to_list()
 
     @staticmethod
-    def load_json(filename):
+    def load_json(filename: str):
         """
+        Accepts file object, parses the JSON data, populates a Python dictionary 
+        with the data and returns it back to you.
 
-        :return:
+        **Parameters**
+
+        * **:param filename:** (str) json filename
+
+        **returns**
+
+        json file object parsed
         """
         with open(filename, ) as f:
 
             return json.load(f)
 
     @staticmethod
-    def check_extension_files(root_directory, ext='.tpl'):
+    def check_extension_files(root_directory: str, ext: str='.tpl'):
         """
         This is an utility method which you can check if in any directory exist files with *:param ext* extension
 
@@ -153,34 +100,33 @@ class Utils:
             return False
 
     @staticmethod
-    def check_path(filename: str, ext: str=".tpl"):
+    def check_path(pathname: str, ext: str=".tpl") -> tuple:
         """
-        Documentation here
+        Checks if a pathname is a directory or a file
+
+        **Parameters**
+
+        * **:param pathname:** (str)
+        * **:param ext:** (str) file extension to look for
+
+        **returns**
+
+        * **(filenames, ext):** (tuple)
+
         """
-        (filename, file_ext) = os.path.splitext(filename)
+        (pathname, file_ext) = os.path.splitext(pathname)
         
         if not file_ext:
 
-            filename = Utils.check_extension_files(filename, ext=ext)
+            pathname = Utils.check_extension_files(pathname, ext=ext)
             file_ext = ext
             
-            if not filename:
+            if not pathname:
 
-                raise FileNotFoundError("File not found in {} directory with {} extension".format(filename, ext))  
+                raise FileNotFoundError("File not found in {} directory with {} extension".format(pathname, ext))  
 
         else:
              
-            filename = [filename + file_ext]      
+            pathname = [pathname + file_ext]      
 
-        return filename, file_ext
-            
-
-class Rule:
-    """
-    Documentation here
-    """
-
-    def __init__(self):
-        """
-        Documentation here
-        """
+        return pathname, file_ext
