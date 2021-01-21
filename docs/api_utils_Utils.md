@@ -5,3 +5,5 @@
     :members: load_json
     :members: check_extension_files
     :members: check_path
+    :members: round
+    :members: is_between

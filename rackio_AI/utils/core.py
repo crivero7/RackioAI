@@ -1,5 +1,6 @@
 from itertools import combinations as Combine
 import json
+import math
 import os
 import pandas as pd
 
@@ -83,9 +84,9 @@ class Utils:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import get_directory
+        >>> from rackio_AI import get_directory, Utils
         >>> directory = os.path.join(get_directory('Leak'))
-        >>> files = Reader.check_extension_files(directory)
+        >>> files = Utils.check_extension_files(directory)
 
         ```
         """
@@ -147,3 +148,81 @@ class Utils:
             pathname = [pathname + file_ext]      
 
         return pathname, file_ext
+
+    @staticmethod
+    def round(value: float, decimals: int=0, down: bool=True)->float:
+        """
+        Round down or up a value
+
+        **Parameters**
+
+        * **:param value:** (float) value to round
+        * **:param decimals:** (int) decimals to round
+        * **:param down:** (bool)
+            * If *True* round down
+            * Otherwise round up 
+
+        **returns**
+
+        * **value** (float) value rounded down
+
+        ____
+
+        ### **Snippet code**
+
+        ```python
+        >>> from rackio_AI import Utils
+        >>> value = 12.3456
+        >>> Utils.round(value, decimals=2)
+        12.34
+        >>> Utils.round(value, decimals=2, down=False)
+        12.35
+
+        ```
+        """ 
+        multiplier = 10 ** decimals
+
+        if down:
+
+            return math.floor(value * multiplier) / multiplier
+        
+        else:
+
+            return math.ceil(value * multiplier) / multiplier
+
+    @staticmethod
+    def is_between(min_value: float, value: float, max_value: float)-> bool:
+        """
+        Check if a value is between a min and a  max value
+
+        **Parameters**
+
+        * **:param min_value:** (float) lower value
+        * **:param value:** (float) value to check this conditional
+        * **:param max_value:** (float) higher value
+
+        **returns**
+
+        **bool**
+
+        ___
+
+        ### Snippet code
+
+        ```python 
+        >>> from rackio_AI import Utils
+        >>> Utils.is_between(1, 5.6, 10)
+        True
+        >>> Utils.is_between(3.9, 2, 10.5)
+        False
+        
+        ```
+        """
+
+        return min(min_value, max_value) < value < max(min_value, max_value)
+
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()

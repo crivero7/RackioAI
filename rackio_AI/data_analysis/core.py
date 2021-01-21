@@ -678,7 +678,7 @@ class RackioEDA(Pipeline):
         return df
 
     @ProgressBar(desc="Resampling...", unit="Sampling")
-    def __resample(self, column, **kwargs):
+    def __resample(self, column: list, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *resample*
         method in the pipeline
@@ -727,7 +727,7 @@ class RackioEDA(Pipeline):
         """
         return
 
-    def reset_index(self, df, drop=False):
+    def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
 
@@ -788,7 +788,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    def print_report(self, df: pd.DataFrame, info=True, head=True, header=10):
+    def print_report(self, df: pd.DataFrame, info: bool=True, head: bool=True, header: int=10):
         """
         Print DataFrame report, info and head report
 
@@ -835,6 +835,144 @@ class RackioEDA(Pipeline):
         self.__print_report(["Printing"])
         
         return self.data
+
+    def fixnan(
+        self, 
+        df: pd.DataFrame, 
+        key: str="median", 
+        neighbors: int=3, 
+        _round: bool=False,
+        down: bool=False,
+        decimals: int=5
+        )->pd.DataFrame:
+        """
+        Fixes nan in dataframe columns by a key function
+
+        **Parameters**
+        
+        * **:param df:** (pandas.DataFrame)
+        * **:param key:** (str) Function's name to fix nan
+            * *median*
+            * *mean*
+            * *std*
+            * *var*
+        * **:param neighbors:** (int) neighbors values to apply key function
+        * **:param _round:** (bool) 
+            * If True the value fixed is rounded
+        * **:param down:** (bool) round down if *_round* is True otherwise round up
+        * **:param decimals:** (int): If *_round* is True, the value is rounded with
+        these decimals
+
+        **returns**
+
+        * **df** (pandas.DataFrame) dataframe with nan values fixed
+        ___
+
+        ### **Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioEDA
+        >>> import pandas as pd
+        >>> import numpy as np
+        >>> df = pd.DataFrame(np.random.randn(10, 3), index=['a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k'], columns=['one', 'two', 'three'])
+        >>> df2 = df.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'])
+        >>> df2
+                one       two     three
+        a  1.108565 -0.586973  0.567825
+        b -2.908394  0.923907 -0.373586
+        c -0.045443  0.750214  0.973620
+        d -0.826050 -1.205517 -0.858363
+        e       NaN       NaN       NaN
+        f -0.059312 -0.170207  0.808748
+        g  0.179349  0.433726 -0.920899
+        h -0.349159 -0.302307  0.571396
+        i  0.609525 -0.603307  0.011705
+        j  0.378459 -1.397737 -0.322218
+        k  0.335913 -1.204695  0.131657
+        >>> EDA = RackioEDA(name='EDA2')
+        >>> EDA.fixnan(df2, _round=True)
+
+        ```
+        """
+        if key.lower() in  ["median", "mean", "std", "var"]:
+            
+            self._dict_nonan_ = dict()
+            self._df_ = df
+            columns = Utils.get_column_names(df)
+            options = {
+                "key": key,
+                "neighbors": neighbors,
+                "_round": _round,
+                "down": down,
+                "decimals": decimals
+            }
+            self.__first_step_fixnan(columns, **options)
+        
+            names = list(self._dict_nonan_.keys())
+            self.__last_step_fixnan(names)
+
+            return self._df_
+        
+        else:
+
+            raise TypeError("{} is key not valid, use: ['median', 'mean', 'std', 'var']".format(key))
+
+    @ProgressBar(desc="Analyzing dataframe...", unit="rows")
+    def __first_step_fixnan(self, column, **kwargs):
+        """
+        Documentation here
+        """
+        if (self._df_[column].dtype == np.float64) & (self._df_[column].isnull().values.any()):
+            # save null values index
+            indexnulls = list(self._df_[column][self._df_[column].isnull()].index)
+            # convert data to numpy array because it's faster
+            self._data_ = self._df_[column].to_numpy()
+            # save null values locations
+            locs = np.where(np.isnan(self._data_))[0]
+
+            self.__second_step_fixnan(locs, **kwargs)
+
+            self._dict_nonan_.update(
+                {
+                    column:np.vstack((indexnulls, self._data_[locs]))
+                }
+            )
+        
+        return
+
+    @ProgressBar(desc="Analyzing dataframe...", unit="columns")
+    def __second_step_fixnan(self, loc, **kwargs):
+        """
+        Documentation here
+        """
+        key = kwargs["key"]
+        neighbors = kwargs["neighbors"]
+        _round = kwargs["_round"]
+        down = kwargs["down"]
+        decimals = kwargs["decimals"]
+
+        fix = getattr(np, "nan{}".format(key))
+        value = fix(self._data_[loc - neighbors: loc + neighbors])
+        if _round:
+
+            self._data_[loc] = Utils.round(value, decimals=decimals, down=down)
+
+        else:
+            
+            self._data_[loc] = value
+
+        return
+
+    @ProgressBar(desc="Fixing nan in dataframe...", unit="columns")
+    def __last_step_fixnan(self, column):
+        """
+        Documentatio here
+        """
+        _serie = pd.Series(self._dict_nonan_[column][1],
+                          index=self._dict_nonan_[column][0])
+        self._df_.loc[:, column].update(_serie)
+
+        return
 
 
 class Plot:
