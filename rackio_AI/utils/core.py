@@ -100,6 +100,23 @@ class Utils:
             return False
 
     @staticmethod
+    def split_str(string: str, pattern: str, get_pos: int = 0) -> str:
+        """
+        Split string given a *pattern* and get the position *get_pos*
+
+        **Parameters**
+
+        * **:param string:** (str) String to split
+        * **:param pattern:** (str) String to look for in *String* to split
+        * **:param get_pos:** (int) Get string in the position get_pos after split string
+
+        **returns**
+
+        * **string**
+        """
+        return string.split(pattern)[get_pos]
+
+    @staticmethod
     def check_path(pathname: str, ext: str=".tpl") -> tuple:
         """
         Checks if a pathname is a directory or a file
