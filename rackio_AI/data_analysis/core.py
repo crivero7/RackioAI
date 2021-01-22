@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
 from rackio_AI.utils import Utils
 from rackio_AI.pipeline import Pipeline
+from rackio_AI.data_analysis.outliers import Outliers
+from rackio_AI.data_analysis.noise import Noise
 from easy_deco.progress_bar import ProgressBar
 import datetime
 
@@ -32,6 +34,8 @@ class RackioEDA(Pipeline):
     """
 
     app = RackioAI()
+    outliers = Outliers()
+    noise = Noise()
 
     def __init__(self, name="", description=""):
         """
