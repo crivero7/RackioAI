@@ -1,6 +1,8 @@
+from easy_deco.progress_bar import ProgressBar
 from itertools import combinations as Combine
 import json
 import math
+import numpy as np
 import os
 import pandas as pd
 
@@ -221,8 +223,64 @@ class Utils:
 
         return min(min_value, max_value) < value < max(min_value, max_value)
 
+    def get_windows(
+        self,
+        df: pd.DataFrame,
+        win_size: int,
+        step: int
+        ):
+        """
+        Creates sliding windows from a dataframe
+
+        **Parameters**
+
+        * **:param df:** (pandas.DataFrame)
+        * **:param win_size:** (int) window size
+        * **:param step:** (int) window sliding step
+
+        **return**
+
+        * **slide** (generator)
+
+        ______
+        ### **Snippet code**
+
+        ```python
+
+        ```
+        """
+        if step > win_size:
+
+            raise ValueError("Step must be less than win_size")
+        
+        self._df_ = df
+        self._start_ = -step
+        self._windows_ = list()
+        options = {
+            'win_size': win_size,
+            'step': step
+        }
+        _slice = range(0, len(df) - win_size + step, step)
+        self.__get_windows(_slice, **options)
+        
+        return self._windows_
+
+    @ProgressBar(desc="Creating windows...", unit="windows")
+    def __get_windows(self, col, **kwargs):
+        """
+        Documentation here
+        """
+        win_size = kwargs['win_size']
+        step = kwargs['step']
+        self._start_ += step
+        self._df_.iloc[self._start_: self._start_ + win_size, :]
+        self._windows_.append(self._df_.iloc[self._start_: self._start_ + win_size, :])
+
+        return
+        
 
 if __name__ == "__main__":
     import doctest
 
     doctest.testmod()
+
