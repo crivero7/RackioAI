@@ -20,6 +20,7 @@ nav:
         - TPL: 'api_reader_tpl.md'
         - CSV: 'api_reader_csv.md'
         - EXL: 'api_reader_exl.md'
+        - PKL: 'api_reader_pkl.md'
       - Data Analysis:
         - RackioEDA: 'api_data_analysis_core.md'
         - Outliers: 'api_data_analysis_outliers.md'

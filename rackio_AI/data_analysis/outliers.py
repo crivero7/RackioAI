@@ -67,9 +67,8 @@ class Outliers:
         >>> df = pd.DataFrame(np.random.randn(100,2), columns=["a", "b"])
         >>> out = Outliers()
         >>> df = out.add(df)
-        >>> ax = df.plot(kind="line", y=["a", "b"], color={"a": "r", "b": "b"})
-        >>> ax = plt.plot(out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD')
-        >>> ax = plt.plot(out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bD')
+        >>> ax = plt.plot(df["a"], '-r', df["b"], '-b', out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD', out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bD')
+        >>> ax = plt.legend(["a", "b", "a outliers", "b outliers"])
         >>> plt.show()
 
         ```
@@ -253,13 +252,10 @@ class Outliers:
         >>> from rackio_AI import Outliers
         >>> df = pd.DataFrame(np.random.randn(1000,2), columns=["a", "b"])
         >>> out = Outliers()
-        >>> df_outliers = out.add(df, percent=1)
-        >>> df_imputed = out.detect(df_outliers, win_size=30)
-        >>> ax = df_outliers.plot(kind="line", y=["a", "b"], color={"a": "r", "b": "b"})
-        >>> ax = plt.plot(out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD')
-        >>> ax = plt.plot(out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bo')
-        >>> ax = plt.plot(out.detected["a"]["locs"], out.detected["a"]["values"], 'kD')
-        >>> ax = plt.plot(out.detected["b"]["locs"], out.detected["b"]["values"], 'ko')
+        >>> df = out.add(df, percent=1)
+        >>> df_imputed = out.detect(df, win_size=30)
+        >>> ax = plt.plot(df["a"], '-r', df["b"], '-b', out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD', out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bo', out.detected["a"]["locs"], out.detected["a"]["values"], 'kD', out.detected["b"]["locs"], out.detected["b"]["values"], 'ko')
+        >>> ax = plt.legend(["a", "b", "a outliers", "b outliers", "a dectected", "b detected"])
         >>> plt.show()
 
         ```

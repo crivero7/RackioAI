@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from easy_deco.progress_bar import ProgressBar
+from rackio_AI.utils.core import Utils
 
 class Noise:
     """
@@ -11,7 +12,7 @@ class Noise:
         self, 
         df: pd.DataFrame,
         win_size: int=30,
-        method: str="rhinenardt",
+        method: str="rhinehardt",
         cols: list=None
         )-> pd.DataFrame:
         """
@@ -33,10 +34,18 @@ class Noise:
         ### **Snippet code
 
         ```python
+        >>> import matplotlib.pyplot as plt
+        >>> from rackio_AI import Noise 
+        >>> df = pd.DataFrame(np.random.randn(100,2), columns=["a", "b"])
+        >>> noise = Noise()
+        >>> df_noisy = noise.add(df, win_size=10)
+        >>> ax = plt.plot(df.index, df["a"], '-r', df.index, df["b"], '-b', df_noisy.index, df_noisy["a"], '--r', df_noisy.index, df_noisy["b"], '--b')
+        >>> ax = plt.legend(["a", "b", "noisy a", "noisy b"])
+        >>> plt.show()
 
         ```
+        ![Add rhinehardt noise](../../img/rhinehardt_noise.png)
         """
-        
         options = {
             'win_size': win_size,
             'method': method
@@ -44,16 +53,16 @@ class Noise:
         self._df_ = df.copy()
         if not cols:
 
-            cols = Utils.get_column_names(self._df_, **options)
+            cols = Utils.get_column_names(self._df_)
 
-        self.__first_step_add(cols, **kwargs)
+        self.__first_step_add(cols, **options)
 
         df = self._df_
         delattr(self, "_df_")
 
         return df
 
-    @ProgressBar(desc="Adding gaussian noise...", unit="rows")
+    @ProgressBar(desc="Adding gaussian noise...", unit="columns")
     def __first_step_add(self, col, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *add noise* method
@@ -73,7 +82,7 @@ class Noise:
 
         self.__last_step_add(windows, **kwargs)
 
-        self._df_.loc[:, col] = np.array(self._noise_)
+        self._df_.loc[:, col] = self._noise_
 
         return
 
@@ -98,7 +107,7 @@ class Noise:
 
         return
 
-    def rhinehardt(self, x: pd.DataFrame)->np.ndarray:
+    def rhinehardt(self, x: pd.DataFrame, std_factor: float=1)->np.ndarray:
         """
         Add noise to variable x based on Box-Muller transform
 
@@ -115,7 +124,7 @@ class Noise:
 
         if s <= 1:
 
-            s = 0.001 * xmean
+            s = std_factor * xmean
 
         d = s * np.sqrt(-2 * np.log(r1)) * np.sin(2 * np.pi * r2)
 

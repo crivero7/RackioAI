@@ -20,6 +20,8 @@ class PKL:
         self._df_ = list()
         self.__read(pathname, **kwargs)
         df = pd.concat(self._df_)
+
+        # delattr(self, "_df_")
             
         return df
 
