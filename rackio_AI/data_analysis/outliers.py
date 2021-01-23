@@ -23,6 +23,10 @@ class Outliers:
             * **locs:** (list) locations where were the outliers added
             * **values:** (list) Outliers values added
     * **detected:** (dict)
+        * **column_name:** (dict) Contains the following keys:
+            * **locs:** (list) locations where were the outliers added
+            * **values:** (list) Outliers values added
+            * **performance:** (float)
 
 
     """

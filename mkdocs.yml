@@ -23,6 +23,7 @@ nav:
       - Data Analysis:
         - RackioEDA: 'api_data_analysis_core.md'
         - Outliers: 'api_data_analysis_outliers.md'
+        - Noise: 'api_data_analysis_noise.md'
       - Preprocessing:
         - Preprocessing: 'api_preprocessing_core.md'
         - Synthetic Data: 'api_preprocessing_synthetic_data.md'
