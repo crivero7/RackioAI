@@ -23,6 +23,25 @@ class PKL:
         **Parameters**
 
         * **:param pathname:** (str) Filename or directory 
+
+        ```python
+        >>> import os
+        >>> from rackio_AI import RackioAI, get_directory
+        >>> filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
+        >>> df = RackioAI.load(filename)
+        >>> print(df.head())
+        tag      TIME_SERIES PT_SECTION_BRANCH_TUBERIA_PIPE_Pipe60_NR_1  ... CONTR_CONTROLLER_CONTROL_FUGA     file
+        variable                                               Pressure  ...             Controller_output filename
+        unit               S                                         PA  ...                                   .tpl
+        0           0.000000                                   568097.3  ...                           0.0   Leak01
+        1           0.502732                                   568098.2  ...                           0.0   Leak01
+        2           1.232772                                   568783.2  ...                           0.0   Leak01
+        3           1.653696                                   569367.3  ...                           0.0   Leak01
+        4           2.200430                                   569933.5  ...                           0.0   Leak01
+        <BLANKLINE>
+        [5 rows x 12 columns]
+
+        ```
         """  
         self._df_ = list()
         self.__read(pathname, **kwargs)

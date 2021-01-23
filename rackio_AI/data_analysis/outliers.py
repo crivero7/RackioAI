@@ -10,7 +10,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-@set_to_methods(del_temp_attr)
+
 class Outliers:
     """
     In statistics, an outlier is a data point that differs significantly from other observations.

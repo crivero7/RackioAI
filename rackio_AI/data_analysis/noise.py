@@ -4,7 +4,7 @@ from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils.core import Utils
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
-@set_to_methods(del_temp_attr)
+
 class Noise:
     """
     Encapsulates method to work with noise

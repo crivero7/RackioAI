@@ -2,11 +2,10 @@ import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
 from rackio_AI.preprocessing import Scaler, Splitter, KalmanFilter
-from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
+
 
 app = RackioAI()
 
-@set_to_methods(del_temp_attr)
 class Preprocessing:
     """
     This class allows to you do preprocessing to the data in *RackioAI* or *RackioEDA

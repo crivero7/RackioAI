@@ -21,7 +21,6 @@ class LoadDataTestCase(unittest.TestCase):
         """
         filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
         df = RackioAI.load(filename)
-        print(df.head(10))
 
 #     def testLoadDataFrameInPickle(self):
 #         """
@@ -89,7 +88,5 @@ class LoadDataTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # unittest.main()
-    filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
-    df = RackioAI.load(filename)
-    print(df.head(10))
+    unittest.main()
+

@@ -6,7 +6,6 @@ from rackio_AI.readers.exl.core import EXL
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-@set_to_methods(del_temp_attr)
 class Reader:
     """
     In all data analysis projects you must load data from different file extensions, so, the **Reader** class has that

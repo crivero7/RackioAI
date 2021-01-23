@@ -13,7 +13,6 @@ from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 app = RackioAI()
 
-@set_to_methods(del_temp_attr)
 class RackioEDA(Pipeline):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
@@ -262,6 +261,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert columns *data* in the dataframe *df* in the location *locs*
@@ -332,6 +332,7 @@ class RackioEDA(Pipeline):
         
         return
 
+  
     def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
@@ -383,6 +384,7 @@ class RackioEDA(Pipeline):
         self.data = self.data.rename(columns=kwargs)
 
         return
+
 
     def rename_columns(self, df, **kwargs):
         """
@@ -445,6 +447,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    @del_temp_attr
     def change_columns(self, df, data, column_names):
         """
         Change columns in the dataframe *df* for another columns in the dataframe *data*
@@ -499,6 +502,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
+  
     def search_loc(self, column_name, *keys, **kwargs):
         """
         Logical indexing
@@ -557,6 +561,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
+   
     def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
@@ -647,6 +652,7 @@ class RackioEDA(Pipeline):
 
         return
 
+  
     def resample(self, df, sample_time, label):
         """
         Resample timeseries column in the dataframe *df*
@@ -736,6 +742,7 @@ class RackioEDA(Pipeline):
         """
         return
 
+    
     def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
@@ -797,6 +804,7 @@ class RackioEDA(Pipeline):
 
         return
 
+  
     def print_report(self, df: pd.DataFrame, info: bool=True, head: bool=True, header: int=10):
         """
         Print DataFrame report, info and head report
@@ -845,6 +853,7 @@ class RackioEDA(Pipeline):
         
         return self.data
 
+   
     def fixnan(
         self, 
         df: pd.DataFrame, 
@@ -995,14 +1004,6 @@ class Plot:
         pass
 
 if __name__ == "__main__":
-    # import doctest
+    import doctest
 
-    # doctest.testmod()
-
-    import pandas as pd
-
-    EDA = RackioEDA(name="EDA")
-    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
-    data = pd.DataFrame([[10, 11], [13, 14], [16, 17]], columns=['Two','Three'])
-    columns=['Two','Three']
-    EDA.change_columns(df, data, columns)
+    doctest.testmod()
