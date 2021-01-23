@@ -59,13 +59,13 @@ class Outliers:
 
         ```python
         >>> import matplotlib.pyplot as plt
-        >>> from rackio_AI import RackioEDA
+        >>> from rackio_AI import Outliers
         >>> df = pd.DataFrame(np.random.randn(100,2), columns=["a", "b"])
-        >>> EDA = RackioEDA(name="EDA")
-        >>> df = EDA.outliers.add(df)
+        >>> out = Outliers()
+        >>> df = out.add(df)
         >>> ax = df.plot(kind="line", y=["a", "b"], color={"a": "r", "b": "b"})
-        >>> ax = plt.plot(EDA.outliers.outliers["a"]["locs"], EDA.outliers.outliers["a"]["values"], 'rD')
-        >>> ax = plt.plot(EDA.outliers.outliers["b"]["locs"], EDA.outliers.outliers["b"]["values"], 'bD')
+        >>> ax = plt.plot(out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD')
+        >>> ax = plt.plot(out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bD')
         >>> plt.show()
 
         ```
@@ -246,23 +246,34 @@ class Outliers:
 
         ```python
         >>> import matplotlib.pyplot as plt
-        >>> from rackio_AI import RackioAI
-        >>> df = pd.DataFrame(np.random.randn(1000,1), columns=["a"])
-        >>> EDA = RackioAI.get("EDA", _type="EDA")
-        >>> df_outliers = EDA.outliers.add(df)
-        >>> df_imputed = EDA.outliers.detect(df_outliers, win_size=30)
-        >>> ax = df_outliers.plot(kind="line", y=["a"], color={"a": "r"})
-        >>> ax = plt.plot(EDA.outliers.outliers["a"]["locs"], EDA.outliers.outliers["a"]["values"], 'rD')
-        >>> ax = plt.plot([float(value) for value in EDA.outliers.detected.keys()], list(EDA.outliers.detected.values()), 'bo')
+        >>> from rackio_AI import Outliers
+        >>> df = pd.DataFrame(np.random.randn(1000,2), columns=["a", "b"])
+        >>> out = Outliers()
+        >>> df_outliers = out.add(df, percent=1)
+        >>> df_imputed = out.detect(df_outliers, win_size=30)
+        >>> ax = df_outliers.plot(kind="line", y=["a", "b"], color={"a": "r", "b": "b"})
+        >>> ax = plt.plot(out.outliers["a"]["locs"], out.outliers["a"]["values"], 'rD')
+        >>> ax = plt.plot(out.outliers["b"]["locs"], out.outliers["b"]["values"], 'bo')
+        >>> ax = plt.plot(out.detected["a"]["locs"], out.detected["a"]["values"], 'kD')
+        >>> ax = plt.plot(out.detected["b"]["locs"], out.detected["b"]["values"], 'ko')
         >>> plt.show()
 
         ```
+        ![Detect Outlier](../../img/impute_outliers.png)
+    
         """
         self._df_ = df.copy()
-        self._serie_list_ = Utils().get_windows(df, win_size, step=step)
-        self._start_ = 0
 
-        self.__detect(self._serie_list_)
+        if not cols:
+
+            cols = Utils.get_column_names(self._df_)
+
+        options = {
+            "win_size": win_size,
+            "step": step
+        }
+
+        self.__first_step_detect(cols, **options)
 
         df = self._df_
 
@@ -270,33 +281,59 @@ class Outliers:
 
         return df
 
+    @ProgressBar(desc="Detecting outliers...", unit="columns")
+    def __first_step_detect(self, col, **kwargs):
+        """
+        Documentation here
+        """
+        win_size = kwargs['win_size']
+        step = kwargs['step']
+        kwargs['col'] = col
+
+        self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
+        
+        self._start_ = 0
+        self._locs_ = list()
+        self._values_ = list()
+        self.__detect(self._serie_list_, **kwargs)
+        self.detected.update({
+            col: {
+                "locs": self._locs_,
+                "values": self._values_
+                }
+            })
+        
+        return
+
     @ProgressBar(desc="Detecting outliers...", unit="windows")
-    def __detect(self, window):
+    def __detect(self, window, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of detect method
 
         **Parameters**
 
-        * **:param column_name:** (list)
+        * **:param window:** (list)
 
         **returns**
 
         None
         """
+        col = kwargs['col']
+        window = window.loc[:, col]
         likely = self.z_score(window)
         
         if likely.size > 0:
            
             likely = likely[0]
-            loc = window.index[np.where(np.asanyarray(~np.isnan(window[window == likely])))[0][0]]
-            
-            if not str(loc) in self.detected.keys():
+            loc = window[window == likely].index[0]
+
+            if not loc in self._locs_:
                 
                 estimated = np.array([])
                 
                 if self._start_ < len(self._serie_list_) - 4:
                     
-                    if self.check(likely, self._serie_list_[self._start_ + 1:self._start_ + 3]):
+                    if self.check(likely, self._serie_list_[self._start_ + 1:self._start_ + 3], col):
                         
                         estimated = self.impute(likely, window)
                 
@@ -305,15 +342,16 @@ class Outliers:
                     estimated = self.impute(likely, window)
                 
                 if estimated.size > 0:
-                    
-                    self.detected.update({str(loc): estimated})
-                    self._df_.loc[loc,"a"] = estimated
+
+                    self._locs_.append(loc)
+                    self._values_.append(estimated)
+                    self._df_[loc, col] = estimated
         
         self._start_ += 1
 
         return
 
-    def check(self, value: float, subsets: list)->bool:
+    def check(self, value: float, subsets: list, col: str)->bool:
         """
         Documentation here
         """
@@ -321,7 +359,11 @@ class Outliers:
         self._value_ = value
         self._status_outlier_ = False
 
-        self.__check(subsets)
+        options = {
+            'col': col
+        }
+
+        self.__check(subsets, **options)
 
         if self._count_ == 2:
 
@@ -330,7 +372,7 @@ class Outliers:
         return self._status_outlier_
     
     @ProgressBar(desc="Checking outlier detected...", unit="outlier")
-    def __check(self, subset):
+    def __check(self, subset, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *check* method
 
@@ -342,6 +384,8 @@ class Outliers:
 
         None
         """
+        col = kwargs['col']
+        subset = subset.loc[:, col]
         new_values = self.z_score(subset)
 
         if new_values.size > 0:

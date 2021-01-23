@@ -5,4 +5,4 @@
     :members: z_score
     :members: iqr
     :members: detect
-    :members: fix
+    :members: impute
