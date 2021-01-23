@@ -3,8 +3,10 @@ from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils import Utils
 import rackio_AI
 import os
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+@set_to_methods(del_temp_attr)
 class CSV:
     """
     The so-called CSV (Comma Separated Values) format is the most common import and export format
@@ -19,6 +21,11 @@ class CSV:
     The CSV class’s reader and writer objects read and write sequences. Programmers can also read and write
     data in dictionary form using the DictReader and DictWriter classes.
     """
+    _instances = list()
+
+    def __init__(self):
+
+        CSV._instances.append(self)
 
     def read(self, pathname: str, **csv_options):
         """

@@ -2,14 +2,15 @@ import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
 from rackio_AI.preprocessing import Scaler, Splitter, KalmanFilter
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
+app = RackioAI()
 
+@set_to_methods(del_temp_attr)
 class Preprocessing:
     """
     This class allows to you do preprocessing to the data in *RackioAI* or *RackioEDA
     """
-
-    app = RackioAI()
 
     def __init__(self, name, description, problem_type='regression'):
         """
@@ -41,7 +42,7 @@ class Preprocessing:
         self._name = name
         self._description = description
         self._type = problem_type
-        self.app.append(self)
+        app.append(self)
 
         if problem_type.lower() in ['regression', 'classification']:
 

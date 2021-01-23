@@ -28,7 +28,7 @@ setuptools.setup(
         'scikit-learn',
         'Pillow==8.0.0',
         'Rackio==1.0.2',
-        'easy-deco==0.0.7',
+        'easy-deco==0.0.9',
         'seaborn',
         'xlrd==1.2.0',
         'openpyxl==3.0.6',

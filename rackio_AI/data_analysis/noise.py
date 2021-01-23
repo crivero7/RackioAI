@@ -2,11 +2,18 @@ import numpy as np
 import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils.core import Utils
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
+@set_to_methods(del_temp_attr)
 class Noise:
     """
     Encapsulates method to work with noise
     """
+    _instances = list()
+
+    def __init__(self):
+
+        Noise._instances.append(self)
 
     def add(
         self, 
@@ -58,7 +65,6 @@ class Noise:
         self.__first_step_add(cols, **options)
 
         df = self._df_
-        delattr(self, "_df_")
 
         return df
 

@@ -2,21 +2,26 @@ import os
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
+from easy_deco.del_temp_attr import DelTempAttr
 from rackio_AI.utils import Utils
 from rackio_AI.readers.tpl.options import TPLOptions
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+@set_to_methods(del_temp_attr)
 class TPL:
     """
     **TPL** class allows to you load into RackioAI .tpl files in pandas.DataFrame format.
     """
 
     tpl_options = TPLOptions()
+    _instances = list()       
 
     def __init__(self):
 
         self.file_extension = ".tpl"
         self.doc = list()
+        TPL._instances.append(self)
 
     def read(self, name):
         """

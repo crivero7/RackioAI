@@ -98,7 +98,6 @@ class Pipeline(object):
         """
         # Define source component
         f = self.sink(args[-1])
-        f = self.__del_temp_attr(f)
         _sink = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
         c = self.__sink(_sink)
         c.__next__() 
@@ -107,15 +106,13 @@ class Pipeline(object):
         # Define filters component
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
-            f = self.__del_temp_attr(stg)
-            _filter = Func(f, *filter_args[i]["args"], **filter_args[i]["kwargs"])
+            _filter = Func(stg, *filter_args[i]["args"], **filter_args[i]["kwargs"])
             s = self.__filter(_filter, t)
             s.__next__() 
             t = s
 
         # Define source component
-        f = self.__del_temp_attr(args[0])
-        _source = Func(f, *func_args[0]["args"], **func_args[0]["kwargs"])
+        _source = Func(args[0], *func_args[0]["args"], **func_args[0]["kwargs"])
         p = self.__source(_source, t)
         p.__next__() 
         self._pipeline = p
@@ -252,34 +249,6 @@ class Pipeline(object):
         """
         self.app._data = value
 
-    def __del_temp_attr(self, f):
-        """
-        Decorator to delete all temporary attributes generated in each pipeline component
-
-        **Parameters**
-
-        * **:param f:** (Function) function to be decorated
-        """
-    
-        def wrapper(*args, **kwargs):
-
-            result = f(*args, **kwargs)
-
-            attrs = inspect.getmembers(self, lambda attr:not(inspect.isroutine(attr)))
-
-            for attr, _ in attrs:
-
-                if attr.startswith('_') and attr.endswith('_'):
-                    
-                    if not(attr.startswith('__')) and not(attr.endswith('__')):
-
-                        delattr(self, attr)
-
-            self.data = result
-
-            return result
-
-        return wrapper
 
 class Func(object):
     """

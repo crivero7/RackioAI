@@ -3,13 +3,21 @@ from easy_deco.progress_bar import ProgressBar
 from rackio_AI.utils import Utils
 import rackio_AI
 import os
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+@set_to_methods(del_temp_attr)
 class EXL:
     """
     Supports xls, xlsx, xlsm, xlsb, odf, ods and odt file extensions read from a local filesystem or URL.
     Supports an option to read a single sheet or a list of sheets.
     """
+
+    _instances = list()
+
+    def __init__(self):
+
+        EXL._instances.append(self)
 
     def read(self, pathname: str, **exl_options):
         """

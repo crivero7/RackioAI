@@ -3,8 +3,10 @@ from rackio_AI.readers.tpl import TPL
 from rackio_AI.readers._csv_.core import CSV
 from rackio_AI.readers.pkl.core import PKL
 from rackio_AI.readers.exl.core import EXL
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+@set_to_methods(del_temp_attr)
 class Reader:
     """
     In all data analysis projects you must load data from different file extensions, so, the **Reader** class has that
@@ -20,6 +22,11 @@ class Reader:
     _csv = CSV()
     pkl = PKL()
     exl = EXL()
+    _instances = list()
+
+    def __init__(self):
+
+        Reader._instances.append(self)
 
     def read(self, pathname: str, ext: str=".tpl", **kwargs):
         """

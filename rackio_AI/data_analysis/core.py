@@ -8,8 +8,12 @@ from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
 from easy_deco.progress_bar import ProgressBar
 import datetime
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+app = RackioAI()
+
+@set_to_methods(del_temp_attr)
 class RackioEDA(Pipeline):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
@@ -33,9 +37,9 @@ class RackioEDA(Pipeline):
     * **RackioEDA object**
     """
 
-    app = RackioAI()
     outliers = Outliers()
     noise = Noise()
+    _instances = list()
 
     def __init__(self, name="", description=""):
         """
@@ -48,7 +52,8 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
-        self.app.append(self)
+        app.append(self)
+        RackioEDA._instances.append(self)
         
     def serialize(self):
         """
@@ -990,6 +995,14 @@ class Plot:
         pass
 
 if __name__ == "__main__":
-    import doctest
+    # import doctest
 
-    doctest.testmod()
+    # doctest.testmod()
+
+    import pandas as pd
+
+    EDA = RackioEDA(name="EDA")
+    df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+    data = pd.DataFrame([[10, 11], [13, 14], [16, 17]], columns=['Two','Three'])
+    columns=['Two','Three']
+    EDA.change_columns(df, data, columns)

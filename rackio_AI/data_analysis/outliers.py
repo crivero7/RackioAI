@@ -7,8 +7,10 @@ import scipy.stats as stats
 from statsmodels.tsa.ar_model import AutoReg
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
+@set_to_methods(del_temp_attr)
 class Outliers:
     """
     In statistics, an outlier is a data point that differs significantly from other observations.
@@ -30,10 +32,13 @@ class Outliers:
 
 
     """
+    _instances = list()
+        
     def __init__(self):
 
         self.outliers = dict()
         self.detected = dict()
+        Outliers._instances.append(self)
 
     def add(
         self, 
@@ -89,7 +94,6 @@ class Outliers:
         self.__first_step_add(cols, **options)
 
         df = self._df_
-        delattr(self, "_df_")
 
         return df
 
@@ -276,8 +280,6 @@ class Outliers:
         self.__first_step_detect(cols, **options)
 
         df = self._df_
-
-        delattr(self, "_df_")
 
         return df
 
