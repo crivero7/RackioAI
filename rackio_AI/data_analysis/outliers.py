@@ -72,7 +72,7 @@ class Outliers:
         >>> plt.show()
 
         ```
-        ![Add Outlier](../../img/add_outliers.png)
+        ![Add Outlier](../img/add_outliers.png)
 
         """
         options = {
@@ -259,7 +259,7 @@ class Outliers:
         >>> plt.show()
 
         ```
-        ![Detect Outlier](../../img/impute_outliers.png)
+        ![Detect Outlier](../img/impute_outliers.png)
     
         """
         self._df_ = df.copy()

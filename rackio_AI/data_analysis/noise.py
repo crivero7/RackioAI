@@ -44,7 +44,7 @@ class Noise:
         >>> plt.show()
 
         ```
-        ![Add rhinehardt noise](../../img/rhinehardt_noise.png)
+        ![Add rhinehardt noise](../img/rhinehardt_noise.png)
         """
         options = {
             'win_size': win_size,
