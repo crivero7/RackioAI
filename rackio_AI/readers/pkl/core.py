@@ -13,7 +13,7 @@ class PKL:
         """
         Read a DataFrame saved with RackioAI's save method as a pkl file
 
-        **Parameters*
+        **Parameters**
 
         * **:param pathname:** (str) Filename or directory 
         """  
@@ -21,7 +21,7 @@ class PKL:
         self.__read(pathname, **kwargs)
         df = pd.concat(self._df_)
 
-        # delattr(self, "_df_")
+        delattr(self, "_df_")
             
         return df
 
