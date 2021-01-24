@@ -13,6 +13,7 @@ from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 app = RackioAI()
 
+@set_to_methods(del_temp_attr)
 class RackioEDA(Pipeline):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter

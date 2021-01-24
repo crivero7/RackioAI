@@ -152,7 +152,11 @@ class Utils:
         return pathname, file_ext
 
     @staticmethod
-    def round(value: float, decimals: int=0, down: bool=True)->float:
+    def round(
+        value: float, 
+        decimals: int=0,
+        down: bool=True
+        )->float:
         """
         Round down or up a value
 
@@ -193,7 +197,11 @@ class Utils:
             return math.ceil(value * multiplier) / multiplier
 
     @staticmethod
-    def is_between(min_value: float, value: float, max_value: float)-> bool:
+    def is_between(
+        min_value: float, 
+        value: float, 
+        max_value: float
+        )-> bool:
         """
         Check if a value is between a min and a  max value
 
