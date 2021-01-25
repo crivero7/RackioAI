@@ -5,7 +5,9 @@ from easy_deco.progress_bar import ProgressBar
 from random import uniform, choice
 import scipy.stats as stats
 from statsmodels.tsa.ar_model import AutoReg
+from sklearn.metrics import precision_recall_curve, auc
 import warnings
+import itertools
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
@@ -36,8 +38,9 @@ class Outliers:
         
     def __init__(self):
 
-        self.outliers = dict()
-        self.detected = dict()
+        self.outliers = None
+        self.detected = None
+        self.optimizer = None
         Outliers._instances.append(self)
 
     def add(
@@ -84,6 +87,8 @@ class Outliers:
             "percent": percent,
             "method": method,
         }
+
+        self.outliers = dict()
 
         self._df_ = df.copy()
 
@@ -270,6 +275,8 @@ class Outliers:
         """
         self._df_ = df.copy()
 
+        self.detected = dict()
+
         if not cols:
 
             cols = Utils.get_column_names(self._df_)
@@ -292,8 +299,6 @@ class Outliers:
         """
         Documentation here
         """
-        win_size = kwargs['win_size']
-        step = kwargs['step']
         kwargs['col'] = col
 
         # self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
@@ -451,8 +456,77 @@ class Outliers:
 
             return sample.median()
 
+    def best(
+        self,
+        df: pd.DataFrame,
+        grid_type: str, 
+        *args):
+        """
+        Documentation here
+        """
+        _iterator = self.__get_iterator(grid_type, *args)
+
+        if not self.outliers:
+
+            self.add(df)
+
+        self.optimizer = list()
+        self._df_ = df
+        self.__best(_iterator)
+
+        return df
+
+    @ProgressBar(desc="Optimizer running...", unit="combination")
+    def __best(self, _iterator, **kwargs):
+        """
+        Documentation here
+        """
+        win_size, step = _iterator
+        self.detect(self._df_, win_size=win_size, step=step)
+        self.optimizer.append(self.detected)
+
+        result = dict()
+
+        for col in list(self.detected.keys()):
+            
+            precision, recall, _ = precision_recall_curve(
+                self.outliers[col]['values'], 
+                self.detected[col]['values']
+                )
+
+            _auc = auc(recall, precision)
+
+            result[col] = {
+                "win_size": win_size,
+                "step": step,
+                "auc": _auc
+            }
+
+        self.optimizer.append(result)
+
+        return            
+
+    def __get_iterator(self, grid_type: str, *args):
+        """
+        Documentation here
+        """
+        valid_iter = ['product', 'permutations', 'combinations', 'combinations_with_replacement']
+        if grid_type.lower() in valid_iter:
+
+            it = getattr(itertools, grid_type)
+
+            return list(it(*args))
+        
+        else: 
+
+            raise ValueError("Use this type {}".format(valid_iter))
 
 if __name__ == "__main__":
-    import doctest
+    # import doctest
 
-    doctest.testmod()
+    # doctest.testmod()
+    windows = range(10, 30, 10)
+    steps = range(1, 3)
+    df = pd.DataFrame(np.random.randn(1000,2), columns=["a", "b"])
+    out = Outliers()
+    out.best(df, "product", *(windows, steps))
