@@ -103,6 +103,7 @@ class Outliers:
         Documentation here
         """
         percent = kwargs["percent"]
+        kwargs['col'] = column
         _subset_ = self._df_[column].sample(frac=percent / 100)
         self._cols_ = column
         self._locs_ = list(_subset_.index)
@@ -118,13 +119,14 @@ class Outliers:
 
         return
 
-    @ProgressBar(desc="Adding outliers...", unit="columns")
+    @ProgressBar(desc="Adding outliers...", unit="columns", activate=False)
     def __second_step_add(self, index, **kwargs):
         """
         Documentation here
         """
         method = kwargs["method"]
-        window = self._df_.loc[index - 3: index + 3].values
+        col = kwargs['col']
+        window = self._df_[col].loc[index - 3: index + 3].values
         
         if method.lower() == "tf": # tukey fence method
             
@@ -277,13 +279,15 @@ class Outliers:
             "step": step
         }
 
+        self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
+
         self.__first_step_detect(cols, **options)
 
         df = self._df_
 
         return df
 
-    @ProgressBar(desc="Detecting outliers...", unit="columns")
+    @ProgressBar(desc="Detecting outliers...", unit="columns", activate=False)
     def __first_step_detect(self, col, **kwargs):
         """
         Documentation here
@@ -292,7 +296,7 @@ class Outliers:
         step = kwargs['step']
         kwargs['col'] = col
 
-        self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
+        # self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
         
         self._start_ = 0
         self._locs_ = list()
@@ -373,7 +377,7 @@ class Outliers:
 
         return self._status_outlier_
     
-    @ProgressBar(desc="Checking outlier detected...", unit="outlier")
+    @ProgressBar(desc="Checking outlier detected...", unit="outlier", activate=False)
     def __check(self, subset, **kwargs):
         """
         Decorated function to visualize the progress bar during the execution of *check* method
