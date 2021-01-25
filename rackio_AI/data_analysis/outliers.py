@@ -437,7 +437,7 @@ class Outliers:
 
         if Utils.is_between(min_lim, value, max_lim):
 
-            return
+            return np.array([])
 
         elif Utils.is_between(min_lim, predictions[loc], max_lim):
 
