@@ -8,9 +8,9 @@ from statsmodels.tsa.ar_model import AutoReg
 from sklearn.metrics import precision_recall_curve, auc
 import warnings
 import itertools
+warnings.filterwarnings("ignore", category=RuntimeWarning) 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
-
 
 
 class Outliers:
@@ -31,7 +31,7 @@ class Outliers:
             * **locs:** (list) locations where were the outliers added
             * **values:** (list) Outliers values added
             * **performance:** (float)
-
+    * **optimizer_result:** (pandas.DataFrame)
 
     """
     _instances = list()
@@ -40,7 +40,7 @@ class Outliers:
 
         self.outliers = None
         self.detected = None
-        self.optimizer = None
+        self.optimizer_result = None
         Outliers._instances.append(self)
 
     def add(
@@ -131,7 +131,7 @@ class Outliers:
         """
         method = kwargs["method"]
         col = kwargs['col']
-        window = self._df_[col].loc[index - 3: index + 3].values
+        window = self._df_[col].loc[index - 10: index + 10].values
         
         if method.lower() == "tf": # tukey fence method
             
@@ -209,7 +209,11 @@ class Outliers:
 
         return q_min, q_max, iqr
 
-    def z_score(self, df: pd.DataFrame, threshold: float=3)->list:
+    def z_score(
+        self, 
+        df: pd.DataFrame,
+        threshold: float=3
+        )->list:
         """
         Rejects outlier values based on z-score modified
 
@@ -300,8 +304,6 @@ class Outliers:
         Documentation here
         """
         kwargs['col'] = col
-
-        # self._serie_list_ = Utils().get_windows(self._df_, win_size, step=step)
         
         self._start_ = 0
         self._locs_ = list()
@@ -362,9 +364,24 @@ class Outliers:
 
         return
 
-    def check(self, value: float, subsets: list, col: str)->bool:
+    def check(
+        self, 
+        value: float, 
+        subsets: list, 
+        col: str
+        )->bool:
         """
-        Documentation here
+        Check if any value is an outlier in subsets using sliding windows and z-score modified
+
+        **Parameters**
+
+        * **:param value:** (float) Value to check if an outlier value
+        * **:param subset:** (list) Dataframes list with sliding windows
+        * **:param col:** (str) Column name where belongs value in the dataframe
+
+        **returns**
+
+        **status_outlier:** (bool) If true the value is an outlier
         """
         self._count_ = 0
         self._value_ = value
@@ -456,42 +473,76 @@ class Outliers:
 
             return sample.median()
 
-    def best(
+    def best_win_size_step(
         self,
         df: pd.DataFrame,
         grid_type: str, 
-        *args):
+        *args,
+        **kwargs
+        ):
         """
-        Documentation here
+        Grid search of window and step size for sliding windows problems
+
+        **Parameters**
+
+        * **:param df:** (Pandas.DataFrame)
+        * **:param  grid_type:** (str)
+        * **:param args:**
+            * **win_sizes:** (list)
+            * **steps:** (list)
+        * **:param percent:** (float)
+
+        **returns**
+
+        * **df:** (pandas.DataFrame)
+
         """
-        _iterator = self.__get_iterator(grid_type, *args)
+        _iterator = self.__get_grid(grid_type, *args)
 
         if not self.outliers:
+            default_kw = {
+                'percent': 0.5,
+                }
+            kw = Utils.check_default_kwargs(default_kw, kwargs)
+            df = self.add(df, percent=kw['percent'])
 
-            self.add(df)
+        self.optimizer_result = list()
+        self.__best(_iterator, df=df)
 
-        self.optimizer = list()
-        self._df_ = df
-        self.__best(_iterator)
+        self.optimizer_result = self.__transform_opt_result_to_df()
 
         return df
 
     @ProgressBar(desc="Optimizer running...", unit="combination")
     def __best(self, _iterator, **kwargs):
         """
-        Documentation here
-        """
-        win_size, step = _iterator
-        self.detect(self._df_, win_size=win_size, step=step)
-        self.optimizer.append(self.detected)
+        Decorated function to visualize the progress bar during the execution of 
+        best_win_size_step method
 
+        **Parameters**
+
+        * **:param column_name:** (list) list of grid
+
+        **returns**
+
+        None
+        """
+        df = kwargs['df']
+        win_size, step = _iterator
+        self.detect(df, win_size=win_size, step=step)
+        
         result = dict()
 
-        for col in list(self.detected.keys()):
+        for col in Utils.get_column_names(df):
+            
+            y_pred = pd.Series(0, index=df[col].index)
+            y_pred.loc[y_pred.index.isin(self.detected[col]['locs'])] = 1
+            y = pd.Series(0, index=df[col].index)
+            y.loc[y.index.isin(self.outliers[col]['locs'])] = 1
             
             precision, recall, _ = precision_recall_curve(
-                self.outliers[col]['values'], 
-                self.detected[col]['values']
+                y.values, 
+                y_pred.values
                 )
 
             _auc = auc(recall, precision)
@@ -502,13 +553,67 @@ class Outliers:
                 "auc": _auc
             }
 
-        self.optimizer.append(result)
+        self.optimizer_result.append(result)
+        
+        return 
 
-        return            
-
-    def __get_iterator(self, grid_type: str, *args):
+    def __transform_opt_result_to_df(self)->pd.DataFrame:
         """
-        Documentation here
+        Transform optimizer result dictionary to pandas dataframe Multiindex
+
+        **Parameters**
+
+        None
+
+        **returns**
+
+        **df:** (pandas.DataFrame)
+        """
+        variables = list(self.optimizer_result[0].keys())
+        _variables = list()
+        items = list(self.optimizer_result[0][variables[0]].keys())
+        _items = list()
+        values = np.zeros((len(variables) * len(items), len(self.optimizer_result)))
+        cols = list()
+        col = 0
+
+        for opt in self.optimizer_result:
+            
+            row = 0
+
+            for var in variables:
+
+                for it in items:
+                    
+                    values[row, col] = opt[var][it]
+                    row += 1
+
+                    if col == 0:
+
+                        _variables.append(var)
+                        _items.append(it)
+
+            cols.append('run {}'.format(col + 1))
+            col += 1
+
+        _index = [_variables, _items]
+        df = pd.DataFrame(values, columns=cols, index=_index)
+        df.index.names = ['Variables','Properties']
+
+        return df
+                   
+    def __get_grid(self, grid_type: str, *args, **kwargs):
+        """
+        Get grid for searching of the best window size and step size
+
+        **Parameters**
+
+        * **:param grid_type:** (str) Combinatoric iterators in itertools
+            * **product:** Cartesian product equivalent a nested for-loop
+            * **permutations:** r-length tuples, all posible orderings, no repeated elements
+            * **combinations:** r-length tuples, in sorted order, no repeated elements
+            * **combinations_with_replacement:** r-length tuples, in sorted order, with repeated elements
+
         """
         valid_iter = ['product', 'permutations', 'combinations', 'combinations_with_replacement']
         if grid_type.lower() in valid_iter:
@@ -521,12 +626,34 @@ class Outliers:
 
             raise ValueError("Use this type {}".format(valid_iter))
 
-if __name__ == "__main__":
-    # import doctest
+    def get_best_window_step_size(self):
+        """
+        Get best window and step size after optimization
 
-    # doctest.testmod()
-    windows = range(10, 30, 10)
-    steps = range(1, 3)
-    df = pd.DataFrame(np.random.randn(1000,2), columns=["a", "b"])
-    out = Outliers()
-    out.best(df, "product", *(windows, steps))
+        **Parameters**
+
+        None
+
+        **returns**
+        
+        **best_win_size, best_step_size** (Tuple of int values)
+
+        """
+        if isinstance(self.optimizer_result, pd.DataFrame):
+
+            df = self.optimizer_result
+            betters = df[df.index.get_level_values('Properties') == 'auc']
+            best_run = betters.idxmax(axis=1)[0]
+            best_step_size = int(df[df.loc[:, best_run].index.get_level_values('Properties') == 'step'].loc[:, best_run][0])
+            best_win_size = int(df[df.loc[:, best_run].index.get_level_values('Properties') == 'win_size'].loc[:, best_run][0])
+            
+            return best_win_size, best_step_size
+        
+        else:
+
+            return None, None
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()
