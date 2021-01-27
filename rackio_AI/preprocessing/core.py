@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
-from rackio_AI.preprocessing import Scaler, Splitter, KalmanFilter
+from rackio_AI.preprocessing import RackioAIScaler, Splitter, KalmanFilter, LSTMDataPreparation
 
 
 app = RackioAI()
@@ -9,33 +9,14 @@ app = RackioAI()
 class Preprocessing:
     """
     This class allows to you do preprocessing to the data in *RackioAI* or *RackioEDA
+    
     """
+    scaler = RackioAIScaler()
 
     def __init__(self, name, description, problem_type='regression'):
         """
         Preprocessing instantiation
 
-        ___
-        **Parameters**
-
-        * **:param name:** (str) Preprocessing model name
-        * **:param description:** (str) Preprocessing model description
-        * **:param problem_type:** (str) Preprocessing model type
-            * *regression*
-            * *classification*
-
-        **:return:**
-
-        * **preprocessing:** (Preprocessing object)
-
-        ___
-
-        ## Snippet code
-        ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
-
-        ```
         """
         self._data = None
         self._name = name
@@ -53,9 +34,10 @@ class Preprocessing:
 
                 self.preprocess = Classification(name, description)
 
-        self.scaler = Scaler()
         self.kalman_filter = KalmanFilter()
         self.splitter = Splitter()
+        self.lstm_data_preparation = LSTMDataPreparation()
+
 
     @property
     def data(self):
@@ -115,8 +97,8 @@ class Preprocessing:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> from rackio_AI import Preprocessing
+        >>> preprocess = Preprocessing(name='Preprocess 2', description='preprocess for data', problem_type='regression')
         >>> preprocess.description
         'preprocess for data'
 
@@ -130,36 +112,6 @@ class Preprocessing:
 
         """
         self._description = value
-
-    def __call__(self, action):
-        """
-        Invoker to apply any preprocessing action
-
-        **Parameters**
-
-        * **:param action:** (str) preprocessing to do
-            * *scaler*
-            * *filter*
-            * *split*
-
-        **:return:**
-
-        * **data:** (pd.DataFrame) Preprocessed data
-
-        """
-        allowed_actions = ["scaler", "filter", "split"]
-
-        if action.lower() in allowed_actions:
-
-            todo = getattr(self.preprocess,action.lower())
-
-            data = todo(self.data)
-
-            return data
-        else:
-            raise NotImplementedError("{} method is not implemented in {} class".format(action, self._preprocesssing.get_type().get_name()))
-
-        return
 
     def serialize(self):
         """
@@ -178,10 +130,10 @@ class Preprocessing:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> from rackio_AI import Preprocessing
+        >>> preprocess = Preprocessing(name='Preprocess 3', description='preprocess for data', problem_type='regression')
         >>> preprocess.serialize()
-        {'name': 'Preprocess model name', 'description': 'preprocess for data', 'type': 'regression'}
+        {'name': 'Preprocess 3', 'description': 'preprocess for data', 'type': 'regression'}
 
         ```
         """
@@ -209,9 +161,9 @@ class Preprocessing:
 
         ```python
         >>> from rackio_AI import RackioAI, Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess model name', description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess 4', description='preprocess for data', problem_type='regression')
         >>> preprocess.get_name()
-        'Preprocess model name'
+        'Preprocess 4'
 
         ```
         """
@@ -257,5 +209,7 @@ class Classification(Preprocessing):
         self._description = description
 
 if __name__=="__main__":
+    
     import doctest
+
     doctest.testmod()

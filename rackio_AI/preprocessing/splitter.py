@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split as TTS
+from rackio_AI.utils import Utils
 import numpy as np
 import pandas as pd
 
@@ -27,11 +28,8 @@ class Splitter:
 
         ## Snippet code
         ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
+        >>> from rackio_AI import Preprocessing
+        >>> preprocess = Preprocessing(name='Preprocess 1',description='preprocess for data', problem_type='regression')
         >>> print(preprocess.splitter)
         Splitter Object
         {'train_size': None, 'test_size': None, 'validation_size': None, 'random_state': None, 'shuffle': True, 'stratify': None}
@@ -83,12 +81,9 @@ class Splitter:
 
         ## Snippet code
         ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> from rackio import Rackio
+        >>> from rackio_AI import  Preprocessing
         >>> import numpy as np
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Preprocess model name',description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess 2',description='preprocess for data', problem_type='regression')
         >>> X, y = np.arange(20).reshape((10, 2)), range(10)
         >>> X
         array([[ 0,  1],
@@ -260,6 +255,133 @@ class Splitter:
         """
         return "Splitter Object\n{}".format(self.default_options)
 
+
+class LSTMDataPreparation:
+    """
+    Documentation here
+    """
+
+    def __init__(self):
+        pass
+
+    def split_sequences(
+        self, 
+        df: pd.DataFrame, 
+        timesteps:int,
+        stepsize: int= 1, 
+        input_cols: list=None, 
+        output_cols: list=None
+        ):
+        """
+        **Parameters**
+
+        * **:param df:** (Pandas.DataFrame)
+        * **:param timesteps:** (int)
+        * **:param input_cols:** (list)
+        * **:param output_cols:** (list)
+
+        **returns**
+
+        **sequences** (tensor)
+
+        ```python
+        >>> import numpy as np
+        >>> from rackio_AI import Preprocessing
+        >>> a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90]).reshape(-1,1)
+        >>> b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
+        >>> c = np.array([a[i]+b[i] for i in range(len(a))]).reshape(-1,1)
+        >>> data = np.hstack((a,b,c))
+        >>> data
+        array([[ 10,  15,  25],
+               [ 20,  25,  45],
+               [ 30,  35,  65],
+               [ 40,  45,  85],
+               [ 50,  55, 105],
+               [ 60,  65, 125],
+               [ 70,  75, 145],
+               [ 80,  85, 165],
+               [ 90,  95, 185]])
+        >>> df = pd.DataFrame(data, columns=['a', 'b', 'c'])
+        >>> preprocess = Preprocessing(name='LSTM Data Preparation', description='LSTM')
+        >>> x, y = preprocess.lstm_data_preparation.split_sequences(df, 2)
+        >>> x
+        array([[[10., 15.],
+                [20., 25.]],
+        <BLANKLINE>
+               [[20., 25.],
+                [30., 35.]],
+        <BLANKLINE>
+               [[30., 35.],
+                [40., 45.]],
+        <BLANKLINE>
+               [[40., 45.],
+                [50., 55.]],
+        <BLANKLINE>
+               [[50., 55.],
+                [60., 65.]],
+        <BLANKLINE>
+               [[60., 65.],
+                [70., 75.]],
+        <BLANKLINE>
+               [[70., 75.],
+                [80., 85.]],
+        <BLANKLINE>
+               [[80., 85.],
+                [90., 95.]]])
+        >>> y
+        array([[[ 25.],
+                [ 45.]],
+        <BLANKLINE>
+               [[ 45.],
+                [ 65.]],
+        <BLANKLINE>
+               [[ 65.],
+                [ 85.]],
+        <BLANKLINE>
+               [[ 85.],
+                [105.]],
+        <BLANKLINE>
+               [[105.],
+                [125.]],
+        <BLANKLINE>
+               [[125.],
+                [145.]],
+        <BLANKLINE>
+               [[145.],
+                [165.]],
+        <BLANKLINE>
+               [[165.],
+                [185.]]])
+
+        ```
+        """
+        if not input_cols:
+
+            input_cols = Utils.get_column_names(df)
+            input_cols = input_cols[:-1]
+        
+        if not output_cols:
+
+            output_cols = Utils.get_column_names(df)
+            output_cols = [output_cols[-1]]
+
+        input_data = df.loc[:, input_cols]
+        output_data = df.loc[:, output_cols]
+        iteration = list(range(0, input_data.shape[0] - timesteps + stepsize, stepsize))
+
+        x_sequences = np.zeros((len(iteration), timesteps, len(input_cols)))
+        y_sequences = np.zeros((len(iteration), timesteps, len(output_cols)))
+        
+        for i in iteration:
+
+            x_sequences[i] = input_data.values[i : i + stepsize + 1, :]
+            y_sequences[i] = output_data.values[i : i + stepsize + 1, :]
+
+        return x_sequences, y_sequences
+
+
+
 if __name__=="__main__":
     import doctest
     doctest.testmod()
+    
