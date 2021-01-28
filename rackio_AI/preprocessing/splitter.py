@@ -404,6 +404,28 @@ class LSTMDataPreparation:
         Pre-padding or removing values from the beginning of the sequence is the
         default.
 
+        **Parameters**
+
+        * **:param sequences:** (list) List of sequences (each sequence is a list of integers).
+        * **:param maxlen:** (Optional Int), maximum length of all sequences. If not provided,
+        sequences will be padded to the length of the longest individual sequence.
+        * **:param dtype:** (Optional, defaults to int32). Type of the output sequences.
+        To pad sequences with variable length strings, you can use `object`.
+        * **:param padding:** (String, 'pre' or 'post') (optional, defaults to 'pre'):
+        pad either before or after each sequence.
+        * **:param truncating:** (String, 'pre' or 'post') (optional, defaults to 'pre'):
+        remove values from sequences larger than `maxlen`, either at the beginning or at the end of the sequences.
+        * **:param value:** (Float or String), padding value. (Optional, defaults to 0.)
+        
+        **returns:**
+            
+        * **Numpy array** with shape `(len(sequences), maxlen)`
+        
+        **Raises:**
+        
+        * **ValueError:** In case of invalid values for `truncating` or `padding`, or in case of invalid
+        shape for a `sequences` entry.
+
         ```python
         >>> from rackio_AI import Preprocessing
         >>> sequence = [[1], [2, 3], [4, 5, 6]]
@@ -426,24 +448,6 @@ class LSTMDataPreparation:
                [5, 6]])
         
         ```
-        Args:
-            sequences: List of sequences (each sequence is a list of integers).
-            maxlen: Optional Int, maximum length of all sequences. If not provided,
-                sequences will be padded to the length of the longest individual
-                sequence.
-            dtype: (Optional, defaults to int32). Type of the output sequences.
-                To pad sequences with variable length strings, you can use `object`.
-            padding: String, 'pre' or 'post' (optional, defaults to 'pre'):
-                pad either before or after each sequence.
-            truncating: String, 'pre' or 'post' (optional, defaults to 'pre'):
-                remove values from sequences larger than
-                `maxlen`, either at the beginning or at the end of the sequences.
-            value: Float or String, padding value. (Optional, defaults to 0.)
-        Returns:
-            Numpy array with shape `(len(sequences), maxlen)`
-        Raises:
-            ValueError: In case of invalid values for `truncating` or `padding`,
-                or in case of invalid shape for a `sequences` entry.
         """
 
         return pad_seq(sequences, maxlen=maxlen, dtype=dtype, padding=padding, truncating=truncating, value=value)
