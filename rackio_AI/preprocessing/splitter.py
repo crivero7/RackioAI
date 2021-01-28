@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split as TTS
+from tensorflow.keras.preprocessing.sequence import pad_sequences as pad_seq
 from rackio_AI.utils import Utils
 import numpy as np
 import pandas as pd
@@ -304,6 +305,8 @@ class LSTMDataPreparation:
         >>> df = pd.DataFrame(data, columns=['a', 'b', 'c'])
         >>> preprocess = Preprocessing(name='LSTM Data Preparation', description='LSTM')
         >>> x, y = preprocess.lstm_data_preparation.split_sequences(df, 2)
+        >>> x.shape
+        (8, 2, 2)
         >>> x
         array([[[10., 15.],
                 [20., 25.]],
@@ -328,30 +331,24 @@ class LSTMDataPreparation:
         <BLANKLINE>
                [[80., 85.],
                 [90., 95.]]])
+        >>> y.shape
+        (8, 1, 1)
         >>> y
-        array([[[ 25.],
-                [ 45.]],
+        array([[[ 45.]],
         <BLANKLINE>
-               [[ 45.],
-                [ 65.]],
+               [[ 65.]],
         <BLANKLINE>
-               [[ 65.],
-                [ 85.]],
+               [[ 85.]],
         <BLANKLINE>
-               [[ 85.],
-                [105.]],
+               [[105.]],
         <BLANKLINE>
-               [[105.],
-                [125.]],
+               [[125.]],
         <BLANKLINE>
-               [[125.],
-                [145.]],
+               [[145.]],
         <BLANKLINE>
-               [[145.],
-                [165.]],
+               [[165.]],
         <BLANKLINE>
-               [[165.],
-                [185.]]])
+               [[185.]]])
 
         ```
         """
@@ -370,18 +367,100 @@ class LSTMDataPreparation:
         iteration = list(range(0, input_data.shape[0] - timesteps + stepsize, stepsize))
 
         x_sequences = np.zeros((len(iteration), timesteps, len(input_cols)))
-        y_sequences = np.zeros((len(iteration), timesteps, len(output_cols)))
+        y_sequences = np.zeros((len(iteration), 1, len(output_cols)))
         
         for i in iteration:
 
-            x_sequences[i] = input_data.values[i : i + stepsize + 1, :]
-            y_sequences[i] = output_data.values[i : i + stepsize + 1, :]
+            x_sequences[i] = input_data.values[i : i + timesteps, :]
+            y_sequences[i] = output_data.values[i + timesteps - 1, :]
 
         return x_sequences, y_sequences
+
+    def pad_sequences(
+        self,
+        sequences,
+        maxlen=None,
+        dtype='int32',
+        padding='pre',
+        truncating='pre',
+        value=0.
+        ):
+        """
+        Pads sequences to the same length.
+
+        This function transforms a list (of length `num_samples`) of sequences (lists of integers)
+        into a 2D Numpy array of shape `(num_samples, num_timesteps)`.
+
+        `num_timesteps` is either the `maxlen` argument if provided, or the length of the longest 
+        sequence in the list.
+
+        Sequences that are shorter than `num_timesteps` are padded with `value` until they are 
+        `num_timesteps` long.
+
+        Sequences longer than `num_timesteps` are truncated so that they fit the desired length.
+
+        The position where padding or truncation happens is determined by the arguments `padding` 
+        and `truncating`, respectively.
+        Pre-padding or removing values from the beginning of the sequence is the
+        default.
+
+        ```python
+        >>> from rackio_AI import Preprocessing
+        >>> sequence = [[1], [2, 3], [4, 5, 6]]
+        >>> preprocessing = Preprocessing(name='Pad sequence', description='preprocess for data', problem_type='regression')
+        >>> preprocessing.lstm_data_preparation.pad_sequences(sequence)
+        array([[0, 0, 1],
+               [0, 2, 3],
+               [4, 5, 6]])
+        >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, value=-1)
+        array([[-1, -1,  1],
+               [-1,  2,  3],
+               [ 4,  5,  6]])
+        >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, padding='post')
+        array([[1, 0, 0],
+               [2, 3, 0],
+               [4, 5, 6]])
+        >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, maxlen=2)
+        array([[0, 1],
+               [2, 3],
+               [5, 6]])
+        
+        ```
+        Args:
+            sequences: List of sequences (each sequence is a list of integers).
+            maxlen: Optional Int, maximum length of all sequences. If not provided,
+                sequences will be padded to the length of the longest individual
+                sequence.
+            dtype: (Optional, defaults to int32). Type of the output sequences.
+                To pad sequences with variable length strings, you can use `object`.
+            padding: String, 'pre' or 'post' (optional, defaults to 'pre'):
+                pad either before or after each sequence.
+            truncating: String, 'pre' or 'post' (optional, defaults to 'pre'):
+                remove values from sequences larger than
+                `maxlen`, either at the beginning or at the end of the sequences.
+            value: Float or String, padding value. (Optional, defaults to 0.)
+        Returns:
+            Numpy array with shape `(len(sequences), maxlen)`
+        Raises:
+            ValueError: In case of invalid values for `truncating` or `padding`,
+                or in case of invalid shape for a `sequences` entry.
+        """
+
+        return pad_seq(sequences, maxlen=maxlen, dtype=dtype, padding=padding, truncating=truncating, value=value)
 
 
 
 if __name__=="__main__":
     import doctest
     doctest.testmod()
+    # a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90]).reshape(-1,1)
+    # b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
+    # c = np.array([a[i]+b[i] for i in range(len(a))]).reshape(-1,1)
+    # data = np.hstack((a,b,c))
+    # df = pd.DataFrame(data, columns=['a', 'b', 'c'])
+    # lst = LSTMDataPreparation()
+    # x, y = lst.split_sequences(df, 2)
+    # print(x)
+    # print(x.shape)
+    # print(y.shape)
     

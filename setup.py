@@ -34,7 +34,8 @@ setuptools.setup(
         'openpyxl==3.0.6',
         'odfpy==1.4.1',
         'pyxlsb==1.0.8',
-        'statsmodels==0.12.1'
+        'statsmodels==0.12.1',
+        'tensorflow==2.4.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
