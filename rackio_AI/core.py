@@ -141,20 +141,20 @@ class RackioAI(Singleton):
         >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
         >>> df = RackioAI.load(filename)
         >>> print(df.head())
-          (time, s) (/Bed-1.In.MoleFlow, kmol/h) (/Bed-1.In.P, kPa)  ... (/Sep2.In.P, kPa) (/Sep3.In.P, kPa) (/Tail_Gas.In.T, C)
-        1         1                  2072.582713        285.9299038  ...       315.8859771       291.4325134                 159
-        2         2                  2081.622826        286.9027793  ...       315.8953772       292.3627861                 159
-        3         3                   2085.98973        287.5966429  ...       316.0995398       293.0376745                 159
-        4         4                  2089.323383        288.1380485  ...       316.3974799       293.5708836                 159
-        5         5                  2092.214077         288.591646  ...       316.7350299       294.0200778                 159
-        <BLANKLINE>
-        [5 rows x 16 columns]
+           Pipe-60 Totalmassflow_(KG/S)  Pipe-151 Totalmassflow_(KG/S)  Pipe-60 Pressure_(PA)  Pipe-151 Pressure_(PA)
+        0                      37.83052                       37.83052               568097.3                352683.3
+        1                      37.83918                       37.70243               568098.2                353449.8
+        2                      37.83237                       37.67011               568783.2                353587.3
+        3                      37.80707                       37.67344               569367.3                353654.8
+        4                      37.76957                       37.69019               569933.5                353706.8
 
         ```
         """
         filename, ext = Utils.check_path(pathname, ext=ext)
 
         data = self.reader.read(filename, ext=ext, **kwargs)
+
+        self.columns_name = Utils.get_column_names(data)
             
         self.data = data
 
@@ -191,7 +191,7 @@ class RackioAI(Singleton):
 
             if isinstance(value, np.ndarray):
                 
-                value = pd.DataFrame(value)
+                value = pd.DataFrame(value, columns=self.columns_name)
         else:
 
             raise TypeError('value must be a pd.DataFrame or np.ndarray')

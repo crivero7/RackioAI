@@ -13,7 +13,12 @@ class Preprocessing:
     """
     scaler = RackioAIScaler()
 
-    def __init__(self, name, description, problem_type='regression'):
+    def __init__(
+        self, 
+        name: str='', 
+        description: str='', 
+        problem_type: str='regression'
+        ):
         """
         Preprocessing instantiation
 
@@ -52,7 +57,7 @@ class Preprocessing:
 
         * **data:** (pandas.DataFrame)
         """
-        return self._data
+        return app.data
 
     @data.setter
     def data(self, value):
@@ -67,16 +72,13 @@ class Preprocessing:
 
         * **data:** (pandas.DataFrame)
         """
-        if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
-
-            if isinstance(value, np.ndarray):
-                value = pd.DataFrame(value)
-
-            self.synthetic_data.data = value
+        if isinstance(value, np.ndarray):
+            
+            app.data = pd.DataFrame(value)
+        
         else:
-            raise TypeError('value must be a pd.DataFrame or np.ndarray')
-
-        self._data = value
+            
+            app.data = value
 
     @property
     def description(self):

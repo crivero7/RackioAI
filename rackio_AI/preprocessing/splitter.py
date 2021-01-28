@@ -268,22 +268,36 @@ class LSTMDataPreparation:
     def split_sequences(
         self, 
         df: pd.DataFrame, 
-        timesteps:int,
+        timesteps,
         stepsize: int= 1, 
         input_cols: list=None, 
-        output_cols: list=None
+        output_cols: list=None,
+        maxlen=None,
+        dtype: str='int32',
+        padding: str='pre',
+        truncating: str='pre',
+        value: float=0.
         ):
         """
+        Splits dataframe in a 3D numpy array format supported by LSTM architectures using sliding windows concept.
+
         **Parameters**
 
-        * **:param df:** (Pandas.DataFrame)
-        * **:param timesteps:** (int)
-        * **:param input_cols:** (list)
-        * **:param output_cols:** (list)
+        * **:param df:** (pandas.DataFrame) Contains inputs and outputs data
+        * **:param timesteps:** (list or int) Timestep for each input variable.
+            * If timestep is an int value, all input columns will be the same timestep
+            * If timestep is a list, must be same lenght that input_cols argument
+        * **:param stepsize:** (int, default = 1) step size for the sliding window
+        * **:param input_cols:** (list, default = None) Column names that represents the input variables to LSTM
+            * If input_cols is None the method assumes that inputs are all column except the last one.
+        * **:param output_cols:** (list, default = None) Column names that represents the output variables to LSTM
+            * If output_cols is None the method assumes that output is the last column.
+
+        The rest of parameters represent the parameters for *pad_sequences* method, see its description.
 
         **returns**
 
-        **sequences** (tensor)
+        **sequences** (3D numpy array) dimensions (df.shape[0] - max(timesteps), max(timesteps), features)
 
         ```python
         >>> import numpy as np
@@ -352,6 +366,7 @@ class LSTMDataPreparation:
 
         ```
         """
+
         if not input_cols:
 
             input_cols = Utils.get_column_names(df)
@@ -362,17 +377,41 @@ class LSTMDataPreparation:
             output_cols = Utils.get_column_names(df)
             output_cols = [output_cols[-1]]
 
+        if isinstance(timesteps, list):
+
+            if not len(timesteps) == len(input_cols):
+
+                raise ValueError('timesteps and input_cols arguments must be same length')
+            
+        else:
+
+            timesteps = [timesteps] * len(input_cols)
+
         input_data = df.loc[:, input_cols]
         output_data = df.loc[:, output_cols]
-        iteration = list(range(0, input_data.shape[0] - timesteps + stepsize, stepsize))
+        iteration = list(range(0, input_data.shape[0] - max(timesteps) + stepsize, stepsize))
 
-        x_sequences = np.zeros((len(iteration), timesteps, len(input_cols)))
-        y_sequences = np.zeros((len(iteration), 1, len(output_cols)))
+        x_sequences = np.zeros((len(iteration), max(timesteps), len(input_cols)))
+        y_sequences = np.zeros((len(iteration), 1, len(output_cols)))     
         
         for i in iteration:
 
-            x_sequences[i] = input_data.values[i : i + timesteps, :]
-            y_sequences[i] = output_data.values[i + timesteps - 1, :]
+            to_pad = list()
+
+            for count, timestep in enumerate(timesteps):
+
+                to_pad.append(input_data.values[i + max(timesteps) - timestep: i + max(timesteps), count].tolist())
+            
+            x_sequences[i] = self.pad_sequences(
+                to_pad, 
+                maxlen=maxlen,
+                dtype=dtype,
+                padding=padding,
+                truncating=truncating,
+                value=value
+                )
+            
+            y_sequences[i] = output_data.values[i + max(timesteps) - 1, :]
 
         return x_sequences, y_sequences
 
@@ -431,27 +470,25 @@ class LSTMDataPreparation:
         >>> sequence = [[1], [2, 3], [4, 5, 6]]
         >>> preprocessing = Preprocessing(name='Pad sequence', description='preprocess for data', problem_type='regression')
         >>> preprocessing.lstm_data_preparation.pad_sequences(sequence)
-        array([[0, 0, 1],
-               [0, 2, 3],
-               [4, 5, 6]])
+        array([[0, 0, 4],
+               [0, 2, 5],
+               [1, 3, 6]])
         >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, value=-1)
-        array([[-1, -1,  1],
-               [-1,  2,  3],
-               [ 4,  5,  6]])
+        array([[-1, -1,  4],
+               [-1,  2,  5],
+               [ 1,  3,  6]])
         >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, padding='post')
-        array([[1, 0, 0],
-               [2, 3, 0],
-               [4, 5, 6]])
+        array([[1, 2, 4],
+               [0, 3, 5],
+               [0, 0, 6]])
         >>> preprocessing.lstm_data_preparation.pad_sequences(sequence, maxlen=2)
-        array([[0, 1],
-               [2, 3],
-               [5, 6]])
+        array([[0, 2, 5],
+               [1, 3, 6]])
         
         ```
         """
 
-        return pad_seq(sequences, maxlen=maxlen, dtype=dtype, padding=padding, truncating=truncating, value=value)
-
+        return np.transpose(pad_seq(sequences, maxlen=maxlen, dtype=dtype, padding=padding, truncating=truncating, value=value))
 
 
 if __name__=="__main__":
@@ -461,9 +498,10 @@ if __name__=="__main__":
     # b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
     # c = np.array([a[i]+b[i] for i in range(len(a))]).reshape(-1,1)
     # data = np.hstack((a,b,c))
+    # print(data)
     # df = pd.DataFrame(data, columns=['a', 'b', 'c'])
     # lst = LSTMDataPreparation()
-    # x, y = lst.split_sequences(df, 2)
+    # x, y = lst.split_sequences(df, [2,1])
     # print(x)
     # print(x.shape)
     # print(y.shape)

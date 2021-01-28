@@ -169,7 +169,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        return self.app._data
+        return app.data
 
     @data.setter
     def data(self, value):
@@ -198,9 +198,12 @@ class RackioEDA(Pipeline):
         """
 
         if isinstance(value, np.ndarray):
-            self.app._data = pd.DataFrame(value)
+            
+            app.data = pd.DataFrame(value)
+        
         else:
-            self.app._data = value
+            
+            app.data = value
 
     def __insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
@@ -262,7 +265,6 @@ class RackioEDA(Pipeline):
 
         return
 
-    
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert columns *data* in the dataframe *df* in the location *locs*
@@ -333,7 +335,6 @@ class RackioEDA(Pipeline):
         
         return
 
-  
     def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
@@ -631,10 +632,12 @@ class RackioEDA(Pipeline):
         None
         """
         if self._start_ == 0:
+            
             self._new_time_column_.append(column)
             self._index_.append(self._now_)
             self._delta_.append(0)
             self._start_ += 1
+            
             return
 
         self._delta_.append(column - self._column_[self._start_ - 1])
@@ -711,15 +714,19 @@ class RackioEDA(Pipeline):
         freq = kwargs["freq"]
 
         if self._start_ == 0:
+            
             self._start_ += 1
+            
             return
 
         delta = column - self._column_[self._start_ - 1]
         self._diff_ += delta
 
         if abs(self._diff_) < freq:
+            
             self._rows_to_delete_.append(self._start_)
             self._start_ += 1
+            
             return
 
         self._diff_ = 0
@@ -806,7 +813,13 @@ class RackioEDA(Pipeline):
         return
 
   
-    def print_report(self, df: pd.DataFrame, info: bool=True, head: bool=True, header: int=10):
+    def print_report(
+        self, 
+        df: pd.DataFrame, 
+        info: bool=True, 
+        head: bool=True, 
+        header: int=10
+        ):
         """
         Print DataFrame report, info and head report
 
@@ -994,17 +1007,8 @@ class RackioEDA(Pipeline):
         return
 
 
-class Plot:
-    """
-    Documentation here
-    """
-    def __init__(self):
-        """
-        Documentation
-        """
-        pass
-
 if __name__ == "__main__":
+    
     import doctest
 
     doctest.testmod()
