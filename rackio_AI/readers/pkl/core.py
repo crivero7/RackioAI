@@ -2,19 +2,19 @@ import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 import pickle
-import rackio_AI
+from rackio_AI._temporal import TemporalAttrs
 
 
 @set_to_methods(del_temp_attr)
-class PKL:
+class PKL(TemporalAttrs):
     """
     This format allows to you read faster a DataFrame saved in pkl format
     """
-    _instances = list()
+    # _instances = list()
 
     def __init__(self):
 
-        PKL._instances.append(self)
+        super(PKL, self).__init__()
 
     def read(self, pathname: str, **kwargs):
         """
@@ -62,6 +62,10 @@ class PKL:
     
 
 if __name__ == "__main__":
-    import doctest
+    # import doctest
 
-    doctest.testmod()
+    # doctest.testmod()
+    import os
+    from rackio_AI import RackioAI, get_directory
+    filename = os.path.join(get_directory('Leak'), 'Leak01.tpl')
+    df = RackioAI.load(filename)
