@@ -116,7 +116,7 @@ class SyntheticData(PrepareData):
         * **data:** (np.ndarray) data with instrument error
         """
         # Adding sensibility according to the deadband instrument
-        self._add_dead_band(self.data)
+        self._add_dead_band()
         # Adding instrument error to all data
         self.data += (self.repeteability * (2 * np.random.random(self.data.shape) - 1) + self.accuracy * (
                     2 * np.random.random(self.data.shape) - 1)) * self.span
@@ -339,7 +339,7 @@ class SyntheticData(PrepareData):
         self,
         decalibrations: int=None, 
         sensor_drift: int=None, 
-        excesive_noiseint: int=None, 
+        excesive_noise: int=None, 
         frozen_data: int=None, 
         outliers: int=None, 
         out_of_range: int=None,
@@ -419,7 +419,7 @@ class SyntheticData(PrepareData):
         duration_max = options['duration']['max']
 
         # Adding decalibration
-        if decalibration
+        if decalibrations:
 
             for i in range(decalibrations):
                 
@@ -581,6 +581,29 @@ class SyntheticData(PrepareData):
 
 if __name__ == "__main__":
     
-    import doctest
+    # import doctest
 
-    doctest.testmod()
+    # doctest.testmod()
+    import sys
+    sys.path.insert(0, "C:\repo\RackioAI")
+    from rackio_AI import RackioEDA
+    app.load("dataset500ms.pkl")
+    EDA = RackioEDA()
+    
+    EDA.remove_columns([('Time', 'Time', 'S')])
+    EDA.data[('Leak', 'Leakage Flow Rate', 'Kg/S')] = np.abs(EDA.data[('Leak', 'Leakage Flow Rate', 'Kg/S')].values)
+    EDA.data = EDA.data.iloc[0:10000, :]
+    
+    error = [0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025]
+    repeteability = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+    lower_limit = [4.3e5, 3e5, 90, 90, 0, 0, 0, 0]
+    upper_limit = [1.2e6, 7.1e5, 2.6e2, 2.6e2, 50, 2.2, 1, 3.4e3]
+    dead_band = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
+    sd = SyntheticData(
+        error=error, 
+        repeteability=repeteability, 
+        lower_limit=lower_limit, 
+        upper_limit=upper_limit, 
+        dead_band=dead_band
+    )
+    sd(add_WN=True, view=True, columns=[2,3])

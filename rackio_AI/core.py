@@ -49,7 +49,6 @@ class RackioAI(Singleton):
 
         * **.tpl:** Is an [OLGA](https://www.petromehras.com/petroleum-software-directory/production-engineering-software/olga-dynamic-multiphase-flow-simulator)
         extension file.
-        * **
         * **.pkl:** Numpy arrays or Pandas.DataFrame saved in pickle format.
 
         ___

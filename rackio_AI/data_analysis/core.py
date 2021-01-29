@@ -331,11 +331,11 @@ class RackioEDA(Pipeline):
 
         None
         """
-        self.data.pop(column_name)
+        self.data.drop(column_name, axis=1, inplace=True)
         
         return
 
-    def remove_columns(self, df, *args):
+    def remove_columns(self, df=None, *args):
         """
         Remove columns in the data by their names
 
@@ -359,11 +359,13 @@ class RackioEDA(Pipeline):
            One
         0    1
         1    4
-        2    7
+        2    10
 
         ```
         """
-        self.data = df
+        if isinstance(df, pd.DataFrame):
+            
+            self.data = df
 
         self.__remove_columns(args)
 
@@ -386,7 +388,6 @@ class RackioEDA(Pipeline):
         self.data = self.data.rename(columns=kwargs)
 
         return
-
 
     def rename_columns(self, df, **kwargs):
         """
@@ -504,7 +505,6 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-  
     def search_loc(self, column_name, *keys, **kwargs):
         """
         Logical indexing
@@ -563,7 +563,6 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-   
     def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
@@ -656,7 +655,6 @@ class RackioEDA(Pipeline):
 
         return
 
-  
     def resample(self, df, sample_time, label):
         """
         Resample timeseries column in the dataframe *df*
@@ -750,7 +748,6 @@ class RackioEDA(Pipeline):
         """
         return
 
-    
     def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
@@ -812,7 +809,6 @@ class RackioEDA(Pipeline):
 
         return
 
-  
     def print_report(
         self, 
         df: pd.DataFrame, 
@@ -867,7 +863,6 @@ class RackioEDA(Pipeline):
         
         return self.data
 
-   
     def fixnan(
         self, 
         df: pd.DataFrame, 
