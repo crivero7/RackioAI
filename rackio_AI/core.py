@@ -152,12 +152,16 @@ class RackioAI(Singleton):
         filename, ext = Utils.check_path(pathname, ext=ext)
 
         data = self.reader.read(filename, ext=ext, **kwargs)
+        
+        if data.index.has_duplicates:
+        
+            data = data.reset_index(drop=True)
 
         self.columns_name = Utils.get_column_names(data)
-            
+
         self.data = data
 
-        return self.data
+        return data
 
     @property
     def data(self):
@@ -189,17 +193,16 @@ class RackioAI(Singleton):
         if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
             if isinstance(value, np.ndarray):
-                
-                value = pd.DataFrame(value, columns=self.columns_name)
+
+                self._data = pd.DataFrame(value, columns=self.columns_name)
+
+            else:
+
+                self._data = pd.DataFrame(value.values, columns=self.columns_name)
+
         else:
 
             raise TypeError('value must be a pd.DataFrame or np.ndarray')
-
-        if value.index.has_duplicates:
-        
-            value = value.reset_index(drop=True)
-
-        self._data = value
 
     def append(self, obj):
         """

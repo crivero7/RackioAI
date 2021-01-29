@@ -12,8 +12,6 @@ data_type_synthetic_data = {'error': [np.ndarray],
                             'upper_limit': [np.ndarray],
                             'dead_band': [np.ndarray]}
 
-app = RackioAI()
-
 @set_to_methods(del_temp_attr)
 class SyntheticData(PrepareData):
     """
@@ -28,6 +26,9 @@ class SyntheticData(PrepareData):
     * **Instrument decalibration**
     * **Sensor drift**
     """
+
+    _instances = list()
+    app = RackioAI()
 
     def __init__(
         self, 
@@ -55,6 +56,7 @@ class SyntheticData(PrepareData):
 
         self.accuracy = self.error - self.repeteability
         self.span = self.upper_limit - self.lower_limit
+        SyntheticData._instances.append(self)
 
     @property
     def data(self):
@@ -70,8 +72,7 @@ class SyntheticData(PrepareData):
 
         * **data:** (np.array, pd.DataFrame)
         """
-
-        return app.data.values
+        return self.app.data.values
 
     @data.setter
     def data(self, value):
@@ -86,17 +87,9 @@ class SyntheticData(PrepareData):
 
             None
         """
-        if isinstance(value, np.ndarray):
-            
-            data = pd.DataFrame(value)
-        
-        else:
-            
-            data = value
+        if len(self.error) == value.shape[-1]:
 
-        if len(self.error) == data.shape[-1]:
-
-            app.data = data
+            self.app.data = value
         
         else:
 
@@ -538,11 +531,11 @@ class SyntheticData(PrepareData):
         * **data:** (np.ndarray) round data
         """
 
-        difference = np.diff(self.data, axis=0)
+        difference = yield np.diff(self.data, axis=0)
         # Positions where the new value has reached the instrument sensibility
-        pos_true = abs(difference) >= self.dead_band
+        pos_true = yield abs(difference) >= self.dead_band
         # Positions where the new value has not changed enough
-        pos_false = abs(difference) < self.dead_band
+        pos_false = yield abs(difference) < self.dead_band
         # decimals to be rounded
         decimals = [str(self.dead_band[count])[::-1].find('.') for count in range(self.dead_band.shape[-1])]
         # Applying round
@@ -581,29 +574,6 @@ class SyntheticData(PrepareData):
 
 if __name__ == "__main__":
     
-    # import doctest
+    import doctest
 
-    # doctest.testmod()
-    import sys
-    sys.path.insert(0, "C:\repo\RackioAI")
-    from rackio_AI import RackioEDA
-    app.load("dataset500ms.pkl")
-    EDA = RackioEDA()
-    
-    EDA.remove_columns([('Time', 'Time', 'S')])
-    EDA.data[('Leak', 'Leakage Flow Rate', 'Kg/S')] = np.abs(EDA.data[('Leak', 'Leakage Flow Rate', 'Kg/S')].values)
-    EDA.data = EDA.data.iloc[0:10000, :]
-    
-    error = [0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025, 0.0025]
-    repeteability = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
-    lower_limit = [4.3e5, 3e5, 90, 90, 0, 0, 0, 0]
-    upper_limit = [1.2e6, 7.1e5, 2.6e2, 2.6e2, 50, 2.2, 1, 3.4e3]
-    dead_band = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
-    sd = SyntheticData(
-        error=error, 
-        repeteability=repeteability, 
-        lower_limit=lower_limit, 
-        upper_limit=upper_limit, 
-        dead_band=dead_band
-    )
-    sd(add_WN=True, view=True, columns=[2,3])
+    doctest.testmod()

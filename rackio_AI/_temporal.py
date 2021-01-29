@@ -44,7 +44,7 @@ from easy_deco.del_temp_attr import del_temp_attr, set_to_methods
 
 
 @set_to_methods(del_temp_attr)
-class TemporalMeta(type):
+class TemporalMeta:
     """
     The Singleton class can be implemented in different ways in Python. Some
     possible methods include: base class, decorator, metaclass. We will use the
@@ -52,19 +52,9 @@ class TemporalMeta(type):
     """
     _instances = list()
 
-    def __init__(cls, name, bases, attrs):
-        
-        cls._instances.append(cls)
-        
-        # for attr in list(attrs.keys()):
-
-        #     if not attr.startswith('_'):
+    def __new__(cls):
     
-        #         setattr(cls, attr, del_temp_attr(getattr(cls, attr)))
+        inst = super(TemporalMeta, cls).__new__(cls)
+        cls._instances.append(inst)
 
-
-class TemporalAttrs(metaclass=TemporalMeta):
-    """
-    The Singleton with simple class name.
-    """
-    
+        return inst

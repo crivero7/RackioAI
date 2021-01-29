@@ -8,13 +8,12 @@ from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
 from easy_deco.progress_bar import ProgressBar
 import datetime
+from rackio_AI._temporal import TemporalMeta
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-app = RackioAI()
-
 @set_to_methods(del_temp_attr)
-class RackioEDA(Pipeline):
+class RackioEDA(Pipeline, TemporalMeta):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
     architecture style, is an ETL framework for data extraction from homogeneous or heterogeneous
@@ -40,6 +39,7 @@ class RackioEDA(Pipeline):
     outliers = Outliers()
     noise = Noise()
     _instances = list()
+    app = RackioAI()
 
     def __init__(self, name="", description=""):
         """
@@ -52,7 +52,7 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
-        app.append(self)
+        self.app.append(self)
         RackioEDA._instances.append(self)
         
     def serialize(self):
@@ -169,7 +169,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        return app.data
+        return self.app.data
 
     @data.setter
     def data(self, value):
@@ -197,13 +197,7 @@ class RackioEDA(Pipeline):
         ```
         """
 
-        if isinstance(value, np.ndarray):
-            
-            app.data = pd.DataFrame(value)
-        
-        else:
-            
-            app.data = value
+        self.app.data = value
 
     def __insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
@@ -331,11 +325,13 @@ class RackioEDA(Pipeline):
 
         None
         """
-        self.data.drop(column_name, axis=1, inplace=True)
+        self.app.columns_name.remove(column_name)
+
+        self.data = self.data.drop(column_name, axis=1)
         
         return
 
-    def remove_columns(self, df=None, *args):
+    def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
 
@@ -363,9 +359,8 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        if isinstance(df, pd.DataFrame):
             
-            self.data = df
+        self.data = df
 
         self.__remove_columns(args)
 
