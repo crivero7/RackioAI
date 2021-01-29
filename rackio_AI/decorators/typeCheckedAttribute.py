@@ -178,9 +178,13 @@ def typeassert(**kwargs):
 
     """
     def decorate(cls):
+        
         for name, expectedType in kwargs.items():
+            
             setattr(cls, name, Typed(name, expectedType))
+        
         return cls
+    
     return decorate
 
 @decorator
@@ -193,7 +197,7 @@ def check_instrument_options(func, args, options):
     lengthOfEachOption = [len(options[option]) for option in options]
 
     # verificar cantidad de sensores
-    lengthOfEachOption.append(args[-1]._data.shape[-1])
+    lengthOfEachOption.append(args[-1].data.shape[-1])
 
     if not all([x == lengthOfEachOption[0] for x in lengthOfEachOption]):
 

@@ -1,6 +1,2 @@
-::: rackio_AI.preprocessing.Scaler
+::: rackio_AI.preprocessing.RackioAIScaler
     :docstring:
-    :members: __init__
-    :members: range
-    :members: __call__
-    :members: get_inverse

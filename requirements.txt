@@ -5,6 +5,7 @@ xlrd==1.2.0
 seaborn
 scikit-learn
 statsmodels==0.12.1
-easy-deco==0.1.0
+easy-deco==0.1.2
 Pillow==8.0.0
+tensorflow==2.4.0
 Rackio==1.0.2

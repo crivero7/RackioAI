@@ -20,7 +20,8 @@ class Noise:
         df: pd.DataFrame,
         win_size: int=30,
         method: str="rhinehardt",
-        cols: list=None
+        cols: list=None,
+        std_factor: float=0.001
         )-> pd.DataFrame:
         """
         Add gaussian noise over subsequence windows based on some method
@@ -55,7 +56,8 @@ class Noise:
         """
         options = {
             'win_size': win_size,
-            'method': method
+            'method': method,
+            'std_factor': std_factor
         }
         self._df_ = df.copy()
         if not cols:
@@ -108,8 +110,8 @@ class Noise:
         method = kwargs['method']
 
         if method.lower() in ["rhinehardt", "rh"]:
-
-            self._noise_.extend(self.rhinehardt(window))
+            std_factor = kwargs['std_factor']
+            self._noise_.extend(self.rhinehardt(window, std_factor=std_factor))
 
         return
 

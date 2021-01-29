@@ -97,7 +97,7 @@ class Pipeline(object):
         ```
         """
         # Define source component
-        f = self.sink(args[-1])
+        f = self._sink(args[-1])
         _sink = Func(f, *func_args[-1]["args"], **func_args[-1]["kwargs"])
         c = self.__sink(_sink)
         c.__next__() 
@@ -208,7 +208,7 @@ class Pipeline(object):
             f(r)
 
     @staticmethod
-    def sink(f):
+    def _sink(f):
         """
         Sink decorator to stop the pipeline execution
 

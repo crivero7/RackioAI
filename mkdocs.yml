@@ -31,6 +31,7 @@ nav:
         - Kalman Filter: 'api_preprocessing_kalman_filter.md'
         - Scaler: 'api_preprocessing_scaler.md'
         - Splitter: 'api_preprocessing_splitter.md'
+        - LSTM Data Preparation: 'api_preprocessing_lstm_data_preparation.md'
       - Models:
         - RackioDNN: 'api_model_RackioDNN.md'
       - Restful API: 'restful_api.md'

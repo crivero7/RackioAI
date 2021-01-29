@@ -8,13 +8,12 @@ from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
 from easy_deco.progress_bar import ProgressBar
 import datetime
+from rackio_AI._temporal import TemporalMeta
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-app = RackioAI()
-
 @set_to_methods(del_temp_attr)
-class RackioEDA(Pipeline):
+class RackioEDA(Pipeline, TemporalMeta):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
     architecture style, is an ETL framework for data extraction from homogeneous or heterogeneous
@@ -40,6 +39,7 @@ class RackioEDA(Pipeline):
     outliers = Outliers()
     noise = Noise()
     _instances = list()
+    app = RackioAI()
 
     def __init__(self, name="", description=""):
         """
@@ -52,7 +52,7 @@ class RackioEDA(Pipeline):
         super(RackioEDA, self).__init__()
         self._name = name
         self._description = description
-        app.append(self)
+        self.app.append(self)
         RackioEDA._instances.append(self)
         
     def serialize(self):
@@ -169,7 +169,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        return self.app._data
+        return self.app.data
 
     @data.setter
     def data(self, value):
@@ -197,10 +197,7 @@ class RackioEDA(Pipeline):
         ```
         """
 
-        if isinstance(value, np.ndarray):
-            self.app._data = pd.DataFrame(value)
-        else:
-            self.app._data = value
+        self.app.data = value
 
     def __insert_column(self, df: pd.DataFrame, data, column_name, loc=None, allow_duplicates=False):
         """
@@ -262,7 +259,6 @@ class RackioEDA(Pipeline):
 
         return
 
-    
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert columns *data* in the dataframe *df* in the location *locs*
@@ -329,11 +325,12 @@ class RackioEDA(Pipeline):
 
         None
         """
-        self.data.pop(column_name)
+        self.app.columns_name.remove(column_name)
+
+        self.data = self.data.drop(column_name, axis=1)
         
         return
 
-  
     def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
@@ -358,10 +355,11 @@ class RackioEDA(Pipeline):
            One
         0    1
         1    4
-        2    7
+        2    10
 
         ```
         """
+            
         self.data = df
 
         self.__remove_columns(args)
@@ -385,7 +383,6 @@ class RackioEDA(Pipeline):
         self.data = self.data.rename(columns=kwargs)
 
         return
-
 
     def rename_columns(self, df, **kwargs):
         """
@@ -503,7 +500,6 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-  
     def search_loc(self, column_name, *keys, **kwargs):
         """
         Logical indexing
@@ -562,7 +558,6 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-   
     def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
@@ -631,10 +626,12 @@ class RackioEDA(Pipeline):
         None
         """
         if self._start_ == 0:
+            
             self._new_time_column_.append(column)
             self._index_.append(self._now_)
             self._delta_.append(0)
             self._start_ += 1
+            
             return
 
         self._delta_.append(column - self._column_[self._start_ - 1])
@@ -653,7 +650,6 @@ class RackioEDA(Pipeline):
 
         return
 
-  
     def resample(self, df, sample_time, label):
         """
         Resample timeseries column in the dataframe *df*
@@ -711,15 +707,19 @@ class RackioEDA(Pipeline):
         freq = kwargs["freq"]
 
         if self._start_ == 0:
+            
             self._start_ += 1
+            
             return
 
         delta = column - self._column_[self._start_ - 1]
         self._diff_ += delta
 
         if abs(self._diff_) < freq:
+            
             self._rows_to_delete_.append(self._start_)
             self._start_ += 1
+            
             return
 
         self._diff_ = 0
@@ -743,7 +743,6 @@ class RackioEDA(Pipeline):
         """
         return
 
-    
     def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
@@ -805,8 +804,13 @@ class RackioEDA(Pipeline):
 
         return
 
-  
-    def print_report(self, df: pd.DataFrame, info: bool=True, head: bool=True, header: int=10):
+    def print_report(
+        self, 
+        df: pd.DataFrame, 
+        info: bool=True, 
+        head: bool=True, 
+        header: int=10
+        ):
         """
         Print DataFrame report, info and head report
 
@@ -854,7 +858,6 @@ class RackioEDA(Pipeline):
         
         return self.data
 
-   
     def fixnan(
         self, 
         df: pd.DataFrame, 
@@ -994,17 +997,8 @@ class RackioEDA(Pipeline):
         return
 
 
-class Plot:
-    """
-    Documentation here
-    """
-    def __init__(self):
-        """
-        Documentation
-        """
-        pass
-
 if __name__ == "__main__":
+    
     import doctest
 
     doctest.testmod()
