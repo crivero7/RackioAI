@@ -369,7 +369,7 @@ class RackioEDA(Pipeline, TemporalMeta):
 
         self.data = self._data_
 
-        return self.data
+        return self._data_
 
     @ProgressBar(desc="Renaming columns...", unit="column")
     def __rename_columns(self, column_name, **kwargs):
@@ -592,7 +592,7 @@ class RackioEDA(Pipeline, TemporalMeta):
 
         ```
         """
-        self._column_ = df[label].values.tolist()
+        self._column_ = df.loc[:, label].values.tolist()
 
         if isinstance(start, datetime.datetime):
             
@@ -613,6 +613,7 @@ class RackioEDA(Pipeline, TemporalMeta):
         df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
         df.index = self._index_
         df.index.name = index_name
+        self.data = df
 
         return df
 
@@ -638,7 +639,8 @@ class RackioEDA(Pipeline, TemporalMeta):
             self._start_ += 1
             
             return
-
+        # print(column)
+        # print(self._column_)
         self._delta_.append(column - self._column_[self._start_ - 1])
 
         if self._delta_[self._start_] > 0:
@@ -687,10 +689,12 @@ class RackioEDA(Pipeline, TemporalMeta):
         """
         self._rows_to_delete_ = list()
         self._diff_ = self._start_ = 0
-        self._column_ = df.loc[:, label].values.reshape(1, -1).tolist()
+        self._column_ = df[label].values.tolist()
         options = {"freq": sample_time}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
+
+        self.data = df
 
         return df
 
