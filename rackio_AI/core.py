@@ -152,6 +152,8 @@ class RackioAI(Singleton):
         filename, ext = Utils.check_path(pathname, ext=ext)
 
         data = self.reader.read(filename, ext=ext, **kwargs)
+
+        self.columns_name = Utils.get_column_names(data)
         
         if data.index.has_duplicates:
         
@@ -159,7 +161,7 @@ class RackioAI(Singleton):
 
         self.columns_name = Utils.get_column_names(data)
 
-        self.data = data
+        self._data = data
 
         return data
 
@@ -177,6 +179,8 @@ class RackioAI(Singleton):
         * **data:** (pandas.DataFrame)
 
         """
+        self.columns_name = Utils.get_column_names(self._data)
+
         return self._data
 
     @data.setter
@@ -192,7 +196,12 @@ class RackioAI(Singleton):
         """
         if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
+            if isinstance(self._data.columns, pd.MultiIndex):
+
+                self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
+
             if isinstance(value, np.ndarray):
+
 
                 self._data = pd.DataFrame(value, columns=self.columns_name)
 

@@ -247,13 +247,14 @@ class RackioEDA(Pipeline, TemporalMeta):
 
         None
         """
+
         if not self._locs_:
-                
-            self.data = self.__insert_column(self.data, self._data_[:, self._count_], column_name, allow_duplicates=self._allow_duplicates_)
+            self.app.columns_name.insert(len(self.app.columns_name), column_name)
+            self._data_ = self.__insert_column(self._data_, self._cols_[:, self._count_], column_name, allow_duplicates=self._allow_duplicates_)
 
         else:
-
-            self.data = self.__insert_column(self.data, self._data_[:, self._count_], column_name, self._locs_[self._count_], allow_duplicates=self._allow_duplicates_)
+            self.app.columns_name.insert(self._locs_, column_name)
+            self._data_ = self.__insert_column(self._data_, self._cols_[:, self._count_], column_name, self._locs_[self._count_], allow_duplicates=self._allow_duplicates_)
 
         self._count_ += 1
 
@@ -292,7 +293,7 @@ class RackioEDA(Pipeline, TemporalMeta):
 
         ```
         """
-        self.data = df
+        self._data_ = df
         self._locs_ = locs
         self._allow_duplicates_ = allow_duplicates
         self._count_ = 0
@@ -305,10 +306,12 @@ class RackioEDA(Pipeline, TemporalMeta):
             
             data = data.values  # converting to np.ndarray
 
-        self._data_ = data
+        self._cols_ = data
 
         self.__insert_columns(column_names)
 
+        self.data = self._data_
+        
         return self.data
 
     @ProgressBar(desc="Removing columns...", unit="column")
@@ -327,7 +330,7 @@ class RackioEDA(Pipeline, TemporalMeta):
         """
         self.app.columns_name.remove(column_name)
 
-        self.data = self.data.drop(column_name, axis=1)
+        self._data_ = self._data_.drop(column_name, axis=1)
         
         return
 
@@ -360,9 +363,11 @@ class RackioEDA(Pipeline, TemporalMeta):
         ```
         """
             
-        self.data = df
+        self._data_ = df
 
         self.__remove_columns(args)
+
+        self.data = self._data_
 
         return self.data
 
@@ -682,7 +687,7 @@ class RackioEDA(Pipeline, TemporalMeta):
         """
         self._rows_to_delete_ = list()
         self._diff_ = self._start_ = 0
-        self._column_ = df.loc[:, label].values.reshape(1, -1).tolist()[0]
+        self._column_ = df.loc[:, label].values.reshape(1, -1).tolist()
         options = {"freq": sample_time}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
