@@ -1,6 +1,5 @@
 ::: rackio_AI.preprocessing.SyntheticData
     :docstring:
-    :members: set_options 
     :members: add_instrument_error
     :members: add_decalibration
     :members: add_sensor_drift

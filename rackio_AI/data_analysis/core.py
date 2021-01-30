@@ -8,12 +8,11 @@ from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
 from easy_deco.progress_bar import ProgressBar
 import datetime
-from rackio_AI._temporal import TemporalMeta
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
 @set_to_methods(del_temp_attr)
-class RackioEDA(Pipeline, TemporalMeta):
+class RackioEDA(Pipeline):
     """
     Rackio Exploratory Data Analysis (RackioEDA for short) based on the pipe and filter
     architecture style, is an ETL framework for data extraction from homogeneous or heterogeneous

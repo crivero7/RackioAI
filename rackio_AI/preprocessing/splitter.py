@@ -1,13 +1,16 @@
 from sklearn.model_selection import train_test_split as TTS
 from tensorflow.keras.preprocessing.sequence import pad_sequences as pad_seq
 from rackio_AI.utils import Utils
+from easy_deco.progress_bar import ProgressBar
 import numpy as np
 import pandas as pd
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
 ONE_SPLIT = 1
 TWO_SPLIT = 2
 
+@set_to_methods(del_temp_attr)
 class Splitter:
     """
     This is a *RackioAI* preprocessing class to split the data to create a Deep learning model
@@ -387,33 +390,61 @@ class LSTMDataPreparation:
 
             timesteps = [timesteps] * len(input_cols)
 
-        input_data = df.loc[:, input_cols]
-        output_data = df.loc[:, output_cols]
+        input_data = df.loc[:, input_cols].values
+        output_data = df.loc[:, output_cols].values
         iteration = list(range(0, input_data.shape[0] - max(timesteps) + stepsize, stepsize))
 
-        x_sequences = np.zeros((len(iteration), max(timesteps), len(input_cols)))
-        y_sequences = np.zeros((len(iteration), 1, len(output_cols)))     
+        self._x_sequences_ = np.zeros((len(iteration), max(timesteps), len(input_cols)))
+        self._y_sequences_ = np.zeros((len(iteration), 1, len(output_cols)))
+
+        self._start_ = 0  
+
+        self._output_data_ = output_data
+        self._input_data_ = input_data
+        self._timesteps_ = timesteps
+        self._maxlen_ = maxlen
+        self._dtype_ = dtype
+        self._padding_ =  padding
+        self._truncating_ = truncating
+        self._value_ = value
         
-        for i in iteration:
+        self.__split_sequences(iteration)
 
-            to_pad = list()
+        return self._x_sequences_, self._y_sequences_
 
-            for count, timestep in enumerate(timesteps):
+    @ProgressBar(desc="Splitting sequences...", unit="windows")
+    def __split_sequences(self, sequence, **kwargs):
+        """
+        Documentation here
+        """
+        to_pad = list()
+        output_data = self._output_data_
+        input_data = self._input_data_
+        timesteps = self._timesteps_
+        maxlen = self._maxlen_
+        dtype = self._dtype_
+        padding = self._padding_
+        truncating = self._truncating_
+        value = self._value_
 
-                to_pad.append(input_data.values[i + max(timesteps) - timestep: i + max(timesteps), count].tolist())
-            
-            x_sequences[i] = self.pad_sequences(
-                to_pad, 
-                maxlen=maxlen,
-                dtype=dtype,
-                padding=padding,
-                truncating=truncating,
-                value=value
-                )
-            
-            y_sequences[i] = output_data.values[i + max(timesteps) - 1, :]
+        for count, timestep in enumerate(timesteps):
 
-        return x_sequences, y_sequences
+            to_pad.append(input_data[self._start_ + max(timesteps) - timestep: self._start_ + max(timesteps), count].tolist())
+        
+        self._x_sequences_[self._start_] = self.pad_sequences(
+            to_pad, 
+            maxlen=maxlen,
+            dtype=dtype,
+            padding=padding,
+            truncating=truncating,
+            value=value
+            )
+        
+        self._y_sequences_[self._start_] = output_data[self._start_ + max(timesteps) - 1, :]
+
+        self._start_ += 1
+
+        return
 
     def pad_sequences(
         self,
