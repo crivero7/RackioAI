@@ -92,7 +92,7 @@ class Pipeline(object):
         >>> pipeline(args, load, power, sum, sum)
         >>> pipeline.start(2)
         >>> pipeline.data
-        array([5, 5, 5, 5], dtype=int32)
+        array([3, 3, 3, 3], dtype=int32)
 
         ```
         """
@@ -207,8 +207,7 @@ class Pipeline(object):
             r = (yield)
             f(r)
 
-    @staticmethod
-    def _sink(f):
+    def _sink(self, f):
         """
         Sink decorator to stop the pipeline execution
 
@@ -223,7 +222,9 @@ class Pipeline(object):
 
         def wrapper(*args, **kwargs):
 
-            f(*args, **kwargs)
+            data = f(*args, **kwargs)
+
+            self.data = data
 
             raise StopPipeline('Enough!')
 

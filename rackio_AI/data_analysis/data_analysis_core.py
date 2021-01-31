@@ -592,7 +592,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        self._column_ = df.loc[:, label].values.tolist()
+        self._column_ = df[label].values.tolist()
 
         if isinstance(start, datetime.datetime):
             
@@ -639,8 +639,7 @@ class RackioEDA(Pipeline):
             self._start_ += 1
             
             return
-        # print(column)
-        # print(self._column_)
+
         self._delta_.append(column - self._column_[self._start_ - 1])
 
         if self._delta_[self._start_] > 0:

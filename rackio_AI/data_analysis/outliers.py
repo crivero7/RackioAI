@@ -452,7 +452,7 @@ class Outliers:
         sample.iloc[loc, :] = np.nan
         sample.fillna(sample.median(), inplace=True)
 
-        model = AutoReg(sample.values, lags=2, trend='n').fit()
+        model = AutoReg(sample.values, lags=2, trend='n', old_names=False).fit()
         ss = np.std(model.resid)
 
         predictions = model.predict(start=0, end=len(sample) + 1)

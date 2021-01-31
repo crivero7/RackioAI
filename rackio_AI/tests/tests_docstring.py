@@ -1,19 +1,19 @@
 import unittest
 import doctest
 import rackio_AI
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-warnings.simplefilter(action='ignore', category=DeprecationWarning)
-warnings.simplefilter(action='ignore', category=RuntimeWarning)
-
 
     
 def load_tests(loader, tests, ignore):
     
+    # Main
     tests.addTests(doctest.DocTestSuite(rackio_AI.core))
+
+    # Data Analysis
     tests.addTests(doctest.DocTestSuite(rackio_AI.data_analysis.data_analysis_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.data_analysis.outliers))
     tests.addTests(doctest.DocTestSuite(rackio_AI.data_analysis.noise))
+
+    #
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.readers_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.tpl.tpl_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.pkl.pkl_core))
@@ -28,6 +28,12 @@ def load_tests(loader, tests, ignore):
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.scaler))
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.splitter))
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.synthetic_data))
+
+    # Pipeline
+    tests.addTests(doctest.DocTestSuite(rackio_AI.pipeline.pipeline_core))
+
+    # Managers
+    tests.addTests(doctest.DocTestSuite(rackio_AI.managers.managers_core))
     
     return tests
 
