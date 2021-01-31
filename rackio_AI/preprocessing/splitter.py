@@ -33,7 +33,7 @@ class Splitter:
         ## Snippet code
         ```python
         >>> from rackio_AI import Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess 1',description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess splitter init', description='preprocess for data', problem_type='regression')
         >>> print(preprocess.splitter)
         Splitter Object
         {'train_size': None, 'test_size': None, 'validation_size': None, 'random_state': None, 'shuffle': True, 'stratify': None}
@@ -87,7 +87,7 @@ class Splitter:
         ```python
         >>> from rackio_AI import  Preprocessing
         >>> import numpy as np
-        >>> preprocess = Preprocessing(name='Preprocess 2',description='preprocess for data', problem_type='regression')
+        >>> preprocess = Preprocessing(name='Preprocess splitter split', description='preprocess for data', problem_type='regression')
         >>> X, y = np.arange(20).reshape((10, 2)), range(10)
         >>> X
         array([[ 0,  1],

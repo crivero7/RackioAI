@@ -368,36 +368,16 @@ class SyntheticData(PrepareData):
 
         ```python
         >>> import os
-        >>> import pandas as pd
-        >>> from rackio_AI import RackioAI
-        >>> from rackio_AI import get_directory
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
+        >>> from rackio_AI import RackioAI, get_directory, SyntheticData
         >>> filename = os.path.join(get_directory('pkl_files'), 'test_data.pkl')
-        >>> RackioAI.load(filename)
-                    Pipe-60 Totalmassflow_(KG/S)  ...  Pipe-151 Pressure_(PA)
-        0.000000                        37.83052  ...                352683.3
-        0.502732                        37.83918  ...                353449.8
-        1.232772                        37.83237  ...                353587.3
-        1.653696                        37.80707  ...                353654.8
-        2.200430                        37.76957  ...                353706.8
-        ...                                  ...  ...                     ...
-        383.031800                     169.36700  ...                374582.2
-        383.518200                     169.37650  ...                374575.9
-        384.004500                     169.38550  ...                374572.7
-        384.490900                     169.39400  ...                374573.0
-        384.977200                     169.40170  ...                374576.1
-        <BLANKLINE>
-        [20000 rows x 4 columns]
-        >>> variable_names = RackioAI.data.columns.to_list()
+        >>> data = RackioAI.load(filename)
         >>> error = [0.0025, 0.0025, 0.0025, 0.0025]
         >>> repeteability = [0.001, 0.001, 0.001, 0.001]
         >>> lower_limit = [0, 0, 400000, 100000]
         >>> upper_limit = [500, 500, 1200000, 600000]
         >>> dead_band = [0.001, 0.001, 0.001, 0.001]
-        >>> RackioAI.synthetic_data.set_options(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
-        >>> data = RackioAI.synthetic_data(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
+        >>> SD = SyntheticData(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
+        >>> data = SD(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
 
         ```
         """

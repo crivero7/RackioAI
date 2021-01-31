@@ -18,16 +18,6 @@ class Manager:
 
         None
 
-        ___
-
-        ## Snippet code
-
-        ```python
-        >>> from rackio_AI import RackioEDA, Preprocessing
-        >>> EDA = RackioEDA(name='EDA manager', description='Object Exploratory Data Analysis')
-        >>> preprocess = Preprocessing(name='Preprocess manager', description='preprocess for data')
-
-        ```
         """
         names = self.get_names()
         
@@ -61,7 +51,7 @@ class Manager:
         >>> manager = RackioAI.get_manager('EDA')
         >>> EDA = manager.get("EDA")
         >>> manager = RackioAI.get_manager('Preprocessing')
-        >>> Preprocess = manager.get("Preprocess")
+        >>> Preprocess = manager.get("Preprocessing")
 
         ```
         """
@@ -95,10 +85,10 @@ class Manager:
         >>> from rackio_AI import RackioAI
         >>> manager = RackioAI.get_manager('EDA')
         >>> manager.get_names()
-        ['EDA_1', 'EDA', 'EDA2', 'EDA manager']
+        ['EDA', 'EDA core']
         >>> manager = RackioAI.get_manager('Preprocessing')
         >>> manager.get_names()
-        ['Preprocess', 'Preprocess 2', 'Preprocess 4', 'Preprocess 3', 'Preprocess manager']
+        ['Preprocessing', 'Preprocessing core']
 
         ```
         """
@@ -124,10 +114,10 @@ class Manager:
         >>> from rackio_AI import RackioAI
         >>> manager = RackioAI.get_manager('EDA')
         >>> manager.get_descriptions()
-        ['Object Exploratory Data Analysis', 'Object Exploratory Data Analysis', '', 'Object Exploratory Data Analysis']
+        ['Object Exploratory Data Analysis', 'Object Exploratory Data Analysis']
         >>> manager = RackioAI.get_manager('Preprocessing')
         >>> manager.get_descriptions()
-        ['Preprocesing object', 'preprocess for data', 'preprocess for data', 'preprocess for data', 'preprocess for data']
+        ['Preprocesing object', 'preprocessing for data']
 
         ```
         """
@@ -153,10 +143,10 @@ class Manager:
         >>> from rackio_AI import RackioAI
         >>> manager = RackioAI.get_manager('EDA')
         >>> manager.summary()
-        {'length': 4, 'names': ['EDA_1', 'EDA', 'EDA2', 'EDA manager'], 'descriptions': ['Object Exploratory Data Analysis', 'Object Exploratory Data Analysis', '', 'Object Exploratory Data Analysis']}
+        {'length': 2, 'names': ['EDA', 'EDA core'], 'descriptions': ['Object Exploratory Data Analysis', 'Object Exploratory Data Analysis']}
         >>> manager = RackioAI.get_manager('Preprocessing')
         >>> manager.summary()
-        {'length': 5, 'names': ['Preprocess', 'Preprocess 2', 'Preprocess 4', 'Preprocess 3', 'Preprocess manager'], 'descriptions': ['Preprocesing object', 'preprocess for data', 'preprocess for data', 'preprocess for data', 'preprocess for data'], 'types': ['regression', 'regression', 'regression', 'regression', 'regression']}
+        {'length': 2, 'names': ['Preprocessing', 'Preprocessing core'], 'descriptions': ['Preprocesing object', 'preprocessing for data'], 'types': ['regression', 'regression']}
 
         ```
         """

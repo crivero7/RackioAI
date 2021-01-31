@@ -33,6 +33,12 @@ class RackioEDA(Pipeline):
     **returns**
 
     * **RackioEDA object**
+
+    ```python
+    >>> from rackio_AI import RackioEDA
+    >>> EDA = RackioEDA(name='EDA core', description='Object Exploratory Data Analysis')
+
+    ```
     """
 
     outliers = Outliers()
@@ -42,11 +48,7 @@ class RackioEDA(Pipeline):
 
     def __init__(self, name="", description=""):
         """
-        ```python
-        >>> from rackio_AI import RackioEDA
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
-
-        ```
+        
         """
         super(RackioEDA, self).__init__()
         self._name = name
@@ -72,9 +74,9 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> EDA.serialize()
-        {'name': 'EDA', 'description': 'Object Exploratory Data Analysis'}
+        {'name': 'EDA core', 'description': 'Object Exploratory Data Analysis'}
 
         ```
         """
@@ -97,9 +99,9 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> EDA.get_name()
-        'EDA'
+        'EDA core'
 
         ```
         """
@@ -124,7 +126,7 @@ class RackioEDA(Pipeline):
 
         ```python
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> EDA.description
         'Object Exploratory Data Analysis'
 
@@ -157,7 +159,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.data = df
         >>> EDA.data
@@ -186,7 +188,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.data = df
            One  Two  Three
@@ -281,7 +283,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> col = [10, 11, 12]
         >>> EDA.insert_columns(df, col, ['Four'])
@@ -351,7 +353,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.remove_columns(df, 'Two', 'Three')
            One
@@ -407,7 +409,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> columns_to_rename = {'One': 'one', 'Two': 'two'}
         >>> EDA.rename_columns(df, **columns_to_rename)
@@ -473,7 +475,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> EDA.data = df
         >>> data = pd.DataFrame([[10, 11], [13, 14], [16, 17]], columns=['Two','Three'])
@@ -586,7 +588,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type='EDA')
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[0.5, 2, 3], [1.5, 5, 6], [3, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> df = EDA.set_datetime_index(df, "Time", "Timestamp", start="2021-01-01 00:00:00")
 
@@ -677,7 +679,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type="EDA")
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA.resample(df, 1, "Time")
            Time  Two  Three
@@ -771,7 +773,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type="EDA")
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
         >>> EDA.reset_index(df, drop=False)
            index  Time  Two  Three
@@ -840,7 +842,7 @@ class RackioEDA(Pipeline):
         ```python
         >>> import pandas as pd
         >>> from rackio_AI import RackioAI
-        >>> EDA = RackioAI.get("EDA", _type="EDA")
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
         >>> df = EDA.print_report(df, info=True, head=False)
         <class 'pandas.core.frame.DataFrame'>
@@ -901,12 +903,12 @@ class RackioEDA(Pipeline):
         ### **Snippet code
 
         ```python
-        >>> from rackio_AI import RackioEDA
         >>> import pandas as pd
         >>> import numpy as np
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame(np.random.randn(10, 3), index=['a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k'], columns=['one', 'two', 'three'])
         >>> df2 = df.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'])
-        >>> EDA = RackioEDA(name='EDA2')
         >>> df_fixed = EDA.fixnan(df2, _round=True)
 
         ```
@@ -990,3 +992,9 @@ class RackioEDA(Pipeline):
         self._df_.loc[:, column].update(_serie)
 
         return
+
+if __name__=="__main__":
+    
+    import doctest
+
+    doctest.testmod()

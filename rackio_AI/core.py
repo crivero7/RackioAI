@@ -237,8 +237,8 @@ class RackioAI(Singleton):
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing
-        >>> EDA = RackioEDA(name='EDA_1', description='Object Exploratory Data Analysis')
-        >>> Preprocess = Preprocessing(name="Preprocess", description="Preprocesing object")
+        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> Preprocess = Preprocessing(name="Preprocessing", description="Preprocesing object")
 
         ```
         """
@@ -372,7 +372,7 @@ class RackioAI(Singleton):
         ```python
         >>> from rackio_AI import RackioAI
         >>> RackioAI.summary()
-        {'preprocessing manager': {'length': 1, 'names': ['Preprocess'], 'descriptions': ['Preprocesing object'], 'types': ['regression']}, 'data analysis manager': {'length': 1, 'names': ['EDA_1'], 'descriptions': ['Object Exploratory Data Analysis']}}
+        {'preprocessing manager': {'length': 1, 'names': ['Preprocessing'], 'descriptions': ['Preprocesing object'], 'types': ['regression']}, 'data analysis manager': {'length': 1, 'names': ['EDA'], 'descriptions': ['Object Exploratory Data Analysis']}}
 
         ```
         """

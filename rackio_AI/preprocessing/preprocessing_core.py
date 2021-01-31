@@ -4,14 +4,19 @@ from rackio_AI.core import RackioAI
 from rackio_AI.preprocessing import RackioAIScaler, Splitter, KalmanFilter, LSTMDataPreparation
 
 
-app = RackioAI()
-
 class Preprocessing:
     """
     This class allows to you do preprocessing to the data in *RackioAI* or *RackioEDA
+
+    ```python
+    >>> from rackio_AI import Preprocessing
+    >>> preprocessing = Preprocessing(name='Preprocessing core', description='preprocessing for data', problem_type='regression')
+    
+    ```
     
     """
     scaler = RackioAIScaler()
+    app = RackioAI()
 
     def __init__(
         self, 
@@ -27,7 +32,7 @@ class Preprocessing:
         self._name = name
         self._description = description
         self._type = problem_type
-        app.append(self)
+        self.app.append(self)
 
         if problem_type.lower() in ['regression', 'classification']:
 
@@ -57,7 +62,7 @@ class Preprocessing:
 
         * **data:** (pandas.DataFrame)
         """
-        return app.data
+        return self.app.data
 
     @data.setter
     def data(self, value):
@@ -74,11 +79,11 @@ class Preprocessing:
         """
         if isinstance(value, np.ndarray):
             
-            app.data = pd.DataFrame(value)
+            self.app.data = pd.DataFrame(value)
         
         else:
             
-            app.data = value
+            self.app.data = value
 
     @property
     def description(self):
@@ -99,10 +104,10 @@ class Preprocessing:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess 2', description='preprocess for data', problem_type='regression')
-        >>> preprocess.description
-        'preprocess for data'
+        >>> from rackio_AI import RackioAI
+        >>> preprocessing = RackioAI.get(name='Preprocessing core', _type='Preprocessing')
+        >>> preprocessing.description
+        'preprocessing for data'
 
         ```
         """
@@ -132,10 +137,10 @@ class Preprocessing:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess 3', description='preprocess for data', problem_type='regression')
-        >>> preprocess.serialize()
-        {'name': 'Preprocess 3', 'description': 'preprocess for data', 'type': 'regression'}
+        >>> from rackio_AI import RackioAI
+        >>> preprocessing = RackioAI.get(name='Preprocessing core', _type='Preprocessing')
+        >>> preprocessing.serialize()
+        {'name': 'Preprocessing core', 'description': 'preprocessing for data', 'type': 'regression'}
 
         ```
         """
@@ -162,10 +167,10 @@ class Preprocessing:
         ## Snippet code
 
         ```python
-        >>> from rackio_AI import RackioAI, Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess 4', description='preprocess for data', problem_type='regression')
-        >>> preprocess.get_name()
-        'Preprocess 4'
+        >>> from rackio_AI import RackioAI
+        >>> preprocessing = RackioAI.get(name='Preprocessing core', _type='Preprocessing')
+        >>> preprocessing.get_name()
+        'Preprocessing core'
 
         ```
         """
