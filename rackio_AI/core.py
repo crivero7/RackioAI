@@ -403,12 +403,3 @@ class RackioAI(Singleton):
             pickle.dump(obj, file, protocol=HIGHEST_PROTOCOL)
 
         return obj
-
-def test_docstring():
-
-    doctest.testmod()
-
-
-if __name__ ==  '__main__':
-
-    test_docstring()

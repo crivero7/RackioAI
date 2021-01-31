@@ -990,10 +990,3 @@ class RackioEDA(Pipeline):
         self._df_.loc[:, column].update(_serie)
 
         return
-
-
-if __name__ == "__main__":
-    
-    import doctest
-
-    doctest.testmod()
