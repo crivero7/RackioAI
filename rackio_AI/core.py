@@ -3,13 +3,13 @@ import pickle
 from pickle import HIGHEST_PROTOCOL
 import numpy as np
 import pandas as pd
-
+import doctest
 from rackio_AI._singleton import Singleton
 from rackio_AI.managers import DataAnalysisManager
 from rackio_AI.managers import ModelsManager
 from rackio_AI.managers import PreprocessManager
 from rackio_AI.readers import Reader
-from rackio_AI.utils import Utils
+from rackio_AI.utils.utils_core import Utils
 
 
 class RackioAI(Singleton):
@@ -33,7 +33,6 @@ class RackioAI(Singleton):
         self._data_analysis_manager = DataAnalysisManager()
         self._models_manager = ModelsManager()
         self.app = None
-        self._data = None
 
     def __call__(self, app):
         """
@@ -196,18 +195,25 @@ class RackioAI(Singleton):
         """
         if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
 
-            if isinstance(self._data.columns, pd.MultiIndex):
+            if hasattr(self, '_data'):
 
-                self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
+                if isinstance(value, np.ndarray):
 
-            if isinstance(value, np.ndarray):
+                    self._data = pd.DataFrame(value, columns=self.columns_name)
 
+                else:
+                    
+                    if isinstance(self._data.columns, pd.MultiIndex):
 
-                self._data = pd.DataFrame(value, columns=self.columns_name)
+                        self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
 
+                    self._data = value
+            
             else:
 
-                self._data = pd.DataFrame(value.values, columns=self.columns_name)
+                self.columns_name = Utils.get_column_names(value)
+
+                self._data = value
 
         else:
 
@@ -231,7 +237,7 @@ class RackioAI(Singleton):
 
         ```python
         >>> from rackio_AI import RackioEDA, Preprocessing
-        >>> EDA = RackioEDA(name='EDA', description='Object Exploratory Data Analysis')
+        >>> EDA = RackioEDA(name='EDA_1', description='Object Exploratory Data Analysis')
         >>> Preprocess = Preprocessing(name="Preprocess", description="Preprocesing object")
 
         ```
@@ -366,7 +372,7 @@ class RackioAI(Singleton):
         ```python
         >>> from rackio_AI import RackioAI
         >>> RackioAI.summary()
-        {'preprocessing manager': {'length': 1, 'names': ['Preprocess'], 'descriptions': ['Preprocesing object'], 'types': ['regression']}, 'data analysis manager': {'length': 1, 'names': ['EDA'], 'descriptions': ['Object Exploratory Data Analysis']}}
+        {'preprocessing manager': {'length': 1, 'names': ['Preprocess'], 'descriptions': ['Preprocesing object'], 'types': ['regression']}, 'data analysis manager': {'length': 1, 'names': ['EDA_1'], 'descriptions': ['Object Exploratory Data Analysis']}}
 
         ```
         """
@@ -398,8 +404,11 @@ class RackioAI(Singleton):
 
         return obj
 
-
-if __name__ == "__main__":
-    import doctest
+def test_docstring():
 
     doctest.testmod()
+
+
+if __name__ ==  '__main__':
+
+    test_docstring()

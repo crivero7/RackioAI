@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split as TTS
 from tensorflow.keras.preprocessing.sequence import pad_sequences as pad_seq
-from rackio_AI.utils import Utils
+from rackio_AI.utils.utils_core import Utils
 from easy_deco.progress_bar import ProgressBar
 import numpy as np
 import pandas as pd

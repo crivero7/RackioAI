@@ -1,4 +1,4 @@
-from .core import Manager
+from .managers_core import Manager
 
 class ModelsManager(Manager):
     """

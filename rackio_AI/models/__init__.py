@@ -1,1 +1,1 @@
-from .core import RackioDNN
+from .models_core import RackioDNN

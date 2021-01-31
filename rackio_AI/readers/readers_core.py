@@ -1,8 +1,8 @@
 import os
 from rackio_AI.readers.tpl import TPL
-from rackio_AI.readers._csv_.core import CSV
-from rackio_AI.readers.pkl.core import PKL
-from rackio_AI.readers.exl.core import EXL
+from rackio_AI.readers._csv_.csv_core import CSV
+from rackio_AI.readers.pkl.pkl_core import PKL
+from rackio_AI.readers.exl.exl_core import EXL
 
 
 class Reader:

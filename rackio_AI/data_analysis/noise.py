@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from easy_deco.progress_bar import ProgressBar
-from rackio_AI.utils.core import Utils
+from rackio_AI.utils.utils_core import Utils
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from rackio_AI.utils.core import Utils
+from rackio_AI.utils.utils_core import Utils
 from easy_deco.progress_bar import ProgressBar
 from random import uniform, choice
 import scipy.stats as stats

@@ -1,1 +1,1 @@
-from .core import Pipeline, StopPipeline
+from .pipeline_core import Pipeline, StopPipeline

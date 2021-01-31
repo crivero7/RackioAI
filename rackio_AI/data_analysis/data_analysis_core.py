@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
-from rackio_AI.utils import Utils
+from rackio_AI.utils.utils_core import Utils
 from rackio_AI.pipeline import Pipeline
 from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
@@ -357,7 +357,7 @@ class RackioEDA(Pipeline):
            One
         0    1
         1    4
-        2    10
+        2    7
 
         ```
         """
@@ -475,6 +475,7 @@ class RackioEDA(Pipeline):
         >>> from rackio_AI import RackioAI
         >>> EDA = RackioAI.get("EDA", _type='EDA')
         >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> EDA.data = df
         >>> data = pd.DataFrame([[10, 11], [13, 14], [16, 17]], columns=['Two','Three'])
         >>> columns=['Two','Three']
         >>> EDA.change_columns(df, data, columns)
@@ -906,21 +907,8 @@ class RackioEDA(Pipeline):
         >>> import numpy as np
         >>> df = pd.DataFrame(np.random.randn(10, 3), index=['a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k'], columns=['one', 'two', 'three'])
         >>> df2 = df.reindex(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'])
-        >>> df2
-                one       two     three
-        a  1.108565 -0.586973  0.567825
-        b -2.908394  0.923907 -0.373586
-        c -0.045443  0.750214  0.973620
-        d -0.826050 -1.205517 -0.858363
-        e       NaN       NaN       NaN
-        f -0.059312 -0.170207  0.808748
-        g  0.179349  0.433726 -0.920899
-        h -0.349159 -0.302307  0.571396
-        i  0.609525 -0.603307  0.011705
-        j  0.378459 -1.397737 -0.322218
-        k  0.335913 -1.204695  0.131657
         >>> EDA = RackioEDA(name='EDA2')
-        >>> EDA.fixnan(df2, _round=True)
+        >>> df_fixed = EDA.fixnan(df2, _round=True)
 
         ```
         """

@@ -1,1 +1,1 @@
-from .core import *
+from .tpl_core import *

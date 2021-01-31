@@ -1,4 +1,4 @@
-from rackio_AI.managers.core import Manager
+from .managers_core import Manager
 
 class PreprocessManager(Manager):
     """
@@ -28,8 +28,8 @@ class PreprocessManager(Manager):
 
         ```python
         >>> from rackio_AI import Preprocessing, RackioAI
-        >>> preprocess = Preprocessing(name= 'Preprocess',description='preprocess for data', problem_type='regression')
-        >>> preprocess2 = Preprocessing(name= 'Preprocess2',description='preprocess for data', problem_type='classification')
+        >>> preprocess = Preprocessing(name='Preprocess', description='preprocess for data', problem_type='regression')
+        >>> preprocess2 = Preprocessing(name='Preprocess2', description='preprocess for data', problem_type='classification')
         >>> manager = RackioAI.get_manager('Preprocessing')
         >>> manager.get_types()
         ['regression', 'classification']
