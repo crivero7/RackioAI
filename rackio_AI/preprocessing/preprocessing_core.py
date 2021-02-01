@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
-from rackio_AI.preprocessing import RackioAIScaler, Splitter, KalmanFilter, LSTMDataPreparation
+from rackio_AI.preprocessing import RackioAIScaler, RackioAISplitter, KalmanFilter, LSTMDataPreparation
 
 
 class Preprocessing:
@@ -16,6 +16,9 @@ class Preprocessing:
     
     """
     scaler = RackioAIScaler()
+    splitter = RackioAISplitter()
+    kalman_filter = KalmanFilter()
+    lstm_data_preparation = LSTMDataPreparation()
     app = RackioAI()
 
     def __init__(
@@ -43,11 +46,6 @@ class Preprocessing:
             else:
 
                 self.preprocess = Classification(name, description)
-
-        self.kalman_filter = KalmanFilter()
-        self.splitter = Splitter()
-        self.lstm_data_preparation = LSTMDataPreparation()
-
 
     @property
     def data(self):

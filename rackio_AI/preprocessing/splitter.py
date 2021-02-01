@@ -7,14 +7,15 @@ import pandas as pd
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-ONE_SPLIT = 1
-TWO_SPLIT = 2
+TRAIN_TEST_SPLIT = 1
+TRAIN_TEST_VALIDATION_SPLIT = 2
 
 @set_to_methods(del_temp_attr)
-class Splitter:
+class RackioAISplitter:
     """
     This is a *RackioAI* preprocessing class to split the data to create a Deep learning model
     """
+    _instances = list()
 
     def __init__(self):
         """
@@ -32,14 +33,15 @@ class Splitter:
 
         ## Snippet code
         ```python
-        >>> from rackio_AI import Preprocessing
-        >>> preprocess = Preprocessing(name='Preprocess splitter init', description='preprocess for data', problem_type='regression')
+        >>> from rackio_AI import RackioAI
+        >>> preprocess = RackioAI.get("Preprocessing", _type="Preprocessing")
         >>> print(preprocess.splitter)
         Splitter Object
         {'train_size': None, 'test_size': None, 'validation_size': None, 'random_state': None, 'shuffle': True, 'stratify': None}
 
         ```
         """
+        RackioAISplitter._instances.append(self)
         self.default_options = {'train_size': None,
                                 'test_size': None,
                                 'validation_size': None,
@@ -85,9 +87,9 @@ class Splitter:
 
         ## Snippet code
         ```python
-        >>> from rackio_AI import  Preprocessing
+        >>> from rackio_AI import  RackioAI
         >>> import numpy as np
-        >>> preprocess = Preprocessing(name='Preprocess splitter split', description='preprocess for data', problem_type='regression')
+        >>> preprocess = RackioAI.get("Preprocessing", _type="Preprocessing")
         >>> X, y = np.arange(20).reshape((10, 2)), range(10)
         >>> X
         array([[ 0,  1],
@@ -108,77 +110,77 @@ class Splitter:
         ```python
         >>> X_train, X_test, X_validation, y_train, y_test, y_validation = preprocess.splitter.split(X, y, train_size=0.6, test_size=0.2, validation_size=0.2, random_state=0)
         >>> X_train
-        array([[ 2,  3],
-               [12, 13],
-               [14, 15],
+        array([[ 0,  1],
+               [ 2,  3],
+               [ 4,  5],
                [ 6,  7],
-               [ 0,  1],
+               [ 8,  9],
                [10, 11]])
         >>> X_test
-        array([[16, 17],
-               [ 4,  5]])
+        array([[12, 13],
+               [14, 15]])
         >>> X_validation
-        array([[ 8,  9],
+        array([[16, 17],
                [18, 19]])
         >>> y_train
-        [1, 6, 7, 3, 0, 5]
+        [0, 1, 2, 3, 4, 5]
         >>> y_test
-        [8, 2]
+        [6, 7]
         >>> y_validation
-        [4, 9]
+        [8, 9]
 
         ```
 
         ## Snippet code 3
         ```python
-        >>> X_train, X_test, X_validation, y_train, y_test, y_validation = preprocess.splitter.split(X, y, train_size=0.6, test_size=0.2, random_state=0)
+        >>> X_train, X_test, y_train, y_test = preprocess.splitter.split(X, y, train_size=0.6, test_size=0.4, random_state=0)
         >>> X_train
-        array([[ 2,  3],
-               [12, 13],
-               [14, 15],
+        array([[ 0,  1],
+               [ 2,  3],
+               [ 4,  5],
                [ 6,  7],
-               [ 0,  1],
+               [ 8,  9],
                [10, 11]])
         >>> X_test
-        array([[16, 17],
-               [ 4,  5]])
-        >>> X_validation
-        array([[ 8,  9],
+        array([[12, 13],
+               [14, 15],
+               [16, 17],
                [18, 19]])
         >>> y_train
-        [1, 6, 7, 3, 0, 5]
+        [0, 1, 2, 3, 4, 5]
         >>> y_test
-        [8, 2]
-        >>> y_validation
-        [4, 9]
+        [6, 7, 8, 9]
+
 
         ```
         """
+        default_options = {'train_size': None,
+                           'test_size': None,
+                           'validation_size': None,
+                           'random_state': None,
+                           'shuffle': False,
+                           'stratify': None}
         data = [array.values if isinstance(array, pd.DataFrame) else array for array in arrays]
 
         # Check default options
-        default_options = {key: options[key] if key in list(options.keys()) else self.default_options[key] for key in list(self.default_options.keys())}
+        options = Utils.check_default_kwargs(default_options, options)
+        train_size = options['train_size']
+        test_size = options['test_size']
 
         # remove validation_size key to be used in train_test_split method from scikit-learn
-        self.validation_size = default_options.pop('validation_size')
+        self.validation_size = options.pop('validation_size')
 
         # check if is necessary to do train-test-validation split
-        lst = [default_options['train_size'], default_options['test_size'], self.validation_size]
+        lst = [options['train_size'], options['test_size'], self.validation_size]
 
-        #if lst.count(None) <= 1 or (default_options['train_size'] + default_options['test_size'] < 1):
-        if default_options['train_size'] and default_options['test_size'] and self.validation_size==None and \
-                (default_options['train_size'] + default_options['test_size'] < 1) or \
-                (default_options['train_size'] and default_options['test_size'] and self.validation_size):
+        if lst.count(None) >= 1 or (options['train_size'] + options['test_size'] == 1):
 
-            #default_options, _ = self._check_split_sizes(**default_options)
+            return self._split(TRAIN_TEST_SPLIT, *data, **options)
 
-            return self._split(TWO_SPLIT, *data, **default_options)
+        return self._split(TRAIN_TEST_VALIDATION_SPLIT, *data, **options)
 
 
-        return self._split(ONE_SPLIT, *data, **default_options)
-
-
-    def _split(self, flag, *data, **default_options):
+    def _split(self, flag, *data, **options):
         """
         splitter manager to do one_split or two_split
         :param flag:
@@ -186,42 +188,40 @@ class Splitter:
         :param default_options:
         :return:
         """
-        if flag==ONE_SPLIT:
+        if flag==TRAIN_TEST_SPLIT:
 
-            return self._one_split(*data, **default_options)
+            return self._one_split(*data, **options)
 
-        elif flag==TWO_SPLIT:
+        elif flag==TRAIN_TEST_VALIDATION_SPLIT:
 
-            return self._two_splits(*data, **default_options)
+            return self._two_splits(*data, **options)
 
         return
 
-    def _one_split(self, *data, **default_options):
+    def _one_split(self, *data, **options):
         """
         Split data in train and test datasets
         :return:
         """
-        default_options['test_size'] = None
+        return TTS(*data, **options)
 
-        return TTS(*data, **default_options)
-
-    def _two_splits(self, *data, **default_options):
+    def _two_splits(self, *data, **options):
         """
         Split data in train-test and validation datasets
         """
-        test_size = default_options['test_size']
+        test_size = options['test_size']
 
-        validation_size = 1 - default_options['train_size'] - test_size
+        validation_size = 1 - options['train_size'] - test_size
 
-        default_options['test_size'] = None
+        options['test_size'] = None
 
         # First split
-        X_train, X_test, y_train, y_test = TTS(*data, **default_options)
+        X_train, X_test, y_train, y_test = TTS(*data, **options)
 
-        default_options['train_size'] = test_size / (test_size + validation_size)
+        options['train_size'] = test_size / (test_size + validation_size)
 
         # Second split
-        X_test, X_validation, y_test, y_validation = TTS(X_test, y_test, **default_options)
+        X_test, X_validation, y_test, y_validation = TTS(X_test, y_test, **options)
 
         return [X_train, X_test, X_validation, y_train, y_test, y_validation]
 
@@ -250,7 +250,7 @@ class Splitter:
             options['test_size'] = test_size / (train_size + test_size + validation_size)
             validation_size = validation_size / (train_size + test_size + validation_size)
 
-            return options, validation_size
+        return options, validation_size
 
     def __str__(self):
         """
@@ -260,13 +260,17 @@ class Splitter:
         return "Splitter Object\n{}".format(self.default_options)
 
 
-class LSTMDataPreparation:
+@set_to_methods(del_temp_attr)
+class LSTMDataPreparation(RackioAISplitter):
     """
     Documentation here
     """
+    _instances = list()
 
     def __init__(self):
-        pass
+        """Documnetation here"""
+        super(LSTMDataPreparation, self).__init__()
+        LSTMDataPreparation._instances.append(self)
 
     def split_sequences(
         self, 
@@ -304,7 +308,7 @@ class LSTMDataPreparation:
 
         ```python
         >>> import numpy as np
-        >>> from rackio_AI import Preprocessing
+        >>> from rackio_AI import RackioAI
         >>> a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90]).reshape(-1,1)
         >>> b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
         >>> c = np.array([a[i]+b[i] for i in range(len(a))]).reshape(-1,1)
@@ -320,7 +324,7 @@ class LSTMDataPreparation:
                [ 80,  85, 165],
                [ 90,  95, 185]])
         >>> df = pd.DataFrame(data, columns=['a', 'b', 'c'])
-        >>> preprocess = Preprocessing(name='LSTM Data Preparation', description='LSTM')
+        >>> preprocess = RackioAI.get("Preprocessing", _type="Preprocessing")
         >>> x, y = preprocess.lstm_data_preparation.split_sequences(df, 2)
         >>> x.shape
         (8, 2, 2)
@@ -394,23 +398,25 @@ class LSTMDataPreparation:
         output_data = df.loc[:, output_cols].values
         iteration = list(range(0, input_data.shape[0] - max(timesteps) + stepsize, stepsize))
 
-        self._x_sequences_ = np.zeros((len(iteration), max(timesteps), len(input_cols)))
-        self._y_sequences_ = np.zeros((len(iteration), 1, len(output_cols)))
+        self.x_sequences = np.zeros((len(iteration), max(timesteps), len(input_cols)))
+        self.y_sequences = np.zeros((len(iteration), 1, len(output_cols)))
 
-        self._start_ = 0  
+        self.start = 0  
 
-        self._output_data_ = output_data
-        self._input_data_ = input_data
-        self._timesteps_ = timesteps
-        self._maxlen_ = maxlen
-        self._dtype_ = dtype
-        self._padding_ =  padding
-        self._truncating_ = truncating
-        self._value_ = value
+        options = {
+            'output_data': output_data,
+            'input_data': input_data,
+            'timesteps': timesteps,
+            'maxlen': maxlen,
+            'dtype': dtype,
+            'padding': padding,
+            'truncating': truncating,
+            'value': value
+        }
         
-        self.__split_sequences(iteration)
+        self.__split_sequences(iteration, **options)
 
-        return self._x_sequences_, self._y_sequences_
+        return self.x_sequences, self.y_sequences
 
     @ProgressBar(desc="Splitting sequences...", unit="windows")
     def __split_sequences(self, sequence, **kwargs):
@@ -418,20 +424,20 @@ class LSTMDataPreparation:
         Documentation here
         """
         to_pad = list()
-        output_data = self._output_data_
-        input_data = self._input_data_
-        timesteps = self._timesteps_
-        maxlen = self._maxlen_
-        dtype = self._dtype_
-        padding = self._padding_
-        truncating = self._truncating_
-        value = self._value_
+        output_data = kwargs['output_data']
+        input_data = kwargs['input_data']
+        timesteps = kwargs['timesteps']
+        maxlen = kwargs['maxlen']
+        dtype = kwargs['dtype']
+        padding = kwargs['padding']
+        truncating = kwargs['truncating']
+        value = kwargs['value']
 
         for count, timestep in enumerate(timesteps):
 
-            to_pad.append(input_data[self._start_ + max(timesteps) - timestep: self._start_ + max(timesteps), count].tolist())
+            to_pad.append(input_data[self.start + max(timesteps) - timestep: self.start + max(timesteps), count].tolist())
         
-        self._x_sequences_[self._start_] = self.pad_sequences(
+        self.x_sequences[self.start] = self.pad_sequences(
             to_pad, 
             maxlen=maxlen,
             dtype=dtype,
@@ -440,9 +446,9 @@ class LSTMDataPreparation:
             value=value
             )
         
-        self._y_sequences_[self._start_] = output_data[self._start_ + max(timesteps) - 1, :]
+        self.y_sequences[self.start] = output_data[self.start + max(timesteps) - 1, :]
 
-        self._start_ += 1
+        self.start += 1
 
         return
 
@@ -497,9 +503,9 @@ class LSTMDataPreparation:
         shape for a `sequences` entry.
 
         ```python
-        >>> from rackio_AI import Preprocessing
+        >>> from rackio_AI import RackioAI
         >>> sequence = [[1], [2, 3], [4, 5, 6]]
-        >>> preprocessing = Preprocessing(name='Pad sequence', description='preprocess for data', problem_type='regression')
+        >>> preprocessing = RackioAI.get("Preprocessing", _type="Preprocessing")
         >>> preprocessing.lstm_data_preparation.pad_sequences(sequence)
         array([[0, 0, 4],
                [0, 2, 5],
@@ -524,6 +530,7 @@ class LSTMDataPreparation:
 
 if __name__=="__main__":
     import doctest
+
     doctest.testmod()
     # a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90]).reshape(-1,1)
     # b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
