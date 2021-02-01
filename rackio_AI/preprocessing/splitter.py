@@ -49,7 +49,7 @@ class RackioAISplitter:
                                 'shuffle': True,
                                 'stratify': None}
 
-    def split(self, *arrays, **options):
+    def split(self, df: pd.DataFrame, input_cols: list=None, output_cols: list=None, **options):
         """
         Split arrays or matrices into random train and test subsets
 
@@ -160,7 +160,17 @@ class RackioAISplitter:
                            'random_state': None,
                            'shuffle': False,
                            'stratify': None}
-        data = [array.values if isinstance(array, pd.DataFrame) else array for array in arrays]
+        if not input_cols:
+    
+            input_cols = Utils.get_column_names(df)
+            input_cols = input_cols[:-1]
+        
+        if not output_cols:
+
+            output_cols = Utils.get_column_names(df)
+            output_cols = [output_cols[-1]]
+
+        data = (df.loc[:, input_cols].values, df.loc[:, output_cols].values)
 
         # Check default options
         options = Utils.check_default_kwargs(default_options, options)
@@ -171,16 +181,34 @@ class RackioAISplitter:
         self.validation_size = options.pop('validation_size')
 
         # check if is necessary to do train-test-validation split
-        lst = [options['train_size'], options['test_size'], self.validation_size]
+        lst = [train_size, test_size, self.validation_size]
 
-        if lst.count(None) >= 1 or (options['train_size'] + options['test_size'] == 1):
+        if lst.count(None) >= 1 or (train_size + test_size == 1):
 
-            return self._split(TRAIN_TEST_SPLIT, *data, **options)
+            X_train, X_test, y_train, y_test = self.__split(TRAIN_TEST_SPLIT, *data, **options)
 
-        return self._split(TRAIN_TEST_VALIDATION_SPLIT, *data, **options)
+            result = (
+                pd.DataFrame(X_train, columns=input_cols),
+                pd.DataFrame(X_test, columns=input_cols),
+                pd.DataFrame(y_train, columns=output_cols),
+                pd.DataFrame(y_test, columns=output_cols)
+            )
+            return result
+
+        X_train, X_test, X_validation, y_train, y_test, y_validation = self.__split(TRAIN_TEST_VALIDATION_SPLIT, *data, **options)
+
+        result = (
+                pd.DataFrame(X_train, columns=input_cols),
+                pd.DataFrame(X_test, columns=input_cols),
+                pd.DataFrame(X_validation, columns=input_cols),
+                pd.DataFrame(y_train, columns=output_cols),
+                pd.DataFrame(y_test, columns=output_cols),
+                pd.DataFrame(y_validation, columns=output_cols)
+            )
+        return result
 
 
-    def _split(self, flag, *data, **options):
+    def __split(self, flag, *data, **options):
         """
         splitter manager to do one_split or two_split
         :param flag:
@@ -190,22 +218,22 @@ class RackioAISplitter:
         """
         if flag==TRAIN_TEST_SPLIT:
 
-            return self._one_split(*data, **options)
+            return self.__one_split(*data, **options)
 
         elif flag==TRAIN_TEST_VALIDATION_SPLIT:
 
-            return self._two_splits(*data, **options)
+            return self.__two_splits(*data, **options)
 
         return
 
-    def _one_split(self, *data, **options):
+    def __one_split(self, *data, **options):
         """
         Split data in train and test datasets
         :return:
         """
         return TTS(*data, **options)
 
-    def _two_splits(self, *data, **options):
+    def __two_splits(self, *data, **options):
         """
         Split data in train-test and validation datasets
         """
@@ -225,7 +253,7 @@ class RackioAISplitter:
 
         return [X_train, X_test, X_validation, y_train, y_test, y_validation]
 
-    def _check_split_sizes(self, **options):
+    def __check_split_sizes(self, **options):
         """
         Normalize proportion if their sum is not 1.0
         """
