@@ -165,52 +165,51 @@ class EXL:
         >>> import os
         >>> from rackio_AI import RackioAI, get_directory
         >>> directory = os.path.join(get_directory('excel'))
-        >>> RackioAI.load(directory, ext=".xlsx", header=0, index_col=0, sheet_name="SalesOrders")
-                     Region       Rep     Item  Units  Unit Cost    Total
-        OrderDate
-        2019-01-06     East     Jones   Pencil     95       1.99   189.05
-        2019-01-23  Central    Kivell   Binder     50      19.99   999.50
-        2019-02-09  Central   Jardine   Pencil     36       4.99   179.64
-        2019-02-26  Central      Gill      Pen     27      19.99   539.73
-        2019-03-15     West   Sorvino   Pencil     56       2.99   167.44
-        2019-04-01     East     Jones   Binder     60       4.99   299.40
-        2019-04-18  Central   Andrews   Pencil     75       1.99   149.25
-        2019-05-05  Central   Jardine   Pencil     90       4.99   449.10
-        2019-05-22     West  Thompson   Pencil     32       1.99    63.68
-        2019-06-08     East     Jones   Binder     60       8.99   539.40
-        2019-06-25  Central    Morgan   Pencil     90       4.99   449.10
-        2019-07-12     East    Howard   Binder     29       1.99    57.71
-        2019-07-29     East    Parent   Binder     81      19.99  1619.19
-        2019-08-15     East     Jones   Pencil     35       4.99   174.65
-        2019-09-01  Central     Smith     Desk      2     125.00   250.00
-        2019-09-18     East     Jones  Pen Set     16      15.99   255.84
-        2019-10-05  Central    Morgan   Binder     28       8.99   251.72
-        2019-10-22     East     Jones      Pen     64       8.99   575.36
-        2019-11-08     East    Parent      Pen     15      19.99   299.85
-        2019-11-25  Central    Kivell  Pen Set     96       4.99   479.04
-        2019-12-12  Central     Smith   Pencil     67       1.29    86.43
-        2019-12-29     East    Parent  Pen Set     74      15.99  1183.26
-        2020-01-15  Central      Gill   Binder     46       8.99   413.54
-        2020-02-01  Central     Smith   Binder     87      15.00  1305.00
-        2020-02-18     East     Jones   Binder      4       4.99    19.96
-        2020-03-07     West   Sorvino   Binder      7      19.99   139.93
-        2020-03-24  Central   Jardine  Pen Set     50       4.99   249.50
-        2020-04-10  Central   Andrews   Pencil     66       1.99   131.34
-        2020-04-27     East    Howard      Pen     96       4.99   479.04
-        2020-05-14  Central      Gill   Pencil     53       1.29    68.37
-        2020-05-31  Central      Gill   Binder     80       8.99   719.20
-        2020-06-17  Central    Kivell     Desk      5     125.00   625.00
-        2020-07-04     East     Jones  Pen Set     62       4.99   309.38
-        2020-07-21  Central    Morgan  Pen Set     55      12.49   686.95
-        2020-08-07  Central    Kivell  Pen Set     42      23.95  1005.90
-        2020-08-24     West   Sorvino     Desk      3     275.00   825.00
-        2020-09-10  Central      Gill   Pencil      7       1.29     9.03
-        2020-09-27     West   Sorvino      Pen     76       1.99   151.24
-        2020-10-14     West  Thompson   Binder     57      19.99  1139.43
-        2020-10-31  Central   Andrews   Pencil     14       1.29    18.06
-        2020-11-17  Central   Jardine   Binder     11       4.99    54.89
-        2020-12-04  Central   Jardine   Binder     94      19.99  1879.06
-        2020-12-21  Central   Andrews   Binder     28       4.99   139.72
+        >>> RackioAI.load(directory, ext=".xlsx", header=0, sheet_name="SalesOrders")
+            OrderDate   Region       Rep     Item  Units  Unit Cost    Total
+        0  2019-01-06     East     Jones   Pencil     95       1.99   189.05
+        1  2019-01-23  Central    Kivell   Binder     50      19.99   999.50
+        2  2019-02-09  Central   Jardine   Pencil     36       4.99   179.64
+        3  2019-02-26  Central      Gill      Pen     27      19.99   539.73
+        4  2019-03-15     West   Sorvino   Pencil     56       2.99   167.44
+        5  2019-04-01     East     Jones   Binder     60       4.99   299.40
+        6  2019-04-18  Central   Andrews   Pencil     75       1.99   149.25
+        7  2019-05-05  Central   Jardine   Pencil     90       4.99   449.10
+        8  2019-05-22     West  Thompson   Pencil     32       1.99    63.68
+        9  2019-06-08     East     Jones   Binder     60       8.99   539.40
+        10 2019-06-25  Central    Morgan   Pencil     90       4.99   449.10
+        11 2019-07-12     East    Howard   Binder     29       1.99    57.71
+        12 2019-07-29     East    Parent   Binder     81      19.99  1619.19
+        13 2019-08-15     East     Jones   Pencil     35       4.99   174.65
+        14 2019-09-01  Central     Smith     Desk      2     125.00   250.00
+        15 2019-09-18     East     Jones  Pen Set     16      15.99   255.84
+        16 2019-10-05  Central    Morgan   Binder     28       8.99   251.72
+        17 2019-10-22     East     Jones      Pen     64       8.99   575.36
+        18 2019-11-08     East    Parent      Pen     15      19.99   299.85
+        19 2019-11-25  Central    Kivell  Pen Set     96       4.99   479.04
+        20 2019-12-12  Central     Smith   Pencil     67       1.29    86.43
+        21 2019-12-29     East    Parent  Pen Set     74      15.99  1183.26
+        22 2020-01-15  Central      Gill   Binder     46       8.99   413.54
+        23 2020-02-01  Central     Smith   Binder     87      15.00  1305.00
+        24 2020-02-18     East     Jones   Binder      4       4.99    19.96
+        25 2020-03-07     West   Sorvino   Binder      7      19.99   139.93
+        26 2020-03-24  Central   Jardine  Pen Set     50       4.99   249.50
+        27 2020-04-10  Central   Andrews   Pencil     66       1.99   131.34
+        28 2020-04-27     East    Howard      Pen     96       4.99   479.04
+        29 2020-05-14  Central      Gill   Pencil     53       1.29    68.37
+        30 2020-05-31  Central      Gill   Binder     80       8.99   719.20
+        31 2020-06-17  Central    Kivell     Desk      5     125.00   625.00
+        32 2020-07-04     East     Jones  Pen Set     62       4.99   309.38
+        33 2020-07-21  Central    Morgan  Pen Set     55      12.49   686.95
+        34 2020-08-07  Central    Kivell  Pen Set     42      23.95  1005.90
+        35 2020-08-24     West   Sorvino     Desk      3     275.00   825.00
+        36 2020-09-10  Central      Gill   Pencil      7       1.29     9.03
+        37 2020-09-27     West   Sorvino      Pen     76       1.99   151.24
+        38 2020-10-14     West  Thompson   Binder     57      19.99  1139.43
+        39 2020-10-31  Central   Andrews   Pencil     14       1.29    18.06
+        40 2020-11-17  Central   Jardine   Binder     11       4.99    54.89
+        41 2020-12-04  Central   Jardine   Binder     94      19.99  1879.06
+        42 2020-12-21  Central   Andrews   Binder     28       4.99   139.72
         
         ```
         """

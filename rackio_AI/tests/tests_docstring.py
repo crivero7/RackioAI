@@ -17,7 +17,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.readers_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.tpl.tpl_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers.pkl.pkl_core))
-    # tests.addTests(doctest.DocTestSuite(rackio_AI.readers.exl.exl_core))
+    tests.addTests(doctest.DocTestSuite(rackio_AI.readers.exl.exl_core))
     tests.addTests(doctest.DocTestSuite(rackio_AI.readers._csv_.csv_core))
 
     # Preprocessing
@@ -39,7 +39,7 @@ def load_tests(loader, tests, ignore):
     # tests.addTests(doctest.DocTestSuite(rackio_AI.models.models_core))
 
     # Utils
-    # tests.addTests(doctest.DocTestSuite(rackio_AI.utils.utils_core))
+    tests.addTests(doctest.DocTestSuite(rackio_AI.utils.utils_core))
 
 
     return tests
