@@ -526,21 +526,3 @@ class LSTMDataPreparation(RackioAISplitter):
         """
 
         return np.transpose(pad_seq(sequences, maxlen=maxlen, dtype=dtype, padding=padding, truncating=truncating, value=value))
-
-
-if __name__=="__main__":
-    import doctest
-
-    doctest.testmod()
-    # a = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90]).reshape(-1,1)
-    # b = np.array([15, 25, 35, 45, 55, 65, 75, 85, 95]).reshape(-1,1)
-    # c = np.array([a[i]+b[i] for i in range(len(a))]).reshape(-1,1)
-    # data = np.hstack((a,b,c))
-    # print(data)
-    # df = pd.DataFrame(data, columns=['a', 'b', 'c'])
-    # lst = LSTMDataPreparation()
-    # x, y = lst.split_sequences(df, [2,1])
-    # print(x)
-    # print(x.shape)
-    # print(y.shape)
-    

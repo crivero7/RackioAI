@@ -11,15 +11,11 @@ class RackioAIScaler:
 
     ### **Preprocessing Instantiation**
 
-    ```python
-    >>> from rackio_AI import Preprocessing
-    >>> preprocessing = Preprocessing(name='Preprocess model name', description='preprocess for data')
-    
-    ```
-
     ### **min_max scaler**
 
     ```python
+    >>> from rackio_AI import RackioAI
+    >>> preprocessing = RackioAI.get("Preprocessing", _type="Preprocessing")
     >>> min_max_scaler = preprocessing.scaler.min_max()
     >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
     >>> min_max_scaler.fit_transform(df)

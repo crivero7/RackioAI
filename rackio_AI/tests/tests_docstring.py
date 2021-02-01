@@ -25,7 +25,7 @@ def load_tests(loader, tests, ignore):
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.feature_extraction))
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.feature_selection))
     # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.kalman_filter))
-    # tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.scaler))
+    tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.scaler))
     tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.splitter))
     tests.addTests(doctest.DocTestSuite(rackio_AI.preprocessing.synthetic_data))
 
