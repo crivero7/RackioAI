@@ -37,14 +37,10 @@ class KalmanFilter:
 
         ```python
         >>> import numpy as np
-        >>> from rackio_AI.preprocessing.core import Preprocessing
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
-        >>> kf = preprocess.kalman_filter # Kalman filter definition
-        >>> variable_to_filter = np.ones((10,1)) +np.random.random((10,1))
+        >>> preprocessing = RackioAI.get('Preprocessing', _type="Preprocessing")
+        >>> kf = preprocessing.kalman_filter # Kalman filter definition
+        >>> variable_to_filter = np.ones((10,1)) + np.random.random((10,1))
         >>> kf.set_init_value(variable_to_filter[0])
 
         ```
@@ -62,16 +58,12 @@ class KalmanFilter:
 
         ```python
         >>> import numpy as np
-        >>> from rackio_AI.preprocessing.core import Preprocessing
         >>> from rackio_AI import RackioAI
-        >>> from rackio import Rackio
-        >>> app = Rackio()
-        >>> RackioAI(app)
-        >>> preprocess = Preprocessing(name= 'Kalman Filter', description='test for filter data', problem_type='regression')
-        >>> kf = preprocess.kalman_filter # Kalman filter definition
+        >>> preprocessing = RackioAI.get("Preprocessing", _type="Preprocessing")
+        >>> kf = preprocessing.kalman_filter # Kalman filter definition
         >>> kf.alpha = 0.001
         >>> kf.beta = 0.2
-        >>> variable_to_filter = np.ones((10,1)) +np.random.random((10,1))
+        >>> variable_to_filter = np.ones((10,1)) + np.random.random((10,1))
         >>> filtered_variable = np.array([kf(value) for value in variable_to_filter]) # Applying Kalman filter
 
         ```
