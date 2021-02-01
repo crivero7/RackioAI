@@ -76,7 +76,3 @@ class KalmanFilter:
         self.posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
 
         return self.filtered_value
-
-if __name__=="__main__":
-    import doctest
-    doctest.testmod()

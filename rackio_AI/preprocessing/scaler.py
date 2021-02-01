@@ -72,9 +72,3 @@ class RackioAIScaler:
         :return:
         """
         return "Scaler Object\n{}".format(self.__name__)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

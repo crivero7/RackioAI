@@ -41,7 +41,6 @@ def load_tests(loader, tests, ignore):
     # Utils
     tests.addTests(doctest.DocTestSuite(rackio_AI.utils.utils_core))
 
-
     return tests
 
 if __name__ == '__main__':
