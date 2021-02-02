@@ -66,9 +66,6 @@ class RackioAIScaler:
     quantile_transform = QuantileTransformer
     power_transform = PowerTransformer
 
-    def __str__(self):
-        """
+    def __init__(self):
 
-        :return:
-        """
-        return "Scaler Object\n{}".format(self.__name__)
+       pass

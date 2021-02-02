@@ -418,7 +418,7 @@ class SyntheticData(PrepareData):
             for i in range(excesive_noise):
                 
                 duration = np.random.randint(duration_min, duration_max)
-                add_excessive_noise(duration=duration)
+                self.add_excessive_noise(duration=duration)
 
         # Adding frozen data
         if frozen_data:
@@ -446,7 +446,7 @@ class SyntheticData(PrepareData):
 
         self.done(view=options['view'], columns=options['columns'], ylabel='Amplitude', xlabel='Point')
 
-        return
+        return self.app.data
 
     def round_by_dead_band(self):
         """
