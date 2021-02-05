@@ -329,7 +329,7 @@ class RackioEDA(Pipeline):
 
         None
         """
-        self.app.columns_name.remove(column_name)
+        # self.app.columns_name.remove(column_name)
 
         self._data_ = self._data_.drop(column_name, axis=1)
         
