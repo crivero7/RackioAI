@@ -68,9 +68,11 @@ class KalmanFilter:
 
         ```
         """
+        # Prediction
         f_value = self.filtered_value
         priori_error_estimate = self.posteri_error_estimate + self.alpha
 
+        # Correction
         blending_factor = priori_error_estimate / (priori_error_estimate + self.beta)
         self.filtered_value = f_value + blending_factor * (value - f_value)
         self.posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
