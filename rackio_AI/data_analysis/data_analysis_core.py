@@ -372,6 +372,47 @@ class RackioEDA(Pipeline):
 
         return self._data_
 
+    def keep_columns(self, df, *args):
+        """
+        Remove columns in the data by their names
+
+        ___
+        **Parameters**
+
+        * **:param args:** (str) column name or column names to remove from the data
+
+        **:return:**
+
+        * **data:** (pandas.DataFrame)
+        ___
+        ##Snippet code
+
+        ```python
+        >>> import pandas as pd
+        >>> from rackio_AI import RackioAI
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
+        >>> df = pd.DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=['One', 'Two', 'Three'])
+        >>> EDA.keep_columns(df, 'Two')
+           Two
+        0    2
+        1    5
+        2    8
+
+        ```
+        """
+            
+        self._data_ = df
+
+        columns = df.columns.tolist()
+        [columns.remove(arg) for arg in args]
+
+        self.__remove_columns(columns)
+
+        self.data = self._data_
+
+        return self._data_
+
+
     @ProgressBar(desc="Renaming columns...", unit="column")
     def __rename_columns(self, column_name, **kwargs):
         """
