@@ -374,12 +374,12 @@ class RackioEDA(Pipeline):
 
     def keep_columns(self, df, *args):
         """
-        Remove columns in the data by their names
+        Keep columns in the data by their names
 
         ___
         **Parameters**
 
-        * **:param args:** (str) column name or column names to remove from the data
+        * **:param args:** (str) column name or column names to keep from the data
 
         **:return:**
 
