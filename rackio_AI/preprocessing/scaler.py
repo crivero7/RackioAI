@@ -73,13 +73,13 @@ class RackioAIScaler:
        """Documentation here"""
        self.__scaler = None
 
-    def __call__(self, df, method: str="min_max", columns: list=[]):
+    def __call__(self, df, method: str="min_max", columns: list=[], **kwargs):
         """Documentation here"""
         if not method.lower() in self.methods:
             
             raise TypeError("{} method not available, availables methods: {}".format(method, methods.keys()))
 
-        self.__scaler = self.methods[method.lower()]()
+        self.__scaler = self.methods[method.lower()](**kwargs)
         column_name = Utils.get_column_names(df)
 
         return pd.DataFrame(self.__scaler.fit_transform(df), columns=column_name)
