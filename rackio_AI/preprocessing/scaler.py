@@ -1,5 +1,6 @@
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 from sklearn.preprocessing import Normalizer, Binarizer, QuantileTransformer, PowerTransformer
+from rackio_AI.utils.utils_core import Utils
 import pandas as pd
 
 class RackioAIScaler:
@@ -57,15 +58,33 @@ class RackioAIScaler:
     
     ```
     """
-    min_max = MinMaxScaler
-    standard = StandardScaler
-    max_abs = MaxAbsScaler
-    robust = RobustScaler
-    normalizer = Normalizer
-    binarizer = Binarizer
-    quantile_transform = QuantileTransformer
-    power_transform = PowerTransformer
+    methods = {
+        "min_max": MinMaxScaler,
+        "standard": StandardScaler,
+        "max_abs": MaxAbsScaler,
+        "robust": RobustScaler,
+        "normalizer": Normalizer,
+        "binarizer": Binarizer,
+        "quantile_transform": QuantileTransformer,
+        "power_transform": PowerTransformer
+    }
 
     def __init__(self):
+       """Documentation here"""
+       self.__scaler = None
 
-       pass
+    def __call__(self, df, method: str="min_max", columns: list=[]):
+        """Documentation here"""
+        if not method.lower() in self.methods:
+            
+            raise TypeError("{} method not available, availables methods: {}".format(method, methods.keys()))
+
+        self.__scaler = self.methods[method.lower()]()
+        column_name = Utils.get_column_names(df)
+
+        return pd.DataFrame(self.__scaler.fit_transform(df), columns=column_name)
+
+    def inverse(self, df, columns: list=[]):
+        """Documentation here"""
+        column_name = Utils.get_column_names(df)
+        return pd.DataFrame(self.__scaler.inverse_transform(df), columns=column_name)
