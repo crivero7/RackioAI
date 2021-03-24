@@ -42,7 +42,7 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def load(self, pathname: str, ext: str=".tpl", **kwargs):
+    def load(self, pathname: str, ext: str=".tpl", reset_index=False, **kwargs):
         """
         Load data into DataFrame format:
 
@@ -156,6 +156,10 @@ class RackioAI(Singleton):
         
         if data.index.has_duplicates:
         
+            data = data.reset_index(drop=True)
+        
+        if reset_index:
+
             data = data.reset_index(drop=True)
 
         self.columns_name = Utils.get_column_names(data)
