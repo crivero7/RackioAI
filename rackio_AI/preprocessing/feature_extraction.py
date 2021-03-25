@@ -429,12 +429,12 @@ class StatisticalsFeatures:
         Often the peak is used in conjunction with other statistical parameters, for instance the 
         peak-to-average rate.
 
-        $peak = \frac{\max\left(dataset_{i}-ref\right)}{\frc{1}{N}\sum_{i=0}^{N-1}dataset_{i}}$
+        $peak = \frac{\max\left(dataset_{i}-ref\right)}{\frac{1}{N}\sum_{i=0}^{N-1}dataset_{i}}$
 
         or peak-to-median rate
 
         """
-        if ref not None:
+        if not ref == None:
 
             _peak = np.array([np.max(col - ref, axis=axis) for col in data])
 
@@ -442,11 +442,11 @@ class StatisticalsFeatures:
             
             _peak = np.array([np.max(col - col[0,:], axis=axis) for col in data])
 
-        if rate not None:
+        if not rate == None:
 
             if rate.lower() == 'average':
                 
-                return _peak / self.mean(dataset, **kwargs
+                return _peak / self.mean(dataset, **kwargs)
 
             elif rate.lower() == 'median':
 
@@ -456,17 +456,27 @@ class StatisticalsFeatures:
             
             return _peak
             
-    def crest_factor(self):
-        """Documentation here"""
-        peak = self.peak()
-        rms = self.rms()
-        return np.array([peak[i,:] / rms[i,:] for i in range(peak.shape[0])])
+    def crest_factor(self, dataset, **kwargs):
+        r"""
+        When we relate the peak value to the RMS of the signal, we obtain the crest facto:
+
+        $CF=\frac{peak}{RMS}$
+
+        which expresses the spikiness of the signal. The crest factor is also known as peak-to-average
+        ratio or peak-to-average power ratio and is used to characterize signals containing repetitive
+        impulses in addition to a lower level continuous signal. The modulus of the signal should be
+        used in the calculus
+        """
+        peak = self.peak(dataset, **kwargs)
+        rms = self.rms(dataset, **kwargs)
+        return peak[i,:] / rms[i,:]
 
     def __call__(
         self, 
         dataset, 
         std=True, 
         mean=False,
+        median=False,
         rms=False,
         kurt=False,
         skew=False,
