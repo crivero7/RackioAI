@@ -16,7 +16,14 @@ class RackioAIFE:
        """Documentation here"""
        pass
 
-    def kurt(self, dataset, axis=0, fisher=True, bias=True, nan_policy='propagate'):
+    def kurt(
+        self, 
+        dataset, 
+        axis: int=0, 
+        fisher: bool=True, 
+        bias: bool=True, 
+        nan_policy: str='propagate'
+        ):
         """
         Compute the kurtosis (Fisher or Pearson) of a dataset
 
@@ -28,7 +35,7 @@ class RackioAIFE:
 
         **Parameters**
 
-        * **dataset:** (array) Data for which the kurtosis is calculated
+        * **dataset:** (2d array) Data for which the kurtosis is calculated
         * **axis:** (int or None) Axis along which the kurtosis is calculated. Default is 0. If None, compute
         over the whole array dataset.
         * **fisher:** (bool) If True, Fisher's definition is used (normal ==> 0.0). If False, Pearson's deifnition
@@ -39,30 +46,101 @@ class RackioAIFE:
 
         **returns**
 
-        * **kurtosis** (array) The kurtosis of values along an axis. If all values are equal, return -3 for Fisher's definition
+        * **kurtosis** (array 1xcols_dataset) The kurtosis of values along an axis. If all values are equal, return -3 for Fisher's definition
         and 0 for Pearson's definition
 
         ## Snippet Code
         ```python
         >>> from scipy.stats import norm
-        >>> from rackio_AI import Preprocessing
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
         >>> dataset = norm.rvs(size=1000, random_state=3)
-        >>> preprocessing = Preprocessing()
-        >>> preprocessing.feature_extraction.kurt(dataset)
-        -0.06928694200380558
+        >>> feature_extraction.kurt(dataset)
+        array([-0.06928694])
+
+        ```
+
+        ## Snippet Code
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.kurt(dataset)
+        array([-0.00560946, -0.1115389 ])
 
         ```
         """
-        _kurt = [kurtosis(col, axis=axis) for col in datasey]
-        _kurt = np.concatenate(_kurt, axis=0)
-        _kurt = _kurt.reshape((dataset.shape[0], dataset.shape[2]))
+        dataset = self.__check_dataset_shape(dataset)
+        _, cols = dataset.shape
+        _kurt = np.array([kurtosis(
+            dataset[:, col], 
+            axis=axis, 
+            fisher=fisher, 
+            bias=bias, 
+            nan_policy=nan_policy
+            ) for col in range(cols)]
+        )
+
         return _kurt
 
-    def mean(self, data):
-        """Documentation here"""
-        _mean = [np.mean(col, axis=0) for col in data]
-        _mean = np.concatenate(_mean, axis=0)
-        _mean = _mean.reshape((data.shape[0], data.shape[2]))
+    def mean(
+        self, 
+        dataset,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=np._NoValue
+        ):
+        """
+        Compute the arithmetic mean along the specified axis.
+        Returns the average of the array elements.  The average is taken over
+        the flattened array by default, otherwise over the specified axis.
+        `float64` intermediate and return values are used for integer inputs.
+        
+        **Parameters**
+        
+        * **dataset:** (2d array_like) Array containing numbers whose mean is desired. If `a` is not an
+        array, a conversion is attempted.
+        * **axis:** (None or int or tuple of ints, optional) Axis or axes along which the means are computed. 
+        The default is to compute the mean of the flattened array.
+        If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis or all the
+        axes as before.
+        * **dtype:** (data-type, optional) Type to use in computing the mean.  For integer inputs, the default
+        is `float64`; for floating point inputs, it is the same as the input dtype.
+        * **out:** (ndarray, optional) Alternate output array in which to place the result.  The default
+        is ``None``; if provided, it must have the same shape as the expected output, but the type will be cast if
+        necessary.
+        * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one. With this option, the result will broadcast correctly against the 
+        input array. If the default value is passed, then `keepdims` will not be passed through to the `mean` method 
+        of sub-classes of `ndarray`, however any non-default value will be.  If the sub-class' method does not implement
+        `keepdims` any exceptions will be raised.
+        
+        **Returns**
+        
+        * **m:** (ndarray, see dtype parameter above) If `out=None`, returns a new array containing the mean values,
+        otherwise a reference to the output array is returned.
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = np.array([[1, 2], [3, 4]])
+        >>> feature_extraction.mean(dataset)
+        2.5
+        >>> feature_extraction.mean(dataset, axis=0)
+        array([2., 3.])
+        >>> feature_extraction.mean(dataset, axis=1)
+        array([1.5, 3.5])
+        
+        ```
+        """
+        dataset = self.__check_dataset_shape(dataset)
+        _, cols = dataset.shape
+        _mean = np.mean(dataset, axis=axis, dtype=dtype, out=dtype, keepdims=keepdims)
+
         return _mean
 
     def std(self, data):
@@ -152,6 +230,22 @@ class RackioAIFE:
             coeffs = pywt.wavedec(data, waveletType, level=lvl, axis=0)
             waveletFeatures.append(np.concatenate([sum(coeff ** 2, 0) for coeff in coeffs[0:lastCoeffs]],axis=0))
         return np.array(waveletFeatures)
+
+    @staticmethod
+    def __check_dataset_shape(dataset):
+        """Documentation here"""
+
+        if len(dataset.shape) == 1:
+            dataset = np.atleast_2d(dataset)
+            rows, cols = dataset.shape
+            if cols > rows:
+                dataset = dataset.reshape((-1,1))
+
+        elif len(dataset.shape) == 3:
+
+            raise TypeError("dataset shape must be 2d")
+
+        return dataset
 
 
 if __name__=='__main__':
