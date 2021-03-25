@@ -69,7 +69,6 @@ class StatisticalsFeatures:
         ```
         """
         dataset = Utils.check_dataset_shape(dataset)
-        _, cols = dataset.shape
         _mean = np.mean(dataset, axis=axis, dtype=dtype, out=dtype, keepdims=keepdims)
 
         return _mean
@@ -148,7 +147,7 @@ class StatisticalsFeatures:
         axis=None,
         dtype=None,
         out=None,
-        ddof=None,
+        ddof=0,
         keepdims=np._NoValue
         ):
         """
@@ -206,15 +205,14 @@ class StatisticalsFeatures:
         
         ## Snippet code
         ```python
+        >>> import numpy as np
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
         >>> dataset = np.array([[1, 2], [3, 4]])
-        >>> feature_extraction.stats.std(dataset)
-        1.1180339887498949 
         >>> feature_extraction.stats.std(dataset, axis=0)
-        array([1.,  1.])
+        array([1., 1.])
         >>> feature_extraction.stats.std(dataset, axis=1)
-        array([0.5,  0.5])
+        array([0.5, 0.5])
 
         ```
         
@@ -226,13 +224,6 @@ class StatisticalsFeatures:
         >>> dataset[1, :] = 0.1
         >>> feature_extraction.stats.std(dataset)
         0.45000005
-
-        ```
-
-        ### Computing the standard deviation in float64 is more accurate
-        ```python
-        >>> feature_extraction.stats.std(dataset, dtype=np.float64)
-        0.44999999925494177
         >>> dataset = np.array([[14, 8, 11, 10], [7, 9, 10, 11], [10, 15, 5, 10]])
         >>> feature_extraction.stats.std(dataset)
         2.614064523559687
@@ -240,15 +231,88 @@ class StatisticalsFeatures:
         ```
         """
         dataset = Utils.check_dataset_shape(dataset)
-        _, cols = dataset.shape
         _std = np.std(dataset, axis=axis, dtype=dtype, out=dtype, ddof=ddof, keepdims=keepdims)
         return _std
 
-    def skew(self, data):
-        """Documentation here"""
-        _skew = [skew(col, axis=0) for col in data]
-        _skew = np.concatenate(_skew, axis=0)
-        _skew = _skew.reshape((data.shape[0], data.shape[2]))
+    def skew(
+        self, 
+        dataset, 
+        axis=0,
+        bias=True,
+        nan_policy='propagate'
+        ):
+        """
+        Compute the sample skewness of a data set.
+        For normally distributed data, the skewness should be about zero. For
+        unimodal continuous distributions, a skewness value greater than zero means
+        that there is more weight in the right tail of the distribution. The
+        function `skewtest` can be used to determine if the skewness value
+        is close enough to zero, statistically speaking.
+        
+        **Parameters**
+
+        * **dataset:** (ndarray) Input array.
+        * **axis:** (int or None, optional) Axis along which skewness is calculated. Default is 0.
+        If None, compute over the whole array `a`.
+        * **bias:** (bool, optional) If False, then the calculations are corrected for statistical bias.
+        * **nan_policy:** ({'propagate', 'raise', 'omit'}, optional) Defines how to handle when input contains nan.
+        The following options are available (default is 'propagate'):
+            * 'propagate': returns nan
+            * 'raise': throws an error
+            * 'omit': performs the calculations ignoring nan values
+        
+        **Returns**
+        
+        * **skewness:** (ndarray) The skewness of values along an axis, returning 0 where all values are equal.
+        
+        ## Notes
+
+        The sample skewness is computed as the Fisher-Pearson coefficient
+        of skewness, i.e.
+        .. math::
+            g_1=\frac{m_3}{m_2^{3/2}}
+        where
+        .. math::
+            m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i
+        
+        is the biased sample :math:`i\texttt{th}` central moment, and :math:`\bar{x}` is
+        the sample mean.  If ``bias`` is False, the calculations are
+        corrected for bias and the value computed is the adjusted
+        Fisher-Pearson standardized moment coefficient, i.e.
+        .. math::
+            G_1=\frac{k_3}{k_2^{3/2}}=
+                \frac{\sqrt{N(N-1)}}{N-2}\frac{m_3}{m_2^{3/2}}.
+        
+        ## References
+        
+        .. [1] Zwillinger, D. and Kokoska, S. (2000). CRC Standard
+        Probability and Statistics Tables and Formulae. Chapman & Hall: New
+        York. 2000.
+        Section 2.2.24.1
+        
+        ## Snippet code
+        ```python
+        >>> import numpy as np
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = np.array([1, 2, 3, 4, 5])
+        >>> feature_extraction.stats.skew(dataset)
+        array([0.])
+        >>> dataset = np.array([2, 8, 0, 4, 1, 9, 9, 0])
+        >>> feature_extraction.stats.skew(dataset)
+        array([0.26505541])
+        
+        ```
+        """
+        dataset = Utils.check_dataset_shape(dataset)
+        _, cols = dataset.shape
+        _skew = np.array([skew(
+            dataset[:, col], 
+            axis=axis, 
+            bias=bias, 
+            nan_policy=nan_policy
+            ) for col in range(cols)]
+        )
         return _skew
 
     def rms(self, data):
