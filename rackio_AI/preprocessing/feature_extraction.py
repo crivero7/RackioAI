@@ -316,7 +316,23 @@ class StatisticalsFeatures:
         return _skew
 
     def rms(self, data):
-        """Documentation here"""
+        """
+        One of the most important basic features that can be extracted directly from the time-domain
+        signal is the RMS which describe the energy of the signal. It is defined as the square root
+        of the average squared value of the signal and can also be called the normalized energy of the
+        signal.
+
+        .. math::
+            g_1=\frac{m_3}{m_2^{3/2}}
+        
+        Especially in vibration analysis the RMS is used to perform fault detection, i.e. triggering an
+        alarm, whenever the RMS surpasses a level that depends on the size of the machine, the nature
+        of the signal (for instance velocity or acceleration), the position of the accelerometer, and so on.
+        After the detection of the existence of a failure, fault diagnosis is performed relying on more
+        sophisticated features. For instance the ISO 2372 (VDI 2056) norms define three different velocity
+        RMS alarm levels for four different machine classes divided by power and foundations of the rotating
+        machines.
+        """
         _rms = [(np.sum(col ** 2, axis=0) / data.shape[0]) ** 0.5 for col in data]
         _rms = np.concatenate(_rms, axis=0)
         _rms = _rms.reshape((data.shape[0], data.shape[2]))
