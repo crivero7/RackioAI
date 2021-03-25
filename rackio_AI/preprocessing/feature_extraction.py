@@ -6,83 +6,14 @@ from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
 @set_to_methods(del_temp_attr)
-class RackioAIFE:
+class StatisticalsFeatures:
     """
     Documentation here
     """
     _instances = list()
 
     def __init__(self):
-       """Documentation here"""
-       pass
-
-    def kurt(
-        self, 
-        dataset, 
-        axis: int=0, 
-        fisher: bool=True, 
-        bias: bool=True, 
-        nan_policy: str='propagate'
-        ):
-        """
-        Compute the kurtosis (Fisher or Pearson) of a dataset
-
-        Kurtosis is the fourth central moment divided by the square of the variance. If Fisher's definiton
-        is used, then 3.0 is subtracted from the result to give 0.0 for a normal distribution.
-
-        If bias is False then the kurtosis is calculated using k statistics to eliminate bias coming from
-        biased moment estimators
-
-        **Parameters**
-
-        * **dataset:** (2d array) Data for which the kurtosis is calculated
-        * **axis:** (int or None) Axis along which the kurtosis is calculated. Default is 0. If None, compute
-        over the whole array dataset.
-        * **fisher:** (bool) If True, Fisher's definition is used (normal ==> 0.0). If False, Pearson's deifnition
-        is used (normal ==> 3.0)
-        * **bias:** (bool) If False, then the calculations are corrected for statistical bias.
-        * **nan_policy:** ({'propagate', 'raise', 'omit'}) Defines how to handle when inputs contains nan. 'propagate' 
-        returns nan, 'raise' throws an error, 'omit' performs the calculations ignoring nan values. Default is propagate.
-
-        **returns**
-
-        * **kurtosis** (array 1xcols_dataset) The kurtosis of values along an axis. If all values are equal, return -3 for Fisher's definition
-        and 0 for Pearson's definition
-
-        ## Snippet Code
-        ```python
-        >>> from scipy.stats import norm
-        >>> from rackio_AI import RackioAIFE
-        >>> feature_extraction = RackioAIFE()
-        >>> dataset = norm.rvs(size=1000, random_state=3)
-        >>> feature_extraction.kurt(dataset)
-        array([-0.06928694])
-
-        ```
-
-        ## Snippet Code
-        ```python
-        >>> from scipy.stats import norm
-        >>> from rackio_AI import RackioAIFE
-        >>> feature_extraction = RackioAIFE()
-        >>> dataset = norm.rvs(size=(1000,2), random_state=3)
-        >>> feature_extraction.kurt(dataset)
-        array([-0.00560946, -0.1115389 ])
-
-        ```
-        """
-        dataset = self.__check_dataset_shape(dataset)
-        _, cols = dataset.shape
-        _kurt = np.array([kurtosis(
-            dataset[:, col], 
-            axis=axis, 
-            fisher=fisher, 
-            bias=bias, 
-            nan_policy=nan_policy
-            ) for col in range(cols)]
-        )
-
-        return _kurt
+        pass
 
     def mean(
         self, 
@@ -128,20 +59,88 @@ class RackioAIFE:
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
         >>> dataset = np.array([[1, 2], [3, 4]])
-        >>> feature_extraction.mean(dataset)
+        >>> feature_extraction.stats.mean(dataset)
         2.5
-        >>> feature_extraction.mean(dataset, axis=0)
+        >>> feature_extraction.stats.mean(dataset, axis=0)
         array([2., 3.])
-        >>> feature_extraction.mean(dataset, axis=1)
+        >>> feature_extraction.stats.mean(dataset, axis=1)
         array([1.5, 3.5])
-        
+
         ```
         """
-        dataset = self.__check_dataset_shape(dataset)
+        dataset = Utils.check_dataset_shape(dataset)
         _, cols = dataset.shape
         _mean = np.mean(dataset, axis=axis, dtype=dtype, out=dtype, keepdims=keepdims)
 
         return _mean
+
+    def kurt(
+        self, 
+        dataset, 
+        axis: int=0, 
+        fisher: bool=True, 
+        bias: bool=True, 
+        nan_policy: str='propagate'
+        ):
+        """
+        Compute the kurtosis (Fisher or Pearson) of a dataset
+
+        Kurtosis is the fourth central moment divided by the square of the variance. If Fisher's definiton
+        is used, then 3.0 is subtracted from the result to give 0.0 for a normal distribution.
+
+        If bias is False then the kurtosis is calculated using k statistics to eliminate bias coming from
+        biased moment estimators
+
+        **Parameters**
+
+        * **dataset:** (2d array) Data for which the kurtosis is calculated
+        * **axis:** (int or None) Axis along which the kurtosis is calculated. Default is 0. If None, compute
+        over the whole array dataset.
+        * **fisher:** (bool) If True, Fisher's definition is used (normal ==> 0.0). If False, Pearson's deifnition
+        is used (normal ==> 3.0)
+        * **bias:** (bool) If False, then the calculations are corrected for statistical bias.
+        * **nan_policy:** ({'propagate', 'raise', 'omit'}) Defines how to handle when inputs contains nan. 'propagate' 
+        returns nan, 'raise' throws an error, 'omit' performs the calculations ignoring nan values. Default is propagate.
+
+        **returns**
+
+        * **kurtosis** (array 1xcols_dataset) The kurtosis of values along an axis. If all values are equal, return -3 for Fisher's definition
+        and 0 for Pearson's definition
+
+        ## Snippet Code
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = norm.rvs(size=1000, random_state=3)
+        >>> feature_extraction.stats.kurt(dataset)
+        array([-0.06928694])
+
+        ```
+
+        ## Snippet Code
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.stats.kurt(dataset)
+        array([-0.00560946, -0.1115389 ])
+
+        ```
+        """
+        dataset = Utils.check_dataset_shape(dataset)
+        _, cols = dataset.shape
+        _kurt = np.array([kurtosis(
+            dataset[:, col], 
+            axis=axis, 
+            fisher=fisher, 
+            bias=bias, 
+            nan_policy=nan_policy
+            ) for col in range(cols)]
+        )
+
+        return _kurt
 
     def std(self, data):
         """Documentation here"""
@@ -184,9 +183,9 @@ class RackioAIFE:
         rms = self.rms()
         return np.array([peak[i,:] / rms[i,:] for i in range(peak.shape[0])])
 
-    def statistical(
+    def __call__(
         self, 
-        data, 
+        dataset, 
         std=True, 
         mean=False,
         rms=False,
@@ -197,7 +196,9 @@ class RackioAIFE:
         crest_factor=False,
         concatenate=True
         ):
-        """Documentation here"""
+        """
+        Documentation here
+        """
         result = list()
         features = {
             'std': std,
@@ -222,30 +223,49 @@ class RackioAIFE:
 
         return result
 
-    def wavelets(self, waveletType='db2', lvl=3):
-        """Documentation here"""
+
+@set_to_methods(del_temp_attr)
+class FrequencyFeatures:
+    """
+    Documentation here
+    """
+    _instances = list()
+
+    def __init__(self):
+        pass
+
+    def wavelets(self, _type='db2', lvl=3):
+        """
+        Documentation here
+        """
         waveletFeatures = list()
         lastCoeffs = 3
         for data in self.inputData:
-            coeffs = pywt.wavedec(data, waveletType, level=lvl, axis=0)
+            coeffs = pywt.wavedec(data, _type, level=lvl, axis=0)
             waveletFeatures.append(np.concatenate([sum(coeff ** 2, 0) for coeff in coeffs[0:lastCoeffs]],axis=0))
         return np.array(waveletFeatures)
 
-    @staticmethod
-    def __check_dataset_shape(dataset):
-        """Documentation here"""
+    def __call__(self, *args, **kwargs):
+        """
+        Documentation here
+        """
+        pass
 
-        if len(dataset.shape) == 1:
-            dataset = np.atleast_2d(dataset)
-            rows, cols = dataset.shape
-            if cols > rows:
-                dataset = dataset.reshape((-1,1))
 
-        elif len(dataset.shape) == 3:
+@set_to_methods(del_temp_attr)
+class RackioAIFE:
+    """
+    Documentation here
+    """
+    _instances = list()
+    
 
-            raise TypeError("dataset shape must be 2d")
-
-        return dataset
+    def __init__(self):
+        """
+        Documentation here
+        """
+        self.stats = StatisticalsFeatures()
+        self.frequency_domain = FrequencyFeatures()
 
 
 if __name__=='__main__':

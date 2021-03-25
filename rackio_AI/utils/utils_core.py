@@ -285,8 +285,23 @@ class Utils:
         self._windows_.append(self._df_.iloc[self._start_: self._start_ + win_size, :])
 
         return
-        
 
+    @staticmethod 
+    def check_dataset_shape(dataset):
+        """
+        Documentation here
+        """
+        if len(dataset.shape) == 1:
+            dataset = np.atleast_2d(dataset)
+            rows, cols = dataset.shape
+            if cols > rows:
+                dataset = dataset.reshape((-1,1))
+
+        elif len(dataset.shape) == 3:
+
+            raise TypeError("dataset shape must be 2d")
+
+        return dataset
 
 if __name__ == "__main__":
     import doctest
