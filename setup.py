@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="RackioAI",
-    version="0.2.8",
+    version="0.2.9",
     author="Carlos Rivero",
     author_email="cdrr.rivero@gmail.com",
     description="A Rackio extension for AI models development",
@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=[
         'scikit-learn',
         'Pillow==8.0.0',
-        'Rackio==1.0.2',
+        'Rackio==1.0.3',
         'easy-deco==0.1.2',
         'seaborn',
         'xlrd==1.2.0',
@@ -36,6 +36,7 @@ setuptools.setup(
         'pyxlsb==1.0.8',
         'statsmodels==0.12.1',
         'tensorflow==2.4.0',
+        'PyWavelets==1.1.1',
         'pydot==1.4.2'
     ],
     classifiers=[

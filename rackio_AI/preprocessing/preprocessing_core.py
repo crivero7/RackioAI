@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
 from rackio_AI.preprocessing import RackioAIScaler, RackioAISplitter, KalmanFilter, LSTMDataPreparation
-from rackio_AI.preprocessing import SyntheticData
+from rackio_AI.preprocessing import SyntheticData, RackioAIFE
 
 
 class Preprocessing:
@@ -21,6 +21,7 @@ class Preprocessing:
     kalman_filter = KalmanFilter()
     lstm_data_preparation = LSTMDataPreparation()
     synthetic_data = SyntheticData()
+    feature_extraction = RackioAIFE()
     app = RackioAI()
 
     def __init__(
