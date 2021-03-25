@@ -142,11 +142,106 @@ class StatisticalsFeatures:
 
         return _kurt
 
-    def std(self, data):
-        """Documentation here"""
-        _std = [np.std(col, axis=0) for col in data]
-        _std = np.concatenate(_std, axis=0)
-        _std = _std.reshape((data.shape[0], data.shape[2]))
+    def std(
+        self, 
+        dataset, 
+        axis=None,
+        dtype=None,
+        out=None,
+        ddof=None,
+        keepdims=np._NoValue
+        ):
+        """
+        Compute the standard deviation along the specified axis.
+
+        Returns the standard deviation, a measure of the spread of a distribution,
+        of the array elements. The standard deviation is computed for the
+        flattened array by default, otherwise over the specified axis.
+        
+        **Parameters**
+        
+        * **dataset:** (2d array_like) Calculate the standard deviation of these values.
+        * **axis:** (None or int or tuple of ints, optional) Axis or axes along which the standard deviation is computed.
+        The default is to compute the standard deviation of the flattened array.
+        If this is a tuple of ints, a standard deviation is performed over multiple axes, instead of a single
+        axis or all the axes as before.
+        * **dtype:** (dtype, optional) Type to use in computing the standard deviation. For arrays of
+        integer type the default is float64, for arrays of float types it is the same as the array type.
+        * **out:** (ndarray, optional) Alternative output array in which to place the result. It must have
+        the same shape as the expected output but the type (of the calculated values) will be cast if necessary.
+        * **ddof:** (int, optional) Means Delta Degrees of Freedom.  The divisor used in calculations
+        is ``N - ddof``, where ``N`` represents the number of elements. By default `ddof` is zero.
+        * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one. With this option, the result will broadcast correctly 
+        against the input array. If the default value is passed, then `keepdims` will not be passed through 
+        to the `std` method of sub-classes of `ndarray`, however any non-default value will be.  If the
+        sub-class' method does not implement `keepdims` any exceptions will be raised.
+
+        **Returns**
+        
+        * **standard_deviation:** (ndarray) If `out` is None, return a new array containing the standard deviation,
+        otherwise return a reference to the output array.
+
+        ## Notes
+        
+        The standard deviation is the square root of the average of the squared
+        deviations from the mean, i.e., ``std = sqrt(mean(x))``, where
+        ``x = abs(a - a.mean())**2``.
+        The average squared deviation is typically calculated as ``x.sum() / N``,
+        where ``N = len(x)``. If, however, `ddof` is specified, the divisor
+        ``N - ddof`` is used instead. In standard statistical practice, ``ddof=1``
+        provides an unbiased estimator of the variance of the infinite population.
+        ``ddof=0`` provides a maximum likelihood estimate of the variance for
+        normally distributed variables. The standard deviation computed in this
+        function is the square root of the estimated variance, so even with
+        ``ddof=1``, it will not be an unbiased estimate of the standard deviation
+        per se.
+        Note that, for complex numbers, `std` takes the absolute
+        value before squaring, so that the result is always real and nonnegative.
+        For floating-point input, the *std* is computed using the same
+        precision the input has. Depending on the input data, this can cause
+        the results to be inaccurate, especially for float32 (see example below).
+        Specifying a higher-accuracy accumulator using the `dtype` keyword can
+        alleviate this issue.
+        
+        ## Snippet code
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = np.array([[1, 2], [3, 4]])
+        >>> feature_extraction.stats.std(dataset)
+        1.1180339887498949 
+        >>> feature_extraction.stats.std(dataset, axis=0)
+        array([1.,  1.])
+        >>> feature_extraction.stats.std(dataset, axis=1)
+        array([0.5,  0.5])
+
+        ```
+        
+        ### In single precision, std() can be inaccurate
+
+        ```python
+        >>> dataset = np.zeros((2, 512*512), dtype=np.float32)
+        >>> dataset[0, :] = 1.0
+        >>> dataset[1, :] = 0.1
+        >>> feature_extraction.stats.std(dataset)
+        0.45000005
+
+        ```
+
+        ### Computing the standard deviation in float64 is more accurate
+        ```python
+        >>> feature_extraction.stats.std(dataset, dtype=np.float64)
+        0.44999999925494177
+        >>> dataset = np.array([[14, 8, 11, 10], [7, 9, 10, 11], [10, 15, 5, 10]])
+        >>> feature_extraction.stats.std(dataset)
+        2.614064523559687
+
+        ```
+        """
+        dataset = Utils.check_dataset_shape(dataset)
+        _, cols = dataset.shape
+        _std = np.std(dataset, axis=axis, dtype=dtype, out=dtype, ddof=ddof, keepdims=keepdims)
         return _std
 
     def skew(self, data):
