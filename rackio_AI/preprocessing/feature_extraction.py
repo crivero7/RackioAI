@@ -380,9 +380,17 @@ class StatisticalsFeatures:
         )
         return _skew
 
-    def rms(self, dataset):
+    def rms(
+        self, 
+        dataset, 
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=np._NoValue,
+        initial=np._NoValue
+        ):
         r"""
-        One of the most important basic features that can be extracted directly from the time-domain
+        Root Mean Square One of the most important basic features that can be extracted directly from the time-domain
         signal is the RMS which describe the energy of the signal. It is defined as the square root
         of the average squared value of the signal and can also be called the normalized energy of the
         signal.
@@ -397,14 +405,68 @@ class StatisticalsFeatures:
         RMS alarm levels for four different machine classes divided by power and foundations of the rotating
         machines.
 
-        **Parameters**
+        RMS of array elements over a given axis.
 
-        * **dataset:** (2d array)
+        **Parameters**
+        
+        * **dataset:** (2d array_like) Elements to get RMS.
+        * **axis:** (None or int or tuple of ints, optional) Axis or axes along which a RMS is performed.  
+        The default, axis=None, will get RMS of all the elements of the input array. If axis is negative
+        it counts from the last to the first axis. If axis is a tuple of ints, a RMS is performed on all
+        of the axes specified in the tuple instead of a single axis or all the axes as before.
+        * **dtype:** (dtype, optional) The type of the returned array and of the accumulator in which the
+        elements are summed.  The dtype of `dataset` is used by default unless `dataset` has an integer 
+        dtype of less precision than the default platform integer.  In that case, if `dataset` is signed 
+        then the platform integer is used while if `dataset` is unsigned then an unsigned integer of the
+        same precision as the platform integer is used.
+        * **out:** (ndarray, optional) Alternative output array in which to place the result. It must have
+        the same shape as the expected output, but the type of the output values will be cast if necessary.
+        * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one. With this option, the result will broadcast correctly 
+        against the input array. If the default value is passed, then `keepdims` will not be passed through
+        to the `sum` method of sub-classes of `ndarray`, however any non-default value will be.  If the
+        sub-class' method does not implement `keepdims` any exceptions will be raised.
+        * **initial:** (scalar, optional) Starting value for the sum.
 
         **Returns**
+        
+        * **RMS_along_axis:** (darray) An array with the same shape as `dataset`, with the specified
+        axis removed.   If `dataset` is a 0-d array, or if `axis` is None, a scalar is returned. 
+        If an output array is specified, a reference to `out` is returned.
 
+        ## Snippet code
+        
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> feature_extraction.stats.rms(np.array([0.5, 1.5]))
+        1.118033988749895
+        >>> feature_extraction.stats.rms(np.array([0.5, 0.7, 0.2, 1.5]), dtype=np.int32)
+        0.7071067811865476
+        >>> feature_extraction.stats.rms(np.array([[0, 1], [0, 5]]))
+        3.605551275463989
+        >>> feature_extraction.stats.rms(np.array([[0, 1], [0, 5]]), axis=0)
+        array([0.        , 3.60555128])
+        >>> feature_extraction.stats.rms(np.array([[0, 1], [0, 5]]), axis=1)
+        array([0.70710678, 3.53553391])
+
+        ```
+        You can also start the sum with a value other than zero:
+        ```python
+        >>> feature_extraction.stats.rms(np.array([2, 7, 10]), initial=5)
+        7.2571803523590805
+
+        ```
         """
-        _rms = np.array([(np.sum(col ** 2, axis=0) / dataset.shape[0]) ** 0.5 for col in dataset])
+        dataset = Utils.check_dataset_shape(dataset)
+        _rms = (np.sum(
+            dataset ** 2, 
+            axis=axis, 
+            dtype=dtype, 
+            out=out, 
+            keepdims=keepdims, 
+            initial=initial
+            ) / dataset.shape[0]) ** 0.5
         return _rms
 
     def peak_2_valley(self, dataset, axis=0):
