@@ -23,7 +23,7 @@ class StatisticalsFeatures:
         out=None,
         keepdims=np._NoValue
         ):
-        """
+        r"""
         Compute the arithmetic mean along the specified axis.
         Returns the average of the array elements.  The average is taken over
         the flattened array by default, otherwise over the specified axis.
@@ -69,9 +69,87 @@ class StatisticalsFeatures:
         ```
         """
         dataset = Utils.check_dataset_shape(dataset)
-        _mean = np.mean(dataset, axis=axis, dtype=dtype, out=dtype, keepdims=keepdims)
+        _mean = np.mean(dataset, axis=axis, dtype=dtype, out=out, keepdims=keepdims)
 
         return _mean
+
+    def median(
+        self, 
+        dataset, 
+        axis=None, 
+        out=None, 
+        overwrite_input=False, 
+        keepdims=False
+        ):
+        r"""
+        Compute the median along the specified axis.
+        Returns the median of the array elements.
+        
+        **Parameters**
+        
+        * **dataset:** (2d array_like) Input array or object that can be converted to an array.
+        * **axis:** ({int, sequence of int, None}, optional) Axis or axes along which the medians \
+        are computed. The default is to compute the median along a flattened version of the array.
+        * **out:** (ndarray, optional) Alternative output array in which to place the result. It must
+        have the same shape and buffer length as the expected output, but the type (of the output) 
+        will be cast if necessary.
+        * **overwrite_input:** (bool, optional) If True, then allow use of memory of input array 
+        `dataset` for calculations. The input array will be modified by the call to `median`. 
+        This will save memory when you do not need to preserve the contents of the input array. 
+        Treat the input as undefined, but it will probably be fully or partially sorted. Default is
+        False. If `overwrite_input` is ``True`` and `dataset` is not already an `ndarray`, an error
+        will be raised.
+        * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one. With this option, the result will broadcast 
+        correctly against the original `arr`.
+        
+        **Returns**
+        
+        * **median:** (ndarray) A new array holding the result. If the input contains integers
+        or floats smaller than ``float64``, then the output data-type is ``np.float64``.  
+        Otherwise, the data-type of the output is the same as that of the input. If `out` is 
+        specified, that array is returned instead.
+
+        ## Notes
+        
+        Given a vector $V$ of length $N$, the median of $V$ is the
+        middle value of a sorted copy of $V$, $V_{sorted}$ - i
+        e., ``V_sorted[(N-1)/2]``, when $N$ is odd, and the average of the
+        two middle values of ``V_sorted`` when ``N`` is even.
+        
+        ## Snippet code
+        
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> dataset = np.array([[10, 7, 4], [3, 2, 1]])
+        >>> feature_extraction.stats.median(dataset)
+        3.5
+        >>> feature_extraction.stats.median(dataset, axis=0)
+        array([6.5, 4.5, 2.5])
+        >>> feature_extraction.stats.median(dataset, axis=1)
+        array([7., 2.])
+        >>> m = feature_extraction.stats.median(dataset, axis=0)
+        >>> out = np.zeros_like(m)
+        >>> feature_extraction.stats.median(dataset, axis=0, out=m)
+        array([6.5, 4.5, 2.5])
+        >>> m
+        array([6.5, 4.5, 2.5])
+        >>> b = dataset.copy()
+        >>> feature_extraction.stats.median(b, axis=1, overwrite_input=True)
+        array([7., 2.])
+        >>> assert not np.all(dataset==b)
+        >>> b = dataset.copy()
+        >>> feature_extraction.stats.median(b, axis=None, overwrite_input=True)
+        3.5
+        >>> assert not np.all(dataset==b)
+
+        ```
+        """
+        dataset = Utils.check_dataset_shape(dataset)
+        _median = np.median(dataset, axis=axis, out=out, overwrite_input=overwrite_input, keepdims=keepdims)
+
+        return _median
 
     def kurt(
         self, 
@@ -81,7 +159,7 @@ class StatisticalsFeatures:
         bias: bool=True, 
         nan_policy: str='propagate'
         ):
-        """
+        r"""
         Compute the kurtosis (Fisher or Pearson) of a dataset
 
         Kurtosis is the fourth central moment divided by the square of the variance. If Fisher's definiton
@@ -150,7 +228,7 @@ class StatisticalsFeatures:
         ddof=0,
         keepdims=np._NoValue
         ):
-        """
+        r"""
         Compute the standard deviation along the specified axis.
 
         Returns the standard deviation, a measure of the spread of a distribution,
@@ -169,7 +247,7 @@ class StatisticalsFeatures:
         * **out:** (ndarray, optional) Alternative output array in which to place the result. It must have
         the same shape as the expected output but the type (of the calculated values) will be cast if necessary.
         * **ddof:** (int, optional) Means Delta Degrees of Freedom.  The divisor used in calculations
-        is ``N - ddof``, where ``N`` represents the number of elements. By default `ddof` is zero.
+        is $N - ddof$, where $N$ represents the number of elements. By default `ddof` is zero.
         * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
         in the result as dimensions with size one. With this option, the result will broadcast correctly 
         against the input array. If the default value is passed, then `keepdims` will not be passed through 
@@ -184,24 +262,11 @@ class StatisticalsFeatures:
         ## Notes
         
         The standard deviation is the square root of the average of the squared
-        deviations from the mean, i.e., ``std = sqrt(mean(x))``, where
-        ``x = abs(a - a.mean())**2``.
-        The average squared deviation is typically calculated as ``x.sum() / N``,
-        where ``N = len(x)``. If, however, `ddof` is specified, the divisor
-        ``N - ddof`` is used instead. In standard statistical practice, ``ddof=1``
-        provides an unbiased estimator of the variance of the infinite population.
-        ``ddof=0`` provides a maximum likelihood estimate of the variance for
-        normally distributed variables. The standard deviation computed in this
-        function is the square root of the estimated variance, so even with
-        ``ddof=1``, it will not be an unbiased estimate of the standard deviation
-        per se.
-        Note that, for complex numbers, `std` takes the absolute
-        value before squaring, so that the result is always real and nonnegative.
-        For floating-point input, the *std* is computed using the same
-        precision the input has. Depending on the input data, this can cause
-        the results to be inaccurate, especially for float32 (see example below).
-        Specifying a higher-accuracy accumulator using the `dtype` keyword can
-        alleviate this issue.
+        deviations from the mean, i.e.
+
+        $\mu = \frac{1}{N}\sum_{i=1}^{n}dataset_{i}$
+
+        $std = \sqrt{\frac{1}{N}\sum_{i=1}^{n}|dataset_{i}-\mu|^2}$
         
         ## Snippet code
         ```python
@@ -241,7 +306,7 @@ class StatisticalsFeatures:
         bias=True,
         nan_policy='propagate'
         ):
-        """
+        r"""
         Compute the sample skewness of a data set.
         For normally distributed data, the skewness should be about zero. For
         unimodal continuous distributions, a skewness value greater than zero means
@@ -269,19 +334,19 @@ class StatisticalsFeatures:
 
         The sample skewness is computed as the Fisher-Pearson coefficient
         of skewness, i.e.
-        .. math::
-            g_1=\frac{m_3}{m_2^{3/2}}
+
+        $g_1=\frac{m_3}{m_2^{3/2}}$
+
         where
-        .. math::
-            m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i
+
+        $m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i$
         
-        is the biased sample :math:`i\texttt{th}` central moment, and :math:`\bar{x}` is
-        the sample mean.  If ``bias`` is False, the calculations are
+        is the biased sample $i\texttt{th}$ central moment, and $\bar{x}$ is
+        the sample mean.  If $bias$ is False, the calculations are
         corrected for bias and the value computed is the adjusted
         Fisher-Pearson standardized moment coefficient, i.e.
-        .. math::
-            G_1=\frac{k_3}{k_2^{3/2}}=
-                \frac{\sqrt{N(N-1)}}{N-2}\frac{m_3}{m_2^{3/2}}.
+
+        $G_1=\frac{k_3}{k_2^{3/2}}=\frac{\sqrt{N(N-1)}}{N-2}\frac{m_3}{m_2^{3/2}}.$
         
         ## References
         
@@ -315,15 +380,14 @@ class StatisticalsFeatures:
         )
         return _skew
 
-    def rms(self, data):
-        """
+    def rms(self, dataset):
+        r"""
         One of the most important basic features that can be extracted directly from the time-domain
         signal is the RMS which describe the energy of the signal. It is defined as the square root
         of the average squared value of the signal and can also be called the normalized energy of the
         signal.
 
-        .. math::
-            g_1=\frac{m_3}{m_2^{3/2}}
+        $RMS = \sqrt{\frac{1}{n}\sum_{i=0}^{n-1}S_{i}^{2}}$
         
         Especially in vibration analysis the RMS is used to perform fault detection, i.e. triggering an
         alarm, whenever the RMS surpasses a level that depends on the size of the machine, the nature
@@ -332,26 +396,66 @@ class StatisticalsFeatures:
         sophisticated features. For instance the ISO 2372 (VDI 2056) norms define three different velocity
         RMS alarm levels for four different machine classes divided by power and foundations of the rotating
         machines.
+
+        **Parameters**
+
+        * **dataset:** (2d array)
+
+        **Returns**
+
         """
-        _rms = [(np.sum(col ** 2, axis=0) / data.shape[0]) ** 0.5 for col in data]
-        _rms = np.concatenate(_rms, axis=0)
-        _rms = _rms.reshape((data.shape[0], data.shape[2]))
+        _rms = np.array([(np.sum(col ** 2, axis=0) / dataset.shape[0]) ** 0.5 for col in dataset])
         return _rms
 
-    def peak_2_valley(self, data):
-        """Documentation here"""
-        _peak_2_valley = [(np.max(col, axis=0)-np.min(col, axis=0)) / 2 for col in data]
-        _peak_2_valley = np.concatenate(_peak_2_valley, axis=0)
-        _peak_2_valley = _peak_2_valley.reshape((data.shape[0], data.shape[2]))
+    def peak_2_valley(self, dataset, axis=0):
+        r"""
+        Another important measurement of a signal, considering a semantically coeherent sampling
+        interval, for instance a fixed-length interval or one period of a rotation, is the peak-to-valley
+        (PV) value which reflects the amplitude spread of a signal:
+
+        $PV=\frac{1}{2}\left(\max{dataset}\quad -\quad \min{dataset}\right)$
+        """
+        _peak_2_valley = np.array([(np.max(col, axis=axis)-np.min(col, axis=axis)) / 2 for col in data])
+
         return _peak_2_valley
 
-    def peak(self, data):
-        """Documentation here"""
-        _peak = [np.max(col - col[0,:], axis=0) for col in data]
-        _peak = np.concatenate(_peak, axis=0)
-        _peak = _peak.reshape((data.shape[0], data.shape[2]))
-        return _peak
+    def peak(self, dataset, ref=None, axis=0, rate=None, **kwargs):
+        r"""
+        I we consider only the maximum amplitude relative to zero $s_{ref}=0$ or a general reference
+        level $s_{ref}$, we get the peak value
 
+        $peak = \max\left(dataset_{i}-ref\right)$
+
+        Often the peak is used in conjunction with other statistical parameters, for instance the 
+        peak-to-average rate.
+
+        $peak = \frac{\max\left(dataset_{i}-ref\right)}{\frc{1}{N}\sum_{i=0}^{N-1}dataset_{i}}$
+
+        or peak-to-median rate
+
+        """
+        if ref not None:
+
+            _peak = np.array([np.max(col - ref, axis=axis) for col in data])
+
+        else:
+            
+            _peak = np.array([np.max(col - col[0,:], axis=axis) for col in data])
+
+        if rate not None:
+
+            if rate.lower() == 'average':
+                
+                return _peak / self.mean(dataset, **kwargs
+
+            elif rate.lower() == 'median':
+
+                return _peak / self.median(dataset, **kwargs)
+
+        else:
+            
+            return _peak
+            
     def crest_factor(self):
         """Documentation here"""
         peak = self.peak()

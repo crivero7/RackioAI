@@ -1,6 +1,7 @@
-::: rackio_AI.preprocessing.StatisticalFeatures
+::: rackio_AI.preprocessing.feature_extraction.StatisticalsFeatures
     :docstring:
     :members: mean
+    :members: median
     :members: std
     :members: rms
     :members: kurt
