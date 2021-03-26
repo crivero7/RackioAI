@@ -16,6 +16,7 @@
 ::: rackio_AI.preprocessing.feature_extraction.Wavelet
     :docstring:
     :members: wavedec
+    :members: wave_energy
 
 ::: rackio_AI.preprocessing.feature_extraction.FrequencyFeatures
     :docstring:

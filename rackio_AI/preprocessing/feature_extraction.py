@@ -668,6 +668,74 @@ class Wavelet:
 
         return coeffs
 
+    def wave_energy(self, s, wavelet, mode='symmetric', level=None, axis=-1):
+        r"""
+        The energy of time-series data distributed in Approximate and Detailed coefficients
+        are calculated as follows:
+
+        $ED_{i}=\sum_{j=1}^{N}|D_{ij}|^2,\quad i={1,2,\cdots,level}$
+
+        $EA_{level}=\sum_{j=1}^{N}|A_{lj}|^2$
+
+        Where $ED_{i}$ represents energy in the $i^{th}$ detailed coefficient and $EA_{level}$
+        is the energy in the $level^{th}$ approximate coefficient respectively. Further, the
+        fraction of total signal energy present in the approximate and detailed components is
+        calculated which serves as a feature vector for every sensor.
+
+        **Parameters**
+
+        * **s:** (array_like) Input data
+        * **wavelet:** (Wavelet object or name string) Wavelet to use
+        * **mode:** (str) Signal extension mode.
+        * **level:** (int) Decomposition level (must be >= 0). If level is None (default)
+        then it will be calculated using the `dwt_max_level` function.
+        * **axis:** (int) Axis over which to compute the DWT. If not given, the last axis 
+        is used.
+
+        **Returns**
+
+        * **[EA_n, ED_n, ED_n-1, ..., ED2, ED1]:** (list) Ordered list of energy arrays where
+        $n$ denotes the level of decomposition.
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> energies = feature_extraction.freq.wavelet.wave_energy([1,2,3,4,5,6,7,8], 'db1', level=2)
+        >>> eA2, eD2, eD1 = energies
+        >>> eD1
+        2.000000000000001
+        >>> eD2
+        8.000000000000004
+        >>> eA2
+        194.00000000000006
+        >>> s = np.array([[1,1], [2,2], [3,3], [4,4], [5, 5], [6, 6], [7, 7], [8, 8]])
+        >>> energies = feature_extraction.freq.wavelet.wave_energy(s, 'db1', level=2, axis=0)
+        >>> eA2, eD2, eD1 = energies
+        >>> eD1
+        array([2., 2.])
+        >>> eD2
+        array([8., 8.])
+        >>> eA2
+        array([194., 194.])
+
+        ```
+        """
+        energy = list()
+        # Wavelet decomposition
+        coeffs = self.wavedec(s, wavelet, mode=mode, level=level, axis=axis)
+        # Get approximation coefficients
+        approximation_coeff = coeffs.pop(0)
+        # Energy approximation computation
+        energy.append(np.sum(approximation_coeff ** 2, axis=axis))
+        # Energy detailed computation
+        for detailed_coeff in coeffs:
+            energy.append(np.sum(detailed_coeff ** 2, axis=axis))
+    
+        return energy
+
+
 class FrequencyFeatures:
     r"""
     Documentation here
@@ -700,17 +768,6 @@ class FrequencyFeatures:
         * **stft:**
         """
         pass
-
-    # def wavelet(self, s, wavelet='db2', mode="symmetric", lvl=None, axis=-1):
-    #     r"""
-    #     Multilevel 1D Discrete Wavelet Transform of signal $s$
-    #     """
-    #     waveletFeatures = list()
-    #     lastCoeffs = 3
-    #     for data in self.inputData:
-    #         coeffs = pywt.wavedec(data, _type, level=lvl, axis=0)
-    #         waveletFeatures.append(np.concatenate([sum(coeff ** 2, 0) for coeff in coeffs[0:lastCoeffs]],axis=0))
-    #     return np.array(waveletFeatures)
 
 
 class RackioAIFE:
