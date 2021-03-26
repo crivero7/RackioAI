@@ -3,20 +3,14 @@ from rackio_AI.utils.utils_core import Utils
 import pywt
 import numpy as np
 from rackio_AI.decorators.wavelets import WaveletDeco
-from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
-@set_to_methods(del_temp_attr)
 class StatisticalsFeatures:
     """
     When we consider the original discretized time domain signal , some basic discriminative
     information can be extracted in form of statistical parameters from the $n$ samples
     $s_{1},\cdots s_{n}$
     """
-    _instances = list()
-
-    def __init__(self):
-        pass
 
     def mean(
         self, 
@@ -616,7 +610,6 @@ class Wavelet:
     functions that have discontinuities and sharp peaks, and for accurately deconstructing 
     and reconstructing finite, non-periodic and/or non-stationary signals.
 
-
     """
 
     @WaveletDeco.is_valid
@@ -675,13 +668,10 @@ class Wavelet:
 
         return coeffs
 
-
-@set_to_methods(del_temp_attr)
 class FrequencyFeatures:
     r"""
     Documentation here
     """
-    _instances = list()
 
     def __init__(self):
         r"""
@@ -723,7 +713,6 @@ class FrequencyFeatures:
     #     return np.array(waveletFeatures)
 
 
-@set_to_methods(del_temp_attr)
 class RackioAIFE:
     r"""
     Rack Input/Output Artificial Intelligence Feature Extraction (RackioAIFE for short) is a class
@@ -735,15 +724,8 @@ class RackioAIFE:
     fault diagnosis, they are essentially based on Fourier transform, cepstral analysis, autoregressive
     modeling, wavelet transform and statistical analysis.
     """
-    _instances = list()
-    
-
-    def __init__(self):
-        """
-        Documentation here
-        """
-        self.stats = StatisticalsFeatures()
-        self.freq = FrequencyFeatures()
+    stats = StatisticalsFeatures()
+    freq = FrequencyFeatures()
 
 
 if __name__=='__main__':
