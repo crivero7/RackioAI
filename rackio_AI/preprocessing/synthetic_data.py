@@ -384,7 +384,8 @@ class SyntheticData(PrepareData):
         >>> lower_limit = [0, 0, 400000, 100000]
         >>> upper_limit = [500, 500, 1200000, 600000]
         >>> dead_band = [0.001, 0.001, 0.001, 0.001]
-        >>> SD = SyntheticData(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
+        >>> SD = SyntheticData()
+        >>> SD.add_attributes(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
         >>> data = SD(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
 
         ```

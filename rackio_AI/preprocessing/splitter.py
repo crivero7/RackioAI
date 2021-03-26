@@ -49,7 +49,7 @@ class RackioAISplitter:
                                 'shuffle': True,
                                 'stratify': None}
 
-    def split(self, df: pd.DataFrame, input_cols: list=None, output_cols: list=None, **options):
+    def split(self, *arrays, **options):
         """
         Split arrays or matrices into random train and test subsets
 
@@ -160,53 +160,19 @@ class RackioAISplitter:
                            'random_state': None,
                            'shuffle': False,
                            'stratify': None}
-        if not input_cols:
-    
-            input_cols = Utils.get_column_names(df)
-            input_cols = input_cols[:-1]
-        
-        if not output_cols:
 
-            output_cols = Utils.get_column_names(df)
-            output_cols = [output_cols[-1]]
-
-        data = (df.loc[:, input_cols].values, df.loc[:, output_cols].values)
-
-        # Check default options
+        data = [array.values if isinstance(array, pd.DataFrame) else array for array in arrays]
         options = Utils.check_default_kwargs(default_options, options)
         train_size = options['train_size']
         test_size = options['test_size']
-
-        # remove validation_size key to be used in train_test_split method from scikit-learn
         self.validation_size = options.pop('validation_size')
-
-        # check if is necessary to do train-test-validation split
-        lst = [train_size, test_size, self.validation_size]
-
-        if lst.count(None) >= 1 or (train_size + test_size == 1):
-
-            X_train, X_test, y_train, y_test = self.__split(TRAIN_TEST_SPLIT, *data, **options)
-
-            result = (
-                pd.DataFrame(X_train, columns=input_cols),
-                pd.DataFrame(X_test, columns=input_cols),
-                pd.DataFrame(y_train, columns=output_cols),
-                pd.DataFrame(y_test, columns=output_cols)
-            )
-            return result
-
-        X_train, X_test, X_validation, y_train, y_test, y_validation = self.__split(TRAIN_TEST_VALIDATION_SPLIT, *data, **options)
-
-        result = (
-                pd.DataFrame(X_train, columns=input_cols),
-                pd.DataFrame(X_test, columns=input_cols),
-                pd.DataFrame(X_validation, columns=input_cols),
-                pd.DataFrame(y_train, columns=output_cols),
-                pd.DataFrame(y_test, columns=output_cols),
-                pd.DataFrame(y_validation, columns=output_cols)
-            )
-        return result
-
+        lst = [options['train_size'], options['test_size'], self.validation_size]
+        
+        if lst.count(None) >= 1 or (options['train_size'] + options['test_size'] == 1):
+            
+            return self.__split(TRAIN_TEST_SPLIT, *data, **options)
+        
+        return self.__split(TRAIN_TEST_VALIDATION_SPLIT, *data, **options)
 
     def __split(self, flag, *data, **options):
         """
