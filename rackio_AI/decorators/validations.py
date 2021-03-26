@@ -13,3 +13,4 @@ def check_instrument_attributes(func):
         return func(*args, **kwargs)
 
     return wrapper
+

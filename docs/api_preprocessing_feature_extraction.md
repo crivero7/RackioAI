@@ -1,3 +1,6 @@
+::: rackio_AI.preprocessing.feature_extraction.RackioAIFE
+    :docstring:
+
 ::: rackio_AI.preprocessing.feature_extraction.StatisticalsFeatures
     :docstring:
     :members: mean
@@ -9,9 +12,10 @@
     :members: peak_2_valley
     :members: peak
     :members: crest_factor
-    :members: __call__
 
-::: rackio_AI.preprocessing.FrequencyFeatures
+::: rackio_AI.preprocessing.feature_extraction.Wavelet
     :docstring:
-    :members: wavelets
-    :members: __call__
+    :members: wavedec
+
+::: rackio_AI.preprocessing.feature_extraction.FrequencyFeatures
+    :docstring:

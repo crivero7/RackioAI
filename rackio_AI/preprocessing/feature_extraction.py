@@ -2,13 +2,16 @@ from scipy.stats import kurtosis, skew
 from rackio_AI.utils.utils_core import Utils
 import pywt
 import numpy as np
+from rackio_AI.decorators.wavelets import WaveletDeco
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
 
 @set_to_methods(del_temp_attr)
 class StatisticalsFeatures:
     """
-    Documentation here
+    When we consider the original discretized time domain signal , some basic discriminative
+    information can be extracted in form of statistical parameters from the $n$ samples
+    $s_{1},\cdots s_{n}$
     """
     _instances = list()
 
@@ -17,7 +20,7 @@ class StatisticalsFeatures:
 
     def mean(
         self, 
-        dataset,
+        s,
         axis=None,
         dtype=None,
         out=None,
@@ -31,7 +34,7 @@ class StatisticalsFeatures:
         
         **Parameters**
         
-        * **dataset:** (2d array_like) Array containing numbers whose mean is desired. If `a` is not an
+        * **s:** (2d array_like) Array containing numbers whose mean is desired. If `s` is not an
         array, a conversion is attempted.
         * **axis:** (None or int or tuple of ints, optional) Axis or axes along which the means are computed. 
         The default is to compute the mean of the flattened array.
@@ -58,24 +61,22 @@ class StatisticalsFeatures:
         ```python
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
-        >>> dataset = np.array([[1, 2], [3, 4]])
-        >>> feature_extraction.stats.mean(dataset)
+        >>> s = np.array([[1, 2], [3, 4]])
+        >>> feature_extraction.stats.mean(s)
         2.5
-        >>> feature_extraction.stats.mean(dataset, axis=0)
+        >>> feature_extraction.stats.mean(s, axis=0)
         array([2., 3.])
-        >>> feature_extraction.stats.mean(dataset, axis=1)
+        >>> feature_extraction.stats.mean(s, axis=1)
         array([1.5, 3.5])
 
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _mean = np.mean(dataset, axis=axis, dtype=dtype, out=out, keepdims=keepdims)
-
-        return _mean
+        s = Utils.check_dataset_shape(s)
+        return np.mean(s, axis=axis, dtype=dtype, out=out, keepdims=keepdims)
 
     def median(
         self, 
-        dataset, 
+        s, 
         axis=None, 
         out=None, 
         overwrite_input=False, 
@@ -87,21 +88,21 @@ class StatisticalsFeatures:
         
         **Parameters**
         
-        * **dataset:** (2d array_like) Input array or object that can be converted to an array.
+        * **s:** (2d array_like) Input array or object that can be converted to an array.
         * **axis:** ({int, sequence of int, None}, optional) Axis or axes along which the medians \
         are computed. The default is to compute the median along a flattened version of the array.
         * **out:** (ndarray, optional) Alternative output array in which to place the result. It must
         have the same shape and buffer length as the expected output, but the type (of the output) 
         will be cast if necessary.
         * **overwrite_input:** (bool, optional) If True, then allow use of memory of input array 
-        `dataset` for calculations. The input array will be modified by the call to `median`. 
+        `s` for calculations. The input array will be modified by the call to `median`. 
         This will save memory when you do not need to preserve the contents of the input array. 
         Treat the input as undefined, but it will probably be fully or partially sorted. Default is
-        False. If `overwrite_input` is ``True`` and `dataset` is not already an `ndarray`, an error
+        False. If `overwrite_input` is ``True`` and `s` is not already an `ndarray`, an error
         will be raised.
         * **keepdims:** (bool, optional) If this is set to True, the axes which are reduced are left
         in the result as dimensions with size one. With this option, the result will broadcast 
-        correctly against the original `arr`.
+        correctly against the original `array`.
         
         **Returns**
         
@@ -114,53 +115,57 @@ class StatisticalsFeatures:
         
         Given a vector $V$ of length $N$, the median of $V$ is the
         middle value of a sorted copy of $V$, $V_{sorted}$ - i
-        e., ``V_sorted[(N-1)/2]``, when $N$ is odd, and the average of the
-        two middle values of ``V_sorted`` when ``N`` is even.
+        e., $V_{sorted}\left[\frac{N-1}{2}\right]$, when $N$ is odd, and the average of the
+        two middle values of $V_{sorted}$ when $N$ is even.
         
         ## Snippet code
         
         ```python
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
-        >>> dataset = np.array([[10, 7, 4], [3, 2, 1]])
-        >>> feature_extraction.stats.median(dataset)
+        >>> s = np.array([[10, 7, 4], [3, 2, 1]])
+        >>> feature_extraction.stats.median(s)
         3.5
-        >>> feature_extraction.stats.median(dataset, axis=0)
+        >>> feature_extraction.stats.median(s, axis=0)
         array([6.5, 4.5, 2.5])
-        >>> feature_extraction.stats.median(dataset, axis=1)
+        >>> feature_extraction.stats.median(s, axis=1)
         array([7., 2.])
-        >>> m = feature_extraction.stats.median(dataset, axis=0)
+        >>> m = feature_extraction.stats.median(s, axis=0)
         >>> out = np.zeros_like(m)
-        >>> feature_extraction.stats.median(dataset, axis=0, out=m)
+        >>> feature_extraction.stats.median(s, axis=0, out=m)
         array([6.5, 4.5, 2.5])
         >>> m
         array([6.5, 4.5, 2.5])
-        >>> b = dataset.copy()
+        >>> b = s.copy()
         >>> feature_extraction.stats.median(b, axis=1, overwrite_input=True)
         array([7., 2.])
-        >>> assert not np.all(dataset==b)
-        >>> b = dataset.copy()
+        >>> assert not np.all(s==b)
+        >>> b = s.copy()
         >>> feature_extraction.stats.median(b, axis=None, overwrite_input=True)
         3.5
-        >>> assert not np.all(dataset==b)
+        >>> assert not np.all(s==b)
 
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _median = np.median(dataset, axis=axis, out=out, overwrite_input=overwrite_input, keepdims=keepdims)
-
-        return _median
+        s = Utils.check_dataset_shape(s)
+        return np.median(
+            s, 
+            axis=axis, 
+            out=out, 
+            overwrite_input=overwrite_input, 
+            keepdims=keepdims
+            )
 
     def kurt(
         self, 
-        dataset, 
+        s, 
         axis: int=0, 
         fisher: bool=True, 
         bias: bool=True, 
         nan_policy: str='propagate'
         ):
         r"""
-        Compute the kurtosis (Fisher or Pearson) of a dataset
+        Compute the kurtosis (Fisher or Pearson) of a dataset $s$
 
         Kurtosis is the fourth central moment divided by the square of the variance. If Fisher's definiton
         is used, then 3.0 is subtracted from the result to give 0.0 for a normal distribution.
@@ -170,7 +175,7 @@ class StatisticalsFeatures:
 
         **Parameters**
 
-        * **dataset:** (2d array) Data for which the kurtosis is calculated
+        * **s:** (2d array) Data for which the kurtosis is calculated
         * **axis:** (int or None) Axis along which the kurtosis is calculated. Default is 0. If None, compute
         over the whole array dataset.
         * **fisher:** (bool) If True, Fisher's definition is used (normal ==> 0.0). If False, Pearson's deifnition
@@ -189,39 +194,27 @@ class StatisticalsFeatures:
         >>> from scipy.stats import norm
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
-        >>> dataset = norm.rvs(size=1000, random_state=3)
-        >>> feature_extraction.stats.kurt(dataset)
+        >>> s = norm.rvs(size=1000, random_state=3)
+        >>> feature_extraction.stats.kurt(s)
         array([-0.06928694])
-
-        ```
-
-        ## Snippet Code
-        ```python
-        >>> from scipy.stats import norm
-        >>> from rackio_AI import RackioAIFE
-        >>> feature_extraction = RackioAIFE()
-        >>> dataset = norm.rvs(size=(1000,2), random_state=3)
-        >>> feature_extraction.stats.kurt(dataset)
+        >>> s = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.stats.kurt(s)
         array([-0.00560946, -0.1115389 ])
 
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _, cols = dataset.shape
-        _kurt = np.array([kurtosis(
-            dataset[:, col], 
+        s = Utils.check_dataset_shape(s)
+        return kurtosis(
+            s, 
             axis=axis, 
             fisher=fisher, 
             bias=bias, 
             nan_policy=nan_policy
-            ) for col in range(cols)]
-        )
-
-        return _kurt
+            )
 
     def std(
         self, 
-        dataset, 
+        s, 
         axis=None,
         dtype=None,
         out=None,
@@ -237,7 +230,7 @@ class StatisticalsFeatures:
         
         **Parameters**
         
-        * **dataset:** (2d array_like) Calculate the standard deviation of these values.
+        * **s:** (2d array_like) Calculate the standard deviation of these values.
         * **axis:** (None or int or tuple of ints, optional) Axis or axes along which the standard deviation is computed.
         The default is to compute the standard deviation of the flattened array.
         If this is a tuple of ints, a standard deviation is performed over multiple axes, instead of a single
@@ -264,19 +257,19 @@ class StatisticalsFeatures:
         The standard deviation is the square root of the average of the squared
         deviations from the mean, i.e.
 
-        $\mu = \frac{1}{N}\sum_{i=1}^{n}dataset_{i}$
+        $\mu = \frac{1}{N}\sum_{i=1}^{n}s_{i}$
 
-        $std = \sqrt{\frac{1}{N}\sum_{i=1}^{n}|dataset_{i}-\mu|^2}$
+        $std = \sqrt{\frac{1}{N}\sum_{i=1}^{n}|s_{i}-\mu|^2}$
         
         ## Snippet code
         ```python
         >>> import numpy as np
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
-        >>> dataset = np.array([[1, 2], [3, 4]])
-        >>> feature_extraction.stats.std(dataset, axis=0)
+        >>> s = np.array([[1, 2], [3, 4]])
+        >>> feature_extraction.stats.std(s, axis=0)
         array([1., 1.])
-        >>> feature_extraction.stats.std(dataset, axis=1)
+        >>> feature_extraction.stats.std(s, axis=1)
         array([0.5, 0.5])
 
         ```
@@ -284,24 +277,30 @@ class StatisticalsFeatures:
         ### In single precision, std() can be inaccurate
 
         ```python
-        >>> dataset = np.zeros((2, 512*512), dtype=np.float32)
-        >>> dataset[0, :] = 1.0
-        >>> dataset[1, :] = 0.1
-        >>> feature_extraction.stats.std(dataset)
+        >>> s = np.zeros((2, 512*512), dtype=np.float32)
+        >>> s[0, :] = 1.0
+        >>> s[1, :] = 0.1
+        >>> feature_extraction.stats.std(s)
         0.45000005
-        >>> dataset = np.array([[14, 8, 11, 10], [7, 9, 10, 11], [10, 15, 5, 10]])
-        >>> feature_extraction.stats.std(dataset)
+        >>> s = np.array([[14, 8, 11, 10], [7, 9, 10, 11], [10, 15, 5, 10]])
+        >>> feature_extraction.stats.std(s)
         2.614064523559687
 
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _std = np.std(dataset, axis=axis, dtype=dtype, out=dtype, ddof=ddof, keepdims=keepdims)
-        return _std
+        s = Utils.check_dataset_shape(s)
+        return np.std(
+            s, 
+            axis=axis, 
+            dtype=dtype, 
+            out=dtype, 
+            ddof=ddof, 
+            keepdims=keepdims
+            )
 
     def skew(
         self, 
-        dataset, 
+        s, 
         axis=0,
         bias=True,
         nan_policy='propagate'
@@ -316,9 +315,9 @@ class StatisticalsFeatures:
         
         **Parameters**
 
-        * **dataset:** (ndarray) Input array.
+        * **s:** (ndarray) Input array.
         * **axis:** (int or None, optional) Axis along which skewness is calculated. Default is 0.
-        If None, compute over the whole array `a`.
+        If None, compute over the whole array `s`.
         * **bias:** (bool, optional) If False, then the calculations are corrected for statistical bias.
         * **nan_policy:** ({'propagate', 'raise', 'omit'}, optional) Defines how to handle when input contains nan.
         The following options are available (default is 'propagate'):
@@ -360,29 +359,26 @@ class StatisticalsFeatures:
         >>> import numpy as np
         >>> from rackio_AI import RackioAIFE
         >>> feature_extraction = RackioAIFE()
-        >>> dataset = np.array([1, 2, 3, 4, 5])
-        >>> feature_extraction.stats.skew(dataset)
+        >>> s = np.array([1, 2, 3, 4, 5])
+        >>> feature_extraction.stats.skew(s)
         array([0.])
-        >>> dataset = np.array([2, 8, 0, 4, 1, 9, 9, 0])
-        >>> feature_extraction.stats.skew(dataset)
+        >>> s = np.array([2, 8, 0, 4, 1, 9, 9, 0])
+        >>> feature_extraction.stats.skew(s)
         array([0.26505541])
         
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _, cols = dataset.shape
-        _skew = np.array([skew(
-            dataset[:, col], 
+        s = Utils.check_dataset_shape(s)
+        return skew(
+            s, 
             axis=axis, 
             bias=bias, 
             nan_policy=nan_policy
-            ) for col in range(cols)]
-        )
-        return _skew
+            )
 
     def rms(
         self, 
-        dataset, 
+        s, 
         axis=None,
         dtype=None,
         out=None,
@@ -395,7 +391,7 @@ class StatisticalsFeatures:
         of the average squared value of the signal and can also be called the normalized energy of the
         signal.
 
-        $RMS = \sqrt{\frac{1}{n}\sum_{i=0}^{n-1}S_{i}^{2}}$
+        $RMS = \sqrt{\frac{1}{n}\sum_{i=0}^{n-1}s_{i}^{2}}$
         
         Especially in vibration analysis the RMS is used to perform fault detection, i.e. triggering an
         alarm, whenever the RMS surpasses a level that depends on the size of the machine, the nature
@@ -409,15 +405,15 @@ class StatisticalsFeatures:
 
         **Parameters**
         
-        * **dataset:** (2d array_like) Elements to get RMS.
+        * **s:** (2d array_like) Elements to get RMS.
         * **axis:** (None or int or tuple of ints, optional) Axis or axes along which a RMS is performed.  
         The default, axis=None, will get RMS of all the elements of the input array. If axis is negative
         it counts from the last to the first axis. If axis is a tuple of ints, a RMS is performed on all
         of the axes specified in the tuple instead of a single axis or all the axes as before.
         * **dtype:** (dtype, optional) The type of the returned array and of the accumulator in which the
-        elements are summed.  The dtype of `dataset` is used by default unless `dataset` has an integer 
-        dtype of less precision than the default platform integer.  In that case, if `dataset` is signed 
-        then the platform integer is used while if `dataset` is unsigned then an unsigned integer of the
+        elements are summed.  The dtype of `s` is used by default unless `s` has an integer 
+        dtype of less precision than the default platform integer.  In that case, if `s` is signed 
+        then the platform integer is used while if `s` is unsigned then an unsigned integer of the
         same precision as the platform integer is used.
         * **out:** (ndarray, optional) Alternative output array in which to place the result. It must have
         the same shape as the expected output, but the type of the output values will be cast if necessary.
@@ -430,8 +426,8 @@ class StatisticalsFeatures:
 
         **Returns**
         
-        * **RMS_along_axis:** (darray) An array with the same shape as `dataset`, with the specified
-        axis removed.   If `dataset` is a 0-d array, or if `axis` is None, a scalar is returned. 
+        * **RMS_along_axis:** (darray) An array with the same shape as `s`, with the specified
+        axis removed.   If `s` is a 0-d array, or if `axis` is None, a scalar is returned. 
         If an output array is specified, a reference to `out` is returned.
 
         ## Snippet code
@@ -458,67 +454,116 @@ class StatisticalsFeatures:
 
         ```
         """
-        dataset = Utils.check_dataset_shape(dataset)
-        _rms = (np.sum(
-            dataset ** 2, 
+        s = Utils.check_dataset_shape(s)
+        return (np.sum(
+            s ** 2, 
             axis=axis, 
             dtype=dtype, 
             out=out, 
             keepdims=keepdims, 
             initial=initial
-            ) / dataset.shape[0]) ** 0.5
-        return _rms
+            ) / s.shape[0]) ** 0.5
 
-    def peak_2_valley(self, dataset, axis=0):
+    def peak_2_valley(self, s, axis=0):
         r"""
-        Another important measurement of a signal, considering a semantically coeherent sampling
+        Another important measurement of a signal, considering a semantically coherent sampling
         interval, for instance a fixed-length interval or one period of a rotation, is the peak-to-valley
         (PV) value which reflects the amplitude spread of a signal:
 
-        $PV=\frac{1}{2}\left(\max{dataset}\quad -\quad \min{dataset}\right)$
+        $PV=\frac{1}{2}\left(\max(s)\quad -\quad \min(s)\right)$
+
+        **Parameters**
+
+        * **s:**
+        * **axis:**
+
+        **Returns**
+
+        * **peak_2_valley:**
+
+        ## Snippet code
+
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> s = norm.rvs(size=1000, random_state=3)
+        >>> feature_extraction.stats.peak_2_valley(s)
+        array([3.34321422])
+        >>> s = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.stats.peak_2_valley(s)
+        array([2.99293034, 3.34321422])
+
+        ```
         """
-        _peak_2_valley = np.array([(np.max(col, axis=axis)-np.min(col, axis=axis)) / 2 for col in data])
+        s = Utils.check_dataset_shape(s)
+        return (np.max(s, axis=axis)-np.min(s, axis=axis)) / 2
 
-        return _peak_2_valley
-
-    def peak(self, dataset, ref=None, axis=0, rate=None, **kwargs):
+    def peak(self, s, ref=None, axis=0, rate=None, **kwargs):
         r"""
         I we consider only the maximum amplitude relative to zero $s_{ref}=0$ or a general reference
         level $s_{ref}$, we get the peak value
 
-        $peak = \max\left(dataset_{i}-ref\right)$
+        $peak = \max\left(s_{i}-ref\right)$
 
         Often the peak is used in conjunction with other statistical parameters, for instance the 
         peak-to-average rate.
 
-        $peak = \frac{\max\left(dataset_{i}-ref\right)}{\frac{1}{N}\sum_{i=0}^{N-1}dataset_{i}}$
+        $peak = \frac{\max\left(s_{i}-ref\right)}{\frac{1}{N}\sum_{i=0}^{N-1}s_{i}}$
 
         or peak-to-median rate
 
+        **Parameters**
+
+        * **s:**
+        * **ref:**
+        * **axis:**
+        * **rate:**
+
+        **Returns**
+
+        * **peak:**
+
+        ## Snippet code
+
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> s = norm.rvs(size=1000, random_state=3)
+        >>> feature_extraction.stats.peak(s)
+        array([1.91382976])
+        >>> s = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.stats.peak(s)
+        array([1.0232499 , 3.26594839])
+
+        ```
+
         """
+        s = Utils.check_dataset_shape(s)
         if not ref == None:
 
-            _peak = np.array([np.max(col - ref, axis=axis) for col in data])
+            _peak = np.max(s - ref, axis=axis)
 
         else:
             
-            _peak = np.array([np.max(col - col[0,:], axis=axis) for col in data])
+            _peak = np.max(s - s[0,:], axis=axis)
 
         if not rate == None:
 
             if rate.lower() == 'average':
                 
-                return _peak / self.mean(dataset, **kwargs)
+                return _peak / self.mean(s, **kwargs)
 
             elif rate.lower() == 'median':
 
-                return _peak / self.median(dataset, **kwargs)
+                return _peak / self.median(s, **kwargs)
 
         else:
             
             return _peak
             
-    def crest_factor(self, dataset, **kwargs):
+    def crest_factor(self, s, **kwargs):
         r"""
         When we relate the peak value to the RMS of the signal, we obtain the crest facto:
 
@@ -527,86 +572,168 @@ class StatisticalsFeatures:
         which expresses the spikiness of the signal. The crest factor is also known as peak-to-average
         ratio or peak-to-average power ratio and is used to characterize signals containing repetitive
         impulses in addition to a lower level continuous signal. The modulus of the signal should be
-        used in the calculus
+        used in the calculus.
+
+        **Parameters**
+
+        * **s:**
+
+        **Returns**
+
+        * **crest_factor:**
+
+        ## Snippet code
+
+        ```python
+        >>> from scipy.stats import norm
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> s = norm.rvs(size=1000, random_state=3)
+        >>> feature_extraction.stats.crest_factor(s)
+        array([1.89760521])
+        >>> s = norm.rvs(size=(1000,2), random_state=3)
+        >>> feature_extraction.stats.crest_factor(s)
+        array([0.71532677, 2.28313758])
+
+        ```
         """
-        peak = self.peak(dataset, **kwargs)
-        rms = self.rms(dataset, **kwargs)
-        return peak[i,:] / rms[i,:]
+        peak = self.peak(s, **kwargs)
+        rms = self.rms(s, **kwargs)
+        return peak / rms
 
-    def __call__(
-        self, 
-        dataset, 
-        std=True, 
-        mean=False,
-        median=False,
-        rms=False,
-        kurt=False,
-        skew=False,
-        peak=False,
-        peak_2_valley=False,
-        crest_factor=False,
-        concatenate=True
-        ):
+
+class Wavelet:
+    r"""
+    A wavelet is a mathematical function used to divide a given function or continuous-time 
+    signal into different scale components. Usually one can assign a frequency range to each 
+    scale component. Each scale component can then be studied with a resolution that matches 
+    its scale. A wavelet transform is the representation of a function by wavelets. 
+    
+    The wavelets are scaled and translated copies (known as "daughter wavelets") of a 
+    finite-length or fast-decaying oscillating waveform (known as the "mother wavelet"). 
+    
+    Wavelet transforms have advantages over traditional Fourier transforms for representing 
+    functions that have discontinuities and sharp peaks, and for accurately deconstructing 
+    and reconstructing finite, non-periodic and/or non-stationary signals.
+
+
+    """
+
+    @WaveletDeco.is_valid
+    @WaveletDeco.mode_is_valid
+    def wavedec(self, s, wavelet, mode='symmetric', level=None, axis=-1):
+        r"""
+        Multilevel 1D Discrete Wavelet Transform of signal $s$
+        
+        **Parameters**
+
+        * **s:** (array_like) Input data
+        * **wavelet:** (Wavelet object or name string) Wavelet to use
+        * **mode:** (str) Signal extension mode.
+        * **level:** (int) Decomposition level (must be >= 0). If level is None (default)
+        then it will be calculated using the `dwt_max_level` function.
+        * **axis:** (int) Axis over which to compute the DWT. If not given, the last axis 
+        is used.
+
+        **Returns**
+
+        * **[cA_n, cD_n, cD_n-1, ..., cD2, cD1]:** (list) Ordered list of coefficients arrays where
+        $n$ denotes the level of decomposition. The first element `(cA_n)` of the result is approximation
+        coefficients array and the following elements `[cD_n - cD1]` are details coefficients arrays.
+
+        ## Snippet code
+
+        ```python
+        >>> from rackio_AI import RackioAIFE
+        >>> feature_extraction = RackioAIFE()
+        >>> coeffs = feature_extraction.freq.wavelet.wavedec([1,2,3,4,5,6,7,8], 'db1', level=2)
+        >>> cA2, cD2, cD1 = coeffs
+        >>> cD1
+        array([-0.70710678, -0.70710678, -0.70710678, -0.70710678])
+        >>> cD2
+        array([-2., -2.])
+        >>> cA2
+        array([ 5., 13.])
+        >>> s = np.array([[1,1], [2,2], [3,3], [4,4], [5, 5], [6, 6], [7, 7], [8, 8]])
+        >>> coeffs = feature_extraction.freq.wavelet.wavedec(s, 'db1', level=2, axis=0)
+        >>> cA2, cD2, cD1 = coeffs
+        >>> cD1
+        array([[-0.70710678, -0.70710678],
+               [-0.70710678, -0.70710678],
+               [-0.70710678, -0.70710678],
+               [-0.70710678, -0.70710678]])
+        >>> cD2
+        array([[-2., -2.],
+               [-2., -2.]])
+        >>> cA2
+        array([[ 5.,  5.],
+               [13., 13.]])
+
+        ```
         """
-        Documentation here
-        """
-        result = list()
-        features = {
-            'std': std,
-            'mean': mean,
-            'rms': rms, 
-            'kurt': kurt, 
-            'skew': skew, 
-            'peak': peak, 
-            'peak_2_valley': peak_2_valley, 
-            'crest_factor': crest_factor
-        }
+        coeffs = pywt.wavedec(s, wavelet, mode=mode, level=level, axis=axis)
 
-        for key, value in features.items():
-            
-            if value:
-                feature = getattr(self, key)
-                result.append(feature(data))
-
-        if concatenate:
-
-            result = np.concatenate(result, axis=1)
-
-        return result
+        return coeffs
 
 
 @set_to_methods(del_temp_attr)
 class FrequencyFeatures:
-    """
+    r"""
     Documentation here
     """
     _instances = list()
 
     def __init__(self):
-        pass
-
-    def wavelets(self, _type='db2', lvl=3):
-        """
+        r"""
         Documentation here
         """
-        waveletFeatures = list()
-        lastCoeffs = 3
-        for data in self.inputData:
-            coeffs = pywt.wavedec(data, _type, level=lvl, axis=0)
-            waveletFeatures.append(np.concatenate([sum(coeff ** 2, 0) for coeff in coeffs[0:lastCoeffs]],axis=0))
-        return np.array(waveletFeatures)
+        self.wavelet = Wavelet()
 
-    def __call__(self, *args, **kwargs):
-        """
-        Documentation here
+    def stft(self, s):
+        r"""
+        In construction...
+
+        The Short Time Fourier Transform (SFTF for short) of a given frame $s\left(m,n\right)$
+        is a Fourier transform performed in successive frames:
+
+        $S\left(m,n\right)=\sum_{n}s\left(m,n\right)\cdot{e^{\frac{-j2\pi nk}{N}}}$
+
+        where $s\left(m,n\right)=s\left(n\right)w\left(n-mL\right)$ and $w\left(n\right)$ is a windowing
+        function of $N$ samples
+
+        **Parameters**
+
+        * **s:**
+
+        **Returns**
+
+        * **stft:**
         """
         pass
+
+    # def wavelet(self, s, wavelet='db2', mode="symmetric", lvl=None, axis=-1):
+    #     r"""
+    #     Multilevel 1D Discrete Wavelet Transform of signal $s$
+    #     """
+    #     waveletFeatures = list()
+    #     lastCoeffs = 3
+    #     for data in self.inputData:
+    #         coeffs = pywt.wavedec(data, _type, level=lvl, axis=0)
+    #         waveletFeatures.append(np.concatenate([sum(coeff ** 2, 0) for coeff in coeffs[0:lastCoeffs]],axis=0))
+    #     return np.array(waveletFeatures)
 
 
 @set_to_methods(del_temp_attr)
 class RackioAIFE:
-    """
-    Documentation here
+    r"""
+    Rack Input/Output Artificial Intelligence Feature Extraction (RackioAIFE for short) is a class
+    to allows to you make feature extraction for pattern recognition models.
+
+    The feature extraction transforms originally high-dimensional patterns into lower dimensional vectors
+    by capturing the essential of their characteristics. Various feature extraction techniques have been
+    proposed in the literature for different signal applications. In speech and speaker recognition,
+    fault diagnosis, they are essentially based on Fourier transform, cepstral analysis, autoregressive
+    modeling, wavelet transform and statistical analysis.
     """
     _instances = list()
     
@@ -616,7 +743,7 @@ class RackioAIFE:
         Documentation here
         """
         self.stats = StatisticalsFeatures()
-        self.frequency_domain = FrequencyFeatures()
+        self.freq = FrequencyFeatures()
 
 
 if __name__=='__main__':
