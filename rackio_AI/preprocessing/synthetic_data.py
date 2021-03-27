@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
-from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options
+from rackio_AI.decorators import typeCheckedAttribute, check_instrument_options, check_instrument_attributes
 from rackio_AI.preprocessing.synthetic_data_base import PrepareData
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
@@ -30,7 +30,11 @@ class SyntheticData(PrepareData):
     _instances = list()
     app = RackioAI()
 
-    def __init__(
+    def __init__(self):
+        
+        SyntheticData._instances.append(self)
+
+    def add_attributes(
         self, 
         error: list, 
         repeteability: list, 
@@ -38,11 +42,8 @@ class SyntheticData(PrepareData):
         upper_limit: list, 
         dead_band: list
         ):
-        """
+        """Documentation here"""
 
-        """
-        super(SyntheticData, self).__init__()
-        
         if len(error) == len(repeteability) == len(lower_limit) == len(upper_limit) == len(dead_band):
             
             self.error = np.array(error)
@@ -56,7 +57,6 @@ class SyntheticData(PrepareData):
 
         self.accuracy = self.error - self.repeteability
         self.span = self.upper_limit - self.lower_limit
-        SyntheticData._instances.append(self)
 
     @property
     def data(self):
@@ -95,6 +95,7 @@ class SyntheticData(PrepareData):
 
             raise ValueError("Instrument properties must be same length than data")
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_instrument_error(self):
         """
@@ -116,6 +117,7 @@ class SyntheticData(PrepareData):
 
         return
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_decalibration(
         self,
@@ -152,6 +154,7 @@ class SyntheticData(PrepareData):
 
         return
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_sensor_drift(
         self,
@@ -197,6 +200,7 @@ class SyntheticData(PrepareData):
 
         return
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_excessive_noise(self, error_factor: float=3.0, repeteability_factor: float=3.0, duration: int=10):
         """
@@ -225,6 +229,7 @@ class SyntheticData(PrepareData):
 
         return
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_frozen_data(self, duration: int=10):
         """
@@ -246,6 +251,7 @@ class SyntheticData(PrepareData):
 
         return
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_outlier(self, span_factor: float=0.03):
         """
@@ -276,6 +282,7 @@ class SyntheticData(PrepareData):
 
         return self.data
 
+    @check_instrument_attributes
     @PrepareData.step
     def add_out_of_range(self, duration: int=10):
         """
@@ -327,7 +334,8 @@ class SyntheticData(PrepareData):
         if view:
             
             self.view(columns=options['columns'], ylabel=options['ylabel'], xlabel=options['ylabel'])
-
+    
+    @check_instrument_attributes
     def __call__(
         self,
         decalibrations: int=None, 
@@ -376,7 +384,8 @@ class SyntheticData(PrepareData):
         >>> lower_limit = [0, 0, 400000, 100000]
         >>> upper_limit = [500, 500, 1200000, 600000]
         >>> dead_band = [0.001, 0.001, 0.001, 0.001]
-        >>> SD = SyntheticData(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
+        >>> SD = SyntheticData()
+        >>> SD.add_attributes(error=error, repeteability=repeteability, lower_limit=lower_limit, upper_limit=upper_limit, dead_band=dead_band)
         >>> data = SD(frozen_data=2, out_of_range=1, add_WN=True, view=False, columns=[0,1,2,3], duration={'min': 20, 'max': 100})
 
         ```
@@ -550,6 +559,14 @@ class SyntheticData(PrepareData):
         plt.ylabel(ylabel)
         plt.xlabel(xlabel)
         plt.show(block=True)
+
+    def is_ready(self):
+        
+        if not hasattr(self, accuracy):
+
+            raise NotImplementedError("Please add instrument attributes")
+
+        return True
 
 
 if __name__ == "__main__":

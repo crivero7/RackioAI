@@ -11,3 +11,27 @@ class RFE(rfe):
         Documentation here
         """
         super(RFE, self).__init__(estimator)
+
+
+class PCA:
+    """
+    Principal Component Analysis class
+    """
+
+    def __init__(self):
+        """
+        Documentation here
+        """
+        pass
+
+
+class ICA:
+    """
+    Independent Component Analysis class
+    """
+
+    def __init__(self):
+        """
+        Documentation here
+        """
+        pass

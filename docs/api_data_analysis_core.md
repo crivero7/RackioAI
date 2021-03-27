@@ -6,6 +6,7 @@
     :members: data
     :members: insert_columns
     :members: remove_columns
+    :members: keep_columns
     :members: rename_columns
     :members: change_columns
     :members: search_loc
