@@ -75,7 +75,7 @@ class RackioAIScaler:
        """Documentation here"""
        self.__scaler = None
 
-    def __call__(self, df, method: str="min_max", columns: list=[], **kwargs):
+    def fit(self, df, method: str="min_max", columns: list=[], **kwargs):
         """Documentation here"""
         if not method.lower() in self.methods:
             
@@ -84,9 +84,15 @@ class RackioAIScaler:
         self.__scaler = self.methods[method.lower()](**kwargs)
         column_name = Utils.get_column_names(df)
 
-        return pd.DataFrame(self.__scaler.fit_transform(df), columns=column_name)
+        return self.__scaler.fit(df)
 
-    def inverse(self, df, columns: list=[]):
+    def __call__(self, df):
+        """Documentation here"""
+        column_name = Utils.get_column_names(df)
+
+        return pd.DataFrame(self.__scaler.transform(df), columns=column_name)
+
+    def inverse(self, df):
         """Documentation here"""
         column_name = Utils.get_column_names(df)
         return pd.DataFrame(self.__scaler.inverse_transform(df), columns=column_name)
