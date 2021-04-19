@@ -25,11 +25,10 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        'scikit-learn',
+        'scikit-learn==0.24.1',
         'Pillow==8.0.0',
-        'Rackio==1.0.3',
         'easy-deco==0.1.2',
-        'seaborn',
+        'seaborn==0.11.1',
         'xlrd==1.2.0',
         'openpyxl==3.0.6',
         'odfpy==1.4.1',

@@ -2,11 +2,10 @@ pyxlsb==1.0.8
 odfpy==1.4.1
 openpyxl==3.0.6
 xlrd==1.2.0
-seaborn
-scikit-learn
+seaborn==0.11.1
+scikit-learn==0.24.1
 statsmodels==0.12.1
 easy-deco==0.1.2
 Pillow==8.0.0
 tensorflow==2.4.0
 PyWavelets==1.1.1
-Rackio==1.0.3
