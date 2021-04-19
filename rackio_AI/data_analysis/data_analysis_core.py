@@ -606,7 +606,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S.%f"):
+    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
 
@@ -722,7 +722,7 @@ class RackioEDA(Pipeline):
         >>> from rackio_AI import RackioAI
         >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
         >>> df = pd.DataFrame([[0.5, 2, 3], [1, 5, 6], [1.5, 8, 9], [2, 8, 9]], columns=['Time', 'Two', 'Three'])
-        >>> EDA.resample(df, 1, "Time")
+        >>> EDA.resample(df, 1, label="Time")
            Time  Two  Three
         0   0.5    2      3
         2   1.5    8      9
@@ -746,11 +746,12 @@ class RackioEDA(Pipeline):
         self._diff_ = self._start_ = 0
         label_index = 'index'
         if not label:
-            df = df.reset_index()
             if df.index.name:
                 label_index = df.index.name
             label = label_index
-
+        if df.index.name:
+            label_index = df.index.name
+        df = df.reset_index()
         self._column_ = df[label].values
         if isinstance(self._column_[0], (str, np.datetime64)):
             base_time = pd.to_datetime(self._column_[0], format=datetime_format)
@@ -763,6 +764,7 @@ class RackioEDA(Pipeline):
         df = df.drop(self._rows_to_delete_)
         if set_index:
             df = df.set_index(label)
+        df = self.remove_columns(df, label_index)
         self.data = df
         return df
 
