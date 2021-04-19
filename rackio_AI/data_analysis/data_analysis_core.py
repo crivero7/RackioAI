@@ -742,6 +742,7 @@ class RackioEDA(Pipeline):
         """
         self._rows_to_delete_ = list()
         self._rows_to_keep_ = list()
+        self._datetime = False
         self._diff_ = self._start_ = 0
         label_index = 'index'
         if not label:
@@ -752,17 +753,17 @@ class RackioEDA(Pipeline):
 
         self._column_ = df[label].values
         if isinstance(self._column_[0], (str, np.datetime64)):
-            base_time = pd.to_datetime(self._column_[0])
-            self._column_ = self._column_ - base_time
+            base_time = pd.to_datetime(self._column_[0], format=datetime_format)
+            self._column_ = pd.to_datetime(self._column_, format=datetime_format)
+            self._column_ = (self._column_ - base_time).total_seconds()
+            self._datetime = True
         self._column_ = self._column_.tolist()
         options = {"freq": sample_time}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
         if set_index:
-            df.set_index(label)
-
+            df = df.set_index(label)
         self.data = df
-
         return df
 
     @ProgressBar(desc="Resampling...", unit="Sampling")
@@ -786,9 +787,8 @@ class RackioEDA(Pipeline):
             self._rows_to_keep_.append(self._start_)
             return
         delta = column - self._column_[self._start_ - 1]
-        if self._datetime:
-            self._diff_ += delta / 1e9
-        if abs(self._diff_) <= freq:
+        self._diff_ += delta 
+        if abs(self._diff_) < freq:
             self._rows_to_delete_.append(self._start_)
             self._start_ += 1
             return
