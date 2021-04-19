@@ -606,7 +606,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
+    def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S.%f"):
         """
         Set index in dataframe *df* in datetime format
 
@@ -699,7 +699,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    def resample(self, df, sample_time, label):
+    def resample(self, df, sample_time, label=None, datetime_format="%Y-%m-%d %H:%M:%S.%f", set_index=False):
         """
         Resample timeseries column in the dataframe *df*
 
@@ -728,13 +728,38 @@ class RackioEDA(Pipeline):
         2   1.5    8      9
 
         ```
+
+        ```python
+        >>> import pandas as pd
+        >>> EDA = RackioAI.get(name="EDA core", _type='EDA')
+        >>> df = pd.DataFrame([["2021-03-24 17:27:11.0", 2, 3], ["2021-03-24 17:27:11.5", 5, 6], ["2021-03-24 17:27:12.0", 8, 9], ["2021-03-24 17:27:12.5", 8, 9]], columns=['Time', 'Two', 'Three'])
+        >>> EDA.resample(df, 1, label="Time")
+                            Time  Two  Three
+        0  2021-03-24 17:27:11.0    2      3
+        2  2021-03-24 17:27:12.0    8      9
+
+        ```
         """
         self._rows_to_delete_ = list()
+        self._rows_to_keep_ = list()
         self._diff_ = self._start_ = 0
-        self._column_ = df[label].values.tolist()
+        label_index = 'index'
+        if not label:
+            df = df.reset_index()
+            if df.index.name:
+                label_index = df.index.name
+            label = label_index
+
+        self._column_ = df[label].values
+        if isinstance(self._column_[0], (str, np.datetime64)):
+            base_time = pd.to_datetime(self._column_[0])
+            self._column_ = self._column_ - base_time
+        self._column_ = self._column_.tolist()
         options = {"freq": sample_time}
         self.__resample(self._column_, **options)
         df = df.drop(self._rows_to_delete_)
+        if set_index:
+            df.set_index(label)
 
         self.data = df
 
@@ -756,23 +781,18 @@ class RackioEDA(Pipeline):
         None
         """
         freq = kwargs["freq"]
-
         if self._start_ == 0:
-            
             self._start_ += 1
-            
+            self._rows_to_keep_.append(self._start_)
             return
-
         delta = column - self._column_[self._start_ - 1]
-        self._diff_ += delta
-
-        if abs(self._diff_) < freq:
-            
+        if self._datetime:
+            self._diff_ += delta / 1e9
+        if abs(self._diff_) <= freq:
             self._rows_to_delete_.append(self._start_)
             self._start_ += 1
-            
             return
-
+        self._rows_to_keep_.append(self._start_)
         self._diff_ = 0
         self._start_ += 1
 
