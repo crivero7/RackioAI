@@ -749,8 +749,9 @@ class RackioEDA(Pipeline):
             if df.index.name:
                 label_index = df.index.name
             label = label_index
-        if df.index.name:
-            label_index = df.index.name
+        else:
+            if df.index.name:
+                label_index = df.index.name
         df = df.reset_index()
         self._column_ = df[label].values
         if isinstance(self._column_[0], (str, np.datetime64)):
@@ -764,7 +765,8 @@ class RackioEDA(Pipeline):
         df = df.drop(self._rows_to_delete_)
         if set_index:
             df = df.set_index(label)
-        df = self.remove_columns(df, label_index)
+        else:
+            df = self.remove_columns(df, label_index)
         self.data = df
         return df
 
