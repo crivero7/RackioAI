@@ -1,6 +1,7 @@
 from easy_deco.progress_bar import ProgressBar
 from itertools import combinations as Combine
 import json
+import pickle
 import math
 import numpy as np
 import os
@@ -65,6 +66,24 @@ class Utils:
         with open(filename, ) as f:
 
             return json.load(f)
+
+    @staticmethod
+    def load_pickle(filename: str):
+        """
+        Accepts file object, parses the pickle object, populates a Python dictionary 
+        with the data and returns it back to you.
+
+        **Parameters**
+
+        * **:param filename:** (str) pickle filename
+
+        **returns**
+
+        json file object parsed
+        """
+        with open(filename, 'rb') as f:
+
+            return pickle.load(f)
 
     @staticmethod
     def check_extension_files(root_directory: str, ext: str='.tpl'):
