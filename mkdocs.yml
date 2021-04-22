@@ -34,7 +34,7 @@ nav:
         - LSTM Data Preparation: 'api_preprocessing_lstm_data_preparation.md'
         - Feature Extraction: 'api_preprocessing_feature_extraction.md'
       - Models:
-        - RackioLSTM: 'api_model_RackioLSTM.md'
+        - RackioLSTM: 'api_model_RackioDNN.md'
       - Restful API: 'restful_api.md'
       - Utils:
         - decorators: 'decorators.md'

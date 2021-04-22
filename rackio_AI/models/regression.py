@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-class AcuNetLSTMCell(tf.keras.layers.Layer):
+class RackioRegressionLSTMCell(tf.keras.layers.Layer):
     r"""
     Documentation here
     """
@@ -12,22 +12,22 @@ class AcuNetLSTMCell(tf.keras.layers.Layer):
         r"""
         Documentation here
         """
-        super(AcuNetLSTMCell, self).__init__(**kwargs)
+        super(RackioRegressionLSTMCell, self).__init__(**kwargs)
         self.units = units
-        self.acunet_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
+        self.rackio_regression_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
         self.activation = tf.keras.activations.get(activation)
 
     def call(self, inputs):
         r"""
         Documentation here
         """
-        outputs = self.acunet_lstm_cell(inputs)
+        outputs = self.rackio_regression_lstm_cell(inputs)
         norm_outputs = self.activation(outputs)
 
         return norm_outputs
 
 
-class AcuNetScaler:
+class RegressionScaler:
     r"""
     Documentation here
     """
@@ -38,7 +38,7 @@ class AcuNetScaler:
         """
         self.input_scaler = scaler['inputs']
         self.output_scaler = scaler['outputs']
-
+    
     def apply(self, inputs, **kwargs):
         r"""
         Documentation here
@@ -81,7 +81,7 @@ class AcuNetScaler:
         return tuple(result)
 
 
-class AcuNet(tf.keras.Model):
+class RackioRegression(tf.keras.Model):
     r"""
     Documentation here
     """
@@ -90,16 +90,15 @@ class AcuNet(tf.keras.Model):
         self,
         units, 
         activations,
-        compile_options,
         scaler=None, 
         **kwargs
         ):
 
-        super(AcuNet, self).__init__(**kwargs)
+        super(RackioRegression, self).__init__(**kwargs)
         self.units = units
         
         # INITIALIZATION
-        self.scaler = AcuNetScaler(scaler)
+        self.scaler = RegressionScaler(scaler)
         layers_names = self.__create_layer_names(**kwargs)
         if not self.__check_arg_length(units, activations, layers_names):
             raise ValueError('units, activations and layer_names must be of the same length')
@@ -113,8 +112,6 @@ class AcuNet(tf.keras.Model):
         # LAYERS DEFINITION
         self.__hidden_layers_definition()
         self.__output_layer_definition()
-        
-        self.compile(**compile_options)
 
     def call(self, inputs):
         r"""
@@ -133,13 +130,72 @@ class AcuNet(tf.keras.Model):
         
         return acunet_output_layer(x)
 
+    def compile(
+        self,
+        optimizer=tf.keras.optimizers.Adam(
+            learning_rate=0.1, 
+            amsgrad=True
+            ),
+        loss='mse',
+        metrics=tf.keras.metrics.MeanAbsoluteError(),
+        loss_weights=None,
+        weighted_metrics=None,
+        run_eagerly=None,
+        steps_per_execution=None,
+        **kwargs
+        ):
+        r"""
+        Configures the model for training.
+
+        **Parameters**
+
+        * **:param optimizer:** String (name of optimizer) or optimizer instance.
+            * **tf.keras.optimizers.Adam**: Optimizer that implements the Adam algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adam)
+            * **tf.keras.optimizers.Adadelta**: Optimizer that implements the Adadelta algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adadelta)
+            * **tf.keras.optimizers.Adagrad**: Optimizer that implements the Adagrad algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adagrad)
+            * **tf.keras.optimizers.Adamax**: Optimizer that implements the Adamax algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adamax)
+            * **tf.keras.optimizers.Ftrl**: Optimizer that implements the FTRL algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Frtl)
+            * **tf.keras.optimizers.Nadam**: Optimizer that implements the Nadam algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Nadam)
+            * **tf.keras.optimizers.RMSprop**: Optimizer that implements the RMSprop algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/RMSprop)
+            * **tf.keras.optimizers.SGD**: Optimizer that implements the SGD algorithm.
+            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/SGD)
+        * **:param loss:** String (name of objective function), objective function or tf.keras.losses.Loss 
+        instance. See [tf.keras.losses](https://www.tensorflow.org/api_docs/python/tf/keras/losses). 
+        An objective function is any callable with the signature loss = fn(y_true, y_pred), 
+        where y_true = ground truth values with shape = [batch_size, d0, .. dN], except sparse loss 
+        functions such as sparse categorical crossentropy where shape = [batch_size, d0, .. dN-1]. 
+        y_pred = predicted values with shape = [batch_size, d0, .. dN]. It returns a weighted loss float tensor. 
+        If a custom Loss instance is used and reduction is set to NONE, return value has the shape [batch_size, d0, .. dN-1] 
+        ie. per-sample or per-timestep loss values; otherwise, it is a scalar. If the model has multiple outputs, 
+        you can use a different loss on each output by passing a dictionary or a list of losses. The loss value that 
+        will be minimized by the model will then be the sum of all individual losses.
+            * **tf.keras.losses.BinaryCrossentropy** Computes the cross-entropy loss between true labels and 
+            predicted labels. See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/losses/BinaryCrossentropy)
+        """
+        super(RackioRegression, self).compile(
+            optimizer=optimizer,
+            loss=loss,
+            metrics=metrics,
+            loss_weights=loss_weights,
+            weighted_metrics=weighted_metrics,
+            run_eagerly=run_eagerly,
+            steps_per_execution=steps_per_execution,
+            **kwargs
+        )
+
     def fit(
         self,
         x=None,
         y=None,
-        batch_size=None,
+        validation_data=None,
         epochs=3,
-        verbose=1,
         callbacks=[
             tf.keras.callbacks.EarlyStopping(
                 monitor='val_loss',
@@ -147,58 +203,37 @@ class AcuNet(tf.keras.Model):
                 min_delta=1e-6,
                 mode='min')
             ],
-        validation_split=0.0,
-        validation_data=None,
-        shuffle=True,
-        class_weight=None,
-        sample_weight=None,
-        initial_epoch=0,
-        steps_per_epoch=None,
-        validation_steps=None,
-        validation_batch_size=None,
-        validation_freq=1,
-        max_queue_size=10,
-        workers=1,
-        use_multiprocessing=False,
         plot=False,
-        data_section='validation'
+        data_section='validation',
+        **kwargs
         ):
         r"""
         Documentation here
         """
-        self._validation_data = validation_data
         self._train_data = (x, y)
+        self._validation_data = validation_data
 
         if self.scaler:
             x_test, y_test = validation_data
             x, y = self.scaler.apply(x, outputs=y)
             validation_data = self.scaler.apply(x_test, outputs=y_test)
 
-        history = super(AcuNet, self).fit(
+        history = super(RackioRegression, self).fit(
             x=x,
             y=y,
-            batch_size=batch_size,
-            epochs=epochs,
-            verbose=verbose,
-            callbacks=callbacks,
-            validation_split=validation_split,
             validation_data=validation_data,
-            shuffle=shuffle,
-            class_weight=class_weight,
-            sample_weight=sample_weight,
-            initial_epoch=initial_epoch,
-            steps_per_epoch=steps_per_epoch,
-            validation_steps=validation_steps,
-            validation_batch_size=validation_batch_size,
-            validation_freq=validation_freq,
-            max_queue_size=max_queue_size,
-            workers=workers,
-            use_multiprocessing=use_multiprocessing
+            epochs=epochs,
+            callbacks=callbacks,
+            **kwargs
         )
 
         if plot:
 
-            self.__plot_prediction(data_section=data_section)
+            if data_section.lower()=='validation':
+                
+                x, y = validation_data
+            
+            self.evaluate(x, y, plot_prediction=True)
 
         return history
 
@@ -214,7 +249,7 @@ class AcuNet(tf.keras.Model):
             
             x = self.scaler.apply(x)
         
-        y = super(AcuNet, self).predict(x, **kwargs)
+        y = super(RackioRegression, self).predict(x, **kwargs)
 
         if self.scaler:
 
@@ -222,25 +257,37 @@ class AcuNet(tf.keras.Model):
 
         return y
 
-    def __plot_prediction(self, data_section:str='validation'):
+    def evaluate(
+        self,
+        x=None,
+        y=None,
+        plot_prediction=False,
+        **kwargs
+        ):
         r"""
         Documentation here
-        """
-        x, y = self._validation_data
-        # MODEL PREDICTION
-        if data_section.lower() == 'train':
-            x, y = self._train_data
-        
-        y_predict = self.predict(x)
+        """        
+        evaluation = super(RackioRegression, self).evaluate(x, y, **kwargs)
 
-        # PLOT RESULT
-        y = y.reshape(y.shape[0], y.shape[-1])
-        y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
-        _result = np.concatenate((y_predict, y), axis=1)
-        result = pd.DataFrame(_result, columns=['Prediction', '{}'.format(data_section).capitalize()])
-        result.plot(kind='line')
-        plt.show()
-        
+        if plot_prediction:
+            
+            y_predict = super(RackioRegression, self).predict(x, **kwargs)
+
+            if self.scaler:
+
+                y_predict = self.scaler.inverse(y_predict)[0]
+                y = self.scaler.inverse(y)[0]
+            
+            # PLOT RESULT
+            y = y.reshape(y.shape[0], y.shape[-1])
+            y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
+            _result = np.concatenate((y_predict, y), axis=1)
+            result = pd.DataFrame(_result, columns=['Prediction', 'Original'])
+            result.plot(kind='line')
+            plt.show()
+
+        return evaluation
+    
     def __check_arg_length(self, *args):
         r"""
         Documentation here
@@ -290,27 +337,25 @@ class AcuNet(tf.keras.Model):
         r"""
         Documentation here
         """
-        initializer = tf.keras.initializers.GlorotUniform()
         for layer_num, units in enumerate(self.hidden_layers_units):
             if layer_num==len(self.hidden_layers_units) - 1:
                 setattr(
                     self, 
                     self.hidden_layers_names[layer_num], 
-                    AcuNetLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=False)
+                    RackioRegressionLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=False)
                     )
 
             else:
                 setattr(
                     self, 
                     self.hidden_layers_names[layer_num], 
-                    AcuNetLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=True)
+                    RackioRegressionLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=True)
                     )
 
     def __output_layer_definition(self):
         r"""
         Documentation here
         """
-        initializer = tf.keras.initializers.GlorotUniform()
         setattr(
             self, 
             self.output_layer_name, 

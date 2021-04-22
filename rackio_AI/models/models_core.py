@@ -1,10 +1,13 @@
 "The Factory Concept"
 
 from abc import ABCMeta, abstractmethod
-from .acunet import AcuNet
+from .regression import RackioRegression
+import pandas as pd
+import numpy as np
 import tensorflow as tf
 
-class FactoryRackioLSTM(metaclass=ABCMeta):
+
+class FactoryRackioDNN(metaclass=ABCMeta):
     """
     RackioLSTM Interface class
     """
@@ -16,71 +19,81 @@ class FactoryRackioLSTM(metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
+    def predict():
+        r"""
+        Documentation here
+        """
+        pass
 
-class RackioLSTM:
+    @abstractmethod
+    def evaluate():
+        r"""
+        Documentation here
+        """
+        pass
+
+    @abstractmethod
+    def retrain():
+        r"""
+        Documentation here
+        """
+        pass
+
+    @abstractmethod
+    def load():
+        r"""
+        Documentation here
+        """
+        pass
+
+
+class RackioDNN:
     r"""
     The Factory Class
     """
+
     @staticmethod
     def create(
         model:str, 
         units:list, 
         activations:list, 
-        compile_options={
-            'optimizer': tf.keras.optimizers.Adam(
-                learning_rate=0.1, 
-                amsgrad=True
-            ),
-            'loss': 'mse',
-            'metrics': tf.keras.metrics.MeanAbsoluteError()
-        }, 
         scaler=None, 
         **kwargs
         ):
         r"""
         A static method to get a concrete RackioLSTM model
         """
-        if model.lower() == 'acunet':
-            return AcuNet(
+        if model.lower() == 'regression':
+            return RackioRegression(
                 units, 
                 activations, 
-                compile_options=compile_options, 
-                scaler=scaler, 
-                **kwargs
-            )
-        
-        elif model.lower() == 'pfm':
-            return PFMNet(
-                units, 
-                activations, 
-                compile_options=compile_options, 
                 scaler=scaler, 
                 **kwargs
             )
 
-        elif model.lower() == 'sa':
-            return SANet(
-                units, 
-                activations, 
-                compile_options=compile_options, 
-                scaler=scaler, 
-                **kwargs
-            )
+    def predict(self, x):
+        r"""
+        Documentation here
+        """
+        pass
 
-        elif model.lower() == 'claus tail gas':
-            return ClausTGNet(
-                units, 
-                activations, 
-                compile_options=compile_options, 
-                scaler=scaler, 
-                **kwargs
-            )
-        
-        elif model.lower() == 'observer':
-            return ObserverNet(
-                units, 
-                activations, 
-                compile_options=compile_options, 
-                scaler=scaler, 
-                **kwargs
-            )
+    def evaluate(self, x, y, **kwargs):
+        r"""
+        Documentation here
+        """
+        pass
+
+    def retrain(self, x, y, **kwargs):
+        r"""
+        Documentation here
+        """
+        pass
+
+    def load(self, directory, **kwargs):
+        r"""
+        Documentation here
+        """
+        self._model = tf.keras.models.load_model(directory, **kwargs)
+
+        return self._model
