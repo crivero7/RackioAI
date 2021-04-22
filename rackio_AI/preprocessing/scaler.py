@@ -72,30 +72,48 @@ class RackioAIScaler:
     }
 
     def __init__(self):
-       """Documentation here"""
+       r"""Documentation here"""
        self.__scaler = None
+       self.__columns = []
 
     def fit(self, df, method: str="min_max", columns: list=[], **kwargs):
-        """Documentation here"""
+        r"""Documentation here"""
         if not method.lower() in self.methods:
             
             raise TypeError("{} method not available, availables methods: {}".format(method, methods.keys()))
 
         self.__scaler = self.methods[method.lower()](**kwargs)
-        column_name = Utils.get_column_names(df)
+        self.__columns = columns
+        
+        if not columns:
+            
+            column_name = Utils.get_column_names(df)
+            if len(column_name)==1:
+                df = df.values.reshape(-1, 1)
+            return self.__scaler.fit(df)
+        
+        if len(columns)==1:
+            df = df.values.reshape(-1, 1)
+            return self.__scaler.fit(df)
 
-        return self.__scaler.fit(df)
+        return self.__scaler.fit(df[columns])
 
     def __call__(self, df):
-        """Documentation here"""
-        column_name = Utils.get_column_names(df)
+        r"""Documentation here"""
+        if isinstance(df, pd.DataFrame):
+            
+            column_name = Utils.get_column_names(df)
+            return pd.DataFrame(self.__scaler.transform(df), columns=column_name)
 
-        return pd.DataFrame(self.__scaler.transform(df), columns=column_name)
+        return self.__scaler.transform(df)
 
     def inverse(self, df):
-        """Documentation here"""
-        column_name = Utils.get_column_names(df)
-        return pd.DataFrame(self.__scaler.inverse_transform(df), columns=column_name)
+        r"""Documentation here"""
+        if isinstance(df, pd.DataFrame):
+            column_name = Utils.get_column_names(df)
+            return pd.DataFrame(self.__scaler.inverse_transform(df), columns=column_name)
+
+        return self.__scaler.inverse_transform(df)
 
 
 if __name__=='__main__':

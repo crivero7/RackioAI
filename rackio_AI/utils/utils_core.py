@@ -47,6 +47,9 @@ class Utils:
 
         **column_names** (list)
         """            
+        if isinstance(df, pd.Series):
+            df = pd.DataFrame(df)  
+     
         return df.columns.to_list()
 
     @staticmethod
