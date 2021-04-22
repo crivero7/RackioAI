@@ -1,4 +1,6 @@
 import tensorflow as tf
+import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 
 
@@ -37,7 +39,7 @@ class AcuNetScaler:
         self.input_scaler = scaler['inputs']
         self.output_scaler = scaler['outputs']
 
-    def apply(self, inputs, outputs:list=[]):
+    def apply(self, inputs, **kwargs):
         r"""
         Documentation here
         """
@@ -48,7 +50,8 @@ class AcuNetScaler:
         ], axis=2)
         
         # OUTPUT SCALING
-        if outputs.any():
+        if 'outputs' in kwargs:
+            outputs = kwargs['outputs']
             samples, timesteps, features = outputs.shape
             scaled_outputs = np.concatenate([
                 self.output_scaler[feature](outputs[:, :, feature].reshape(-1, 1)).reshape((samples, timesteps, 1)) for feature in range(features)
@@ -93,11 +96,16 @@ class AcuNet(tf.keras.Model):
         ):
 
         super(AcuNet, self).__init__(**kwargs)
+        self.units = units
         
         # INITIALIZATION
         self.scaler = AcuNetScaler(scaler)
         layers_names = self.__create_layer_names(**kwargs)
-        self.__check_arg_length(units, activations, layers_names)
+        if not self.__check_arg_length(units, activations, layers_names):
+            raise ValueError('units, activations and layer_names must be of the same length')
+
+        self.activations = activations
+        self.layers_names = layers_names
 
         # HIDDEN/OUTPUT STRUCTURE DEFINITION
         self.__hidden_output_structure_definition()
@@ -125,6 +133,114 @@ class AcuNet(tf.keras.Model):
         
         return acunet_output_layer(x)
 
+    def fit(
+        self,
+        x=None,
+        y=None,
+        batch_size=None,
+        epochs=3,
+        verbose=1,
+        callbacks=[
+            tf.keras.callbacks.EarlyStopping(
+                monitor='val_loss',
+                patience=3,
+                min_delta=1e-6,
+                mode='min')
+            ],
+        validation_split=0.0,
+        validation_data=None,
+        shuffle=True,
+        class_weight=None,
+        sample_weight=None,
+        initial_epoch=0,
+        steps_per_epoch=None,
+        validation_steps=None,
+        validation_batch_size=None,
+        validation_freq=1,
+        max_queue_size=10,
+        workers=1,
+        use_multiprocessing=False,
+        plot=False,
+        data_section='validation'
+        ):
+        r"""
+        Documentation here
+        """
+        self._validation_data = validation_data
+        self._train_data = (x, y)
+
+        if self.scaler:
+            x_test, y_test = validation_data
+            x, y = self.scaler.apply(x, outputs=y)
+            validation_data = self.scaler.apply(x_test, outputs=y_test)
+
+        history = super(AcuNet, self).fit(
+            x=x,
+            y=y,
+            batch_size=batch_size,
+            epochs=epochs,
+            verbose=verbose,
+            callbacks=callbacks,
+            validation_split=validation_split,
+            validation_data=validation_data,
+            shuffle=shuffle,
+            class_weight=class_weight,
+            sample_weight=sample_weight,
+            initial_epoch=initial_epoch,
+            steps_per_epoch=steps_per_epoch,
+            validation_steps=validation_steps,
+            validation_batch_size=validation_batch_size,
+            validation_freq=validation_freq,
+            max_queue_size=max_queue_size,
+            workers=workers,
+            use_multiprocessing=use_multiprocessing
+        )
+
+        if plot:
+
+            self.__plot_prediction(data_section=data_section)
+
+        return history
+
+    def predict(
+        self,
+        x,
+        **kwargs
+        ):
+        r"""
+        Documentation here
+        """
+        if self.scaler:
+            
+            x = self.scaler.apply(x)
+        
+        y = super(AcuNet, self).predict(x, **kwargs)
+
+        if self.scaler:
+
+            y = self.scaler.inverse(y)[0]
+
+        return y
+
+    def __plot_prediction(self, data_section:str='validation'):
+        r"""
+        Documentation here
+        """
+        x, y = self._validation_data
+        # MODEL PREDICTION
+        if data_section.lower() == 'train':
+            x, y = self._train_data
+        
+        y_predict = self.predict(x)
+
+        # PLOT RESULT
+        y = y.reshape(y.shape[0], y.shape[-1])
+        y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
+        _result = np.concatenate((y_predict, y), axis=1)
+        result = pd.DataFrame(_result, columns=['Prediction', '{}'.format(data_section).capitalize()])
+        result.plot(kind='line')
+        plt.show()
+        
     def __check_arg_length(self, *args):
         r"""
         Documentation here
@@ -135,7 +251,9 @@ class AcuNet(tf.keras.Model):
             
             if len(arg) != flag_len:
                 
-                raise ValueError('Arguments must be the same length')
+                return False
+        
+        return True
 
     def __create_layer_names(self, **kwargs):
         r"""
@@ -149,7 +267,7 @@ class AcuNet(tf.keras.Model):
         
         else:
             
-            for layer_num in range(len(units)):
+            for layer_num in range(len(self.units)):
                 
                 layers_names.append('AcuNet_Layer_{}'.format(layer_num))
 
@@ -161,11 +279,11 @@ class AcuNet(tf.keras.Model):
         r"""
         Documentation here
         """
-        self.output_layer_units = units.pop()
-        self.output_layer_activation = activations.pop()
+        self.output_layer_units = self.units.pop()
+        self.output_layer_activation = self.activations.pop()
         self.output_layer_name = self.layers_names.pop()
-        self.hidden_layers_units = units
-        self.hidden_layers_activations = activations
+        self.hidden_layers_units = self.units
+        self.hidden_layers_activations = self.activations
         self.hidden_layers_names = self.layers_names
 
     def __hidden_layers_definition(self):
