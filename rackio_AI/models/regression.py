@@ -150,22 +150,22 @@ class RackioRegression(tf.keras.Model):
         **Parameters**
 
         * **:param optimizer:** String (name of optimizer) or optimizer instance.
-            * **tf.keras.optimizers.Adam**: Optimizer that implements the Adam algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adam)
-            * **tf.keras.optimizers.Adadelta**: Optimizer that implements the Adadelta algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adadelta)
-            * **tf.keras.optimizers.Adagrad**: Optimizer that implements the Adagrad algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adagrad)
-            * **tf.keras.optimizers.Adamax**: Optimizer that implements the Adamax algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adamax)
-            * **tf.keras.optimizers.Ftrl**: Optimizer that implements the FTRL algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Frtl)
-            * **tf.keras.optimizers.Nadam**: Optimizer that implements the Nadam algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Nadam)
-            * **tf.keras.optimizers.RMSprop**: Optimizer that implements the RMSprop algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/RMSprop)
-            * **tf.keras.optimizers.SGD**: Optimizer that implements the SGD algorithm.
-            See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/SGD)
+            * **[tf.keras.optimizers.Adam](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adam)**: 
+            Optimizer that implements the Adam algorithm.
+            * **[tf.keras.optimizers.Adadelta](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adadelta)**: 
+            Optimizer that implements the Adadelta algorithm.
+            * **[tf.keras.optimizers.Adagrad](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adagrad)**: 
+            Optimizer that implements the Adagrad algorithm.
+            * **[tf.keras.optimizers.Adamax](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Adamax)**: 
+            Optimizer that implements the Adamax algorithm.
+            * **[tf.keras.optimizers.Ftrl](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Ftrl)**: 
+            Optimizer that implements the FTRL algorithm.
+            * **[tf.keras.optimizers.Nadam](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/Nadam)**: 
+            Optimizer that implements the Nadam algorithm.
+            * **[tf.keras.optimizers.RMSprop](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/RMSprop)**: 
+            Optimizer that implements the RMSprop algorithm.
+            * **[tf.keras.optimizers.SGD](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/SGD)**: 
+            Optimizer that implements the SGD algorithm.
         * **:param loss:** String (name of objective function), objective function or tf.keras.losses.Loss 
         instance. See [tf.keras.losses](https://www.tensorflow.org/api_docs/python/tf/keras/losses). 
         An objective function is any callable with the signature loss = fn(y_true, y_pred), 
@@ -176,8 +176,104 @@ class RackioRegression(tf.keras.Model):
         ie. per-sample or per-timestep loss values; otherwise, it is a scalar. If the model has multiple outputs, 
         you can use a different loss on each output by passing a dictionary or a list of losses. The loss value that 
         will be minimized by the model will then be the sum of all individual losses.
-            * **tf.keras.losses.BinaryCrossentropy** Computes the cross-entropy loss between true labels and 
-            predicted labels. See [tf documentation](https://www.tensorflow.org/api_docs/python/tf/keras/losses/BinaryCrossentropy)
+
+            ## Classes
+
+            * **[tf.keras.losses.BinaryCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/BinaryCrossentropy)** 
+            Computes the cross-entropy loss between true labels and predicted labels.
+            * **[tf.keras.losses.CategoricalCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/CategoricalCrossentropy)**
+            Computes the crossentropy loss between the labels and predictions.
+            * **[tf.keras.losses.CategoricalHinge](https://www.tensorflow.org/api_docs/python/tf/keras/losses/CategoricalHinge)** 
+            Computes the categorical hinge loss between y_true and y_pred.
+            * **[tf.keras.losses.CosineSimilarity](https://www.tensorflow.org/api_docs/python/tf/keras/losses/CosineSimilarity)** 
+            Computes the cosine similarity between labels and predictions.
+            * **[tf.keras.losses.Hinge](https://www.tensorflow.org/api_docs/python/tf/keras/losses/Hinge)** 
+            Computes the hinge loss between y_true and y_pred.
+            * **[tf.keras.losses.Huber](https://www.tensorflow.org/api_docs/python/tf/keras/losses/Huber)** 
+            Computes the Huber loss between y_true and y_pred.
+            * **[tf.keras.losses.KLDivergence](https://www.tensorflow.org/api_docs/python/tf/keras/losses/KLDivergence)** 
+            Computes Kullback-Leibler divergence loss between y_true and y_pred.
+            * **[tf.keras.losses.LogCosh](https://www.tensorflow.org/api_docs/python/tf/keras/losses/LogCosh)** 
+            Computes the logarithm of the hyperbolic cosine of the prediction error.
+            * **[tf.keras.losses.MeanAbsoluteError](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MeanAbsoluteError)** 
+            Computes the mean of absolute difference between labels and predictions.
+            * **[tf.keras.losses.MeanAbsolutePercentageError](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MeanAbsolutePercentageError)** 
+            Computes the mean absolute percentage error between y_true and y_pred.
+            * **[tf.keras.losses.MeanSquaredError](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MeanSquaredError)**
+             Computes the mean of squares of errors between labels and predictions.
+            * **[tf.keras.losses.MeanSquaredLogarithmicError](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MeanSquaredLogarithmicError)** 
+            Computes the mean squared logarithmic error between y_true and y_pred.
+            * **[tf.keras.losses.Poisson](https://www.tensorflow.org/api_docs/python/tf/keras/losses/Poisson)**
+            Computes the Poisson loss between y_true and y_pred.
+            * **[tf.keras.losses.Reduction](https://www.tensorflow.org/api_docs/python/tf/keras/losses/Reduction)** 
+            Types of loss reduction.
+            * **[tf.keras.losses.SparseCategoricalCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy)** 
+            Computes the crossentropy loss between the labels and predictions.
+            * **[tf.keras.losses.SquaredHinge](https://www.tensorflow.org/api_docs/python/tf/keras/losses/SquaredHinge)** 
+            Computes the squared hinge loss between y_true and y_pred.
+
+            ## Functions
+
+            * **[KLD(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/KLD):** 
+            Computes Kullback-Leibler divergence loss between y_true and y_pred.
+            * **[MAE(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MAE):** 
+            Computes the mean absolute error between labels and predictions.
+            * **[MAPE(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MAPE):** 
+            Computes the mean absolute percentage error between y_true and y_pred.
+            * **[MSE(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MSE):** 
+            Computes the mean squared error between labels and predictions.
+            * **[MSLE(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/MSLE):** 
+            Computes the mean squared logarithmic error between y_true and y_pred.
+            * **[binary_crossentropy(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/binary_crossentropy):** 
+            Computes the binary crossentropy loss.
+            * **[categorical_crossentropy(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/categorical_crossentropy):** 
+            Computes the categorical crossentropy loss.
+            * **[categorical_hinge(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/categorical_hinge):** 
+            Computes the categorical hinge loss between y_true and y_pred.
+            * **[cosine_similarity(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/cosine_similarity):** 
+            Computes the cosine similarity between labels and predictions.
+            * **[deserialize(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/deserialize):** 
+            Deserializes a serialized loss class/function instance.
+            * **[get(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/get):** 
+            Retrieves a Keras loss as a function/Loss class instance.
+            * **[hinge(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/hinge):** 
+            Computes the hinge loss between y_true and y_pred.
+            * **[huber(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/huber):** 
+            Computes Huber loss value.
+            * **[kl_divergence(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/kl_divergence):** 
+            Computes Kullback-Leibler divergence loss between y_true and y_pred.
+            * **[kld(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/kld):** 
+            Computes Kullback-Leibler divergence loss between y_true and y_pred.
+            * **[kullback_leibler_divergence(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/kullback_leibler_divergence):** 
+            Computes Kullback-Leibler divergence loss between y_true and y_pred.
+            * **[log_cosh(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/log_cosh):** 
+            Logarithm of the hyperbolic cosine of the prediction error.
+            * **[logcosh(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/logcosh):** 
+            Logarithm of the hyperbolic cosine of the prediction error.
+            * **[mae(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mae):** 
+            Computes the mean absolute error between labels and predictions.
+            * **[mape(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mape):** 
+            Computes the mean absolute percentage error between y_true and y_pred.
+            * **[mean_absolute_error(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mean_absolute_error):** 
+            Computes the mean absolute error between labels and predictions.
+            * **[mean_absolute_percentage_error(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mean_absolute_percentage_error):** 
+            Computes the mean absolute percentage error between y_true and y_pred.
+            * **[mean_squared_error(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mean_squared_error):** 
+            Computes the mean squared error between labels and predictions.
+            * **[mean_squared_logarithmic_error(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mean_squared_logarithmic_error):** 
+            Computes the mean squared logarithmic error between y_true and y_pred.
+            * **[mse(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/mse):** 
+            Computes the mean squared error between labels and predictions.
+            * **[msle(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/msle):** 
+            Computes the mean squared logarithmic error between y_true and y_pred.
+            * **[poisson(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/poisson):** 
+            Computes the Poisson loss between y_true and y_pred.
+            * **[serialize(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/serialize):** 
+            Serializes loss function or Loss instance.
+            * **[sparse_categorical_crossentropy(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/sparse_categorical_crossentropy):** 
+            Computes the sparse categorical crossentropy loss.
+            * **[squared_hinge(...)](https://www.tensorflow.org/api_docs/python/tf/keras/losses/squared_hinge):** 
+            Computes the squared hinge loss between y_true and y_pred.
         """
         super(RackioRegression, self).compile(
             optimizer=optimizer,
