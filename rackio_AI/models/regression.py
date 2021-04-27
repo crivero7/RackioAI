@@ -2,6 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from rackio_AI.decorators.deco import scaler
 
 
 class RackioRegressionLSTMCell(tf.keras.layers.Layer):
@@ -388,6 +389,7 @@ class RackioRegression(tf.keras.Model):
 
         return history
 
+    @scaler
     def predict(
         self,
         x,
@@ -396,15 +398,15 @@ class RackioRegression(tf.keras.Model):
         r"""
         Documentation here
         """
-        if self.scaler:
+        # if self.scaler:
             
-            x = self.scaler.apply(x)
+        #     x = self.scaler.apply(x)
         
         y = super(RackioRegression, self).predict(x, **kwargs)
 
-        if self.scaler:
+        # if self.scaler:
 
-            y = self.scaler.inverse(y)[0]
+        #     y = self.scaler.inverse(y)[0]
 
         return y
 
