@@ -2,7 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from rackio_AI.decorators.deco import scaler
+from rackio_AI.decorators.deco import scaler, fit_scaler, plot_scaler
 
 
 class RackioRegressionLSTMCell(tf.keras.layers.Layer):
@@ -325,6 +325,7 @@ class RackioRegression(tf.keras.Model):
             **kwargs
         )
 
+    @fit_scaler
     def fit(
         self,
         x=None,
@@ -338,8 +339,6 @@ class RackioRegression(tf.keras.Model):
                 min_delta=1e-6,
                 mode='min')
             ],
-        plot=False,
-        data_section='validation',
         **kwargs
         ):
         r"""
@@ -362,30 +361,14 @@ class RackioRegression(tf.keras.Model):
         If x is a dataset, generator, or keras.utils.Sequence instance, y should not be specified 
         (since targets will be obtained from x).
         """
-        self._train_data = (x, y)
-        self._validation_data = validation_data
-
-        if self.scaler:
-            x_test, y_test = validation_data
-            x, y = self.scaler.apply(x, outputs=y)
-            validation_data = self.scaler.apply(x_test, outputs=y_test)
-
         history = super(RackioRegression, self).fit(
-            x=x,
-            y=y,
+            x,
+            y,
             validation_data=validation_data,
             epochs=epochs,
             callbacks=callbacks,
             **kwargs
         )
-
-        if plot:
-
-            if data_section.lower()=='validation':
-                
-                x, y = validation_data
-            
-            self.evaluate(x, y, plot_prediction=True)
 
         return history
 
@@ -398,15 +381,7 @@ class RackioRegression(tf.keras.Model):
         r"""
         Documentation here
         """
-        # if self.scaler:
-            
-        #     x = self.scaler.apply(x)
-        
         y = super(RackioRegression, self).predict(x, **kwargs)
-
-        # if self.scaler:
-
-        #     y = self.scaler.inverse(y)[0]
 
         return y
 
@@ -422,25 +397,15 @@ class RackioRegression(tf.keras.Model):
         """        
         evaluation = super(RackioRegression, self).evaluate(x, y, **kwargs)
 
-        if plot_prediction:
-            
-            y_predict = super(RackioRegression, self).predict(x, **kwargs)
-
-            if self.scaler:
-
-                y_predict = self.scaler.inverse(y_predict)[0]
-                y = self.scaler.inverse(y)[0]
-            
-            # PLOT RESULT
-            y = y.reshape(y.shape[0], y.shape[-1])
-            y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
-            _result = np.concatenate((y_predict, y), axis=1)
-            result = pd.DataFrame(_result, columns=['Prediction', 'Original'])
-            result.plot(kind='line')
-            plt.show()
-
         return evaluation
-    
+
+    @plot_scaler
+    def plot(self, x, y, **kwargs):
+        r"""
+        Documentation here
+        """
+        return super(RackioRegression, self).predict(x, **kwargs)
+
     def __check_arg_length(self, *args):
         r"""
         Documentation here
