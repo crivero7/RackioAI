@@ -122,13 +122,13 @@ class RackioClassification(tf.keras.Model):
         # HIDDEN LAYER CALL
         for layer_num, units in enumerate(self.hidden_layers_units):
            
-            acunet_layer = getattr(self, self.hidden_layers_names[layer_num])
-            x = acunet_layer(x)
+            classification_layer = getattr(self, self.hidden_layers_names[layer_num])
+            x = classification_layer(x)
 
         # OUTPUT LAYER CALL
-        acunet_output_layer = getattr(self, self.output_layer_name)
+        classification_output_layer = getattr(self, self.output_layer_name)
         
-        return acunet_output_layer(x)
+        return classification_output_layer(x)
 
     def compile(
         self,

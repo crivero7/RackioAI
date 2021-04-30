@@ -2,9 +2,12 @@ from scipy.stats import kurtosis, skew
 from rackio_AI.utils.utils_core import Utils
 import pywt
 import numpy as np
+import pandas as pd
 from rackio_AI.decorators.wavelets import WaveletDeco
+from easy_deco.progress_bar import ProgressBar
+from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
-
+@set_to_methods(del_temp_attr)
 class StatisticalsFeatures:
     """
     When we consider the original discretized time domain signal , some basic discriminative
@@ -596,6 +599,7 @@ class StatisticalsFeatures:
         return peak / rms
 
 
+@set_to_methods(del_temp_attr)
 class Wavelet:
     r"""
     A wavelet is a mathematical function used to divide a given function or continuous-time 
@@ -611,6 +615,8 @@ class Wavelet:
     and reconstructing finite, non-periodic and/or non-stationary signals.
 
     """
+
+    _instances = list()
 
     @WaveletDeco.is_valid
     @WaveletDeco.mode_is_valid
@@ -735,6 +741,55 @@ class Wavelet:
     
         return energy
 
+    def get_energies(
+        self, 
+        s, 
+        input_cols=None, 
+        output_cols=None, 
+        timesteps=10, 
+        wavelet_type='db2',
+        wavelet_lvl=2,
+        axis=0
+        ):
+        r"""
+        Documentation here
+        """
+        self._s_ = s
+        self.wavelet_type = wavelet_type
+        self.wavelet_lvl = wavelet_lvl
+        self.axis = axis
+        self._start_ = 0
+        self.result = list()
+        rows = s.shape[0]
+        rows = range(0 , rows - timesteps)
+        self.timesteps = timesteps
+        self.input_cols = input_cols
+
+        self.__get_energies(rows)
+        
+        result = np.array(self.result)
+        return result
+
+    @ProgressBar(desc="Getting energies...", unit=" Sliding windows")
+    def __get_energies(self, column):
+        r"""
+        Documentation here
+        """
+        if isinstance(self._s_, pd.DataFrame):
+            data = self._s_.loc[self._start_ : self._start_ + self.timesteps, self.input_cols].values
+        else:
+            data = self._s_[self._start_,:,:]
+
+        energies = self.wave_energy(
+            data, 
+            self.wavelet_type, 
+            level=self.wavelet_lvl, 
+            axis=self.axis
+            )
+        energies = np.concatenate(list(energies))
+        self.result.append(list(energies))
+        self._start_ += 1
+        return
 
 class FrequencyFeatures:
     r"""

@@ -412,7 +412,6 @@ class RackioEDA(Pipeline):
 
         return self._data_
 
-
     @ProgressBar(desc="Renaming columns...", unit="column")
     def __rename_columns(self, column_name, **kwargs):
         """

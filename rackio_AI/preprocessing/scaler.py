@@ -1,5 +1,6 @@
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 from sklearn.preprocessing import Normalizer, Binarizer, QuantileTransformer, PowerTransformer
+from sklearn.preprocessing import LabelBinarizer
 from rackio_AI.utils.utils_core import Utils
 import pandas as pd
 
@@ -68,7 +69,8 @@ class RackioAIScaler:
         "normalizer": Normalizer,
         "binarizer": Binarizer,
         "quantile_transform": QuantileTransformer,
-        "power_transform": PowerTransformer
+        "power_transform": PowerTransformer,
+        "label_binarizer": LabelBinarizer
     }
 
     def __init__(self):

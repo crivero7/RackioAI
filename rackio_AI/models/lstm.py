@@ -1,88 +1,10 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
+from rackio_AI.models.lstm_layer import RackioLSTMCell
+from rackio_AI.models.scaler import RackioDNNScaler
 from rackio_AI.decorators.deco import scaler, fit_scaler, plot_scaler
 
 
-class RackioRegressionLSTMCell(tf.keras.layers.Layer):
-    r"""
-    Documentation here
-    """
-    def __init__(self, units, activation='tanh', return_sequences=False, **kwargs):
-        r"""
-        Documentation here
-        """
-        super(RackioRegressionLSTMCell, self).__init__(**kwargs)
-        self.units = units
-        self.rackio_regression_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
-        self.activation = tf.keras.activations.get(activation)
-
-    def call(self, inputs):
-        r"""
-        Documentation here
-        """
-        outputs = self.rackio_regression_lstm_cell(inputs)
-        norm_outputs = self.activation(outputs)
-
-        return norm_outputs
-
-
-class RegressionScaler:
-    r"""
-    Documentation here
-    """
-    
-    def __init__(self, scaler):
-        r"""
-        Documentation here
-        """
-        self.input_scaler = scaler['inputs']
-        self.output_scaler = scaler['outputs']
-    
-    def apply(self, inputs, **kwargs):
-        r"""
-        Documentation here
-        """
-        # INPUT SCALING
-        samples, timesteps, features = inputs.shape
-        scaled_inputs = np.concatenate([
-            self.input_scaler[feature](inputs[:, :, feature].reshape(-1, 1)).reshape((samples, timesteps, 1)) for feature in range(features)
-        ], axis=2)
-        
-        # OUTPUT SCALING
-        if 'outputs' in kwargs:
-            outputs = kwargs['outputs']
-            samples, timesteps, features = outputs.shape
-            scaled_outputs = np.concatenate([
-                self.output_scaler[feature](outputs[:, :, feature].reshape(-1, 1)).reshape((samples, timesteps, 1)) for feature in range(features)
-            ], axis=2)
-
-            return scaled_inputs, scaled_outputs
-        
-        return scaled_inputs
-
-    def inverse(self, *outputs):
-        r"""
-        Documentation here
-        """
-        result = list()
-        
-        for output in outputs:
-            
-            features = output.shape[-1]
-            samples = output.shape[0]
-            # INVERSE APPLY
-            scaled_output = np.concatenate([
-                self.output_scaler[feature].inverse(output[:, feature].reshape(-1, 1)).reshape((samples, features, 1)) for feature in range(features)
-            ], axis=2)
-
-            result.append(scaled_output)
-       
-        return tuple(result)
-
-
-class RackioRegression(tf.keras.Model):
+class RackioLSTM(tf.keras.Model):
     r"""
     Documentation here
     """
@@ -91,28 +13,26 @@ class RackioRegression(tf.keras.Model):
         self,
         units, 
         activations,
-        scaler=None, 
+        scaler=None,
+        layers_names: list=[], 
         **kwargs
         ):
-
-        super(RackioRegression, self).__init__(**kwargs)
-        self.units = units
-        
         # INITIALIZATION
-        self.scaler = RegressionScaler(scaler)
-        layers_names = self.__create_layer_names(**kwargs)
-        if not self.__check_arg_length(units, activations, layers_names):
-            raise ValueError('units, activations and layer_names must be of the same length')
-
+        super(RackioLSTM, self).__init__(**kwargs)
+        self.units = units
         self.activations = activations
         self.layers_names = layers_names
+        self.scaler = RackioDNNScaler(scaler)
+        self.layers_names = self.create_layer_names(units, layers_names=layers_names)
+        if not self.check_arg_length(units, activations, self.layers_names):
+            raise ValueError('units, activations and layer_names must be of the same length')
 
         # HIDDEN/OUTPUT STRUCTURE DEFINITION
-        self.__hidden_output_structure_definition()
+        self.define_structure_hidden_output_layers()
 
         # LAYERS DEFINITION
-        self.__hidden_layers_definition()
-        self.__output_layer_definition()
+        self.__define_hidden_layers()
+        self.__define_output_layer()
 
     def call(self, inputs):
         r"""
@@ -134,7 +54,7 @@ class RackioRegression(tf.keras.Model):
     def compile(
         self,
         optimizer=tf.keras.optimizers.Adam(
-            learning_rate=0.1, 
+            learning_rate=0.01, 
             amsgrad=True
             ),
         loss='mse',
@@ -314,7 +234,7 @@ class RackioRegression(tf.keras.Model):
 
         * **ValueError:** In case of invalid arguments for *optimizer*, *loss* or *metrics*.
         """
-        super(RackioRegression, self).compile(
+        super(RackioLSTM, self).compile(
             optimizer=optimizer,
             loss=loss,
             metrics=metrics,
@@ -361,7 +281,7 @@ class RackioRegression(tf.keras.Model):
         If x is a dataset, generator, or keras.utils.Sequence instance, y should not be specified 
         (since targets will be obtained from x).
         """
-        history = super(RackioRegression, self).fit(
+        history = super(RackioLSTM, self).fit(
             x,
             y,
             validation_data=validation_data,
@@ -381,7 +301,7 @@ class RackioRegression(tf.keras.Model):
         r"""
         Documentation here
         """
-        y = super(RackioRegression, self).predict(x, **kwargs)
+        y = super(RackioLSTM, self).predict(x, **kwargs)
 
         return y
 
@@ -395,7 +315,7 @@ class RackioRegression(tf.keras.Model):
         r"""
         Documentation here
         """        
-        evaluation = super(RackioRegression, self).evaluate(x, y, **kwargs)
+        evaluation = super(RackioLSTM, self).evaluate(x, y, **kwargs)
 
         return evaluation
 
@@ -404,9 +324,39 @@ class RackioRegression(tf.keras.Model):
         r"""
         Documentation here
         """
-        return super(RackioRegression, self).predict(x, **kwargs)
+        return super(RackioLSTM, self).predict(x, **kwargs)
 
-    def __check_arg_length(self, *args):
+    def __define_hidden_layers(self):
+        r"""
+        Documentation here
+        """
+        for layer_num, units in enumerate(self.hidden_layers_units):
+            if layer_num==len(self.hidden_layers_units) - 1:
+                setattr(
+                    self, 
+                    self.hidden_layers_names[layer_num], 
+                    RackioLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=False)
+                    )
+
+            else:
+                setattr(
+                    self, 
+                    self.hidden_layers_names[layer_num], 
+                    RackioLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=True)
+                    )
+
+    def __define_output_layer(self):
+        r"""
+        Documentation here
+        """
+        setattr(
+            self, 
+            self.output_layer_name, 
+            tf.keras.layers.Dense(self.output_layer_units, self.output_layer_activation)
+            )
+
+    @staticmethod
+    def check_arg_length(*args):
         r"""
         Documentation here
         """
@@ -420,27 +370,26 @@ class RackioRegression(tf.keras.Model):
         
         return True
 
-    def __create_layer_names(self, **kwargs):
+    @staticmethod
+    def create_layer_names(units: list, layers_names: list=[]):
         r"""
         Documentation here
         """
         layers_names = list()
 
-        if 'layers_names' in kwargs:
+        if layers_names:
             
-            layers_names = kwargs['layers_names']
+            layers_names = layers_names
         
         else:
             
-            for layer_num in range(len(self.units)):
+            for layer_num in range(len(units)):
                 
                 layers_names.append('AcuNet_Layer_{}'.format(layer_num))
 
-        self.layers_names = layers_names
-
         return layers_names
 
-    def __hidden_output_structure_definition(self):
+    def define_structure_hidden_output_layers(self):
         r"""
         Documentation here
         """
@@ -450,32 +399,3 @@ class RackioRegression(tf.keras.Model):
         self.hidden_layers_units = self.units
         self.hidden_layers_activations = self.activations
         self.hidden_layers_names = self.layers_names
-
-    def __hidden_layers_definition(self):
-        r"""
-        Documentation here
-        """
-        for layer_num, units in enumerate(self.hidden_layers_units):
-            if layer_num==len(self.hidden_layers_units) - 1:
-                setattr(
-                    self, 
-                    self.hidden_layers_names[layer_num], 
-                    RackioRegressionLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=False)
-                    )
-
-            else:
-                setattr(
-                    self, 
-                    self.hidden_layers_names[layer_num], 
-                    RackioRegressionLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=True)
-                    )
-
-    def __output_layer_definition(self):
-        r"""
-        Documentation here
-        """
-        setattr(
-            self, 
-            self.output_layer_name, 
-            tf.keras.layers.Dense(self.output_layer_units, self.output_layer_activation)
-            )

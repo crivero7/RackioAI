@@ -1,9 +1,6 @@
 "The Factory Concept"
 
 from abc import ABCMeta, abstractmethod
-from .regression import RackioRegression
-import pandas as pd
-import numpy as np
 import tensorflow as tf
 
 
@@ -20,27 +17,6 @@ class FactoryRackioDNN(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def predict():
-        r"""
-        Documentation here
-        """
-        pass
-
-    @abstractmethod
-    def evaluate():
-        r"""
-        Documentation here
-        """
-        pass
-
-    @abstractmethod
-    def retrain():
-        r"""
-        Documentation here
-        """
-        pass
-
-    @abstractmethod
     def load():
         r"""
         Documentation here
@@ -48,7 +24,7 @@ class FactoryRackioDNN(metaclass=ABCMeta):
         pass
 
 
-class RackioDNN:
+class RackioDNN(FactoryRackioDNN):
     r"""
     The Factory Class
     """
@@ -64,36 +40,17 @@ class RackioDNN:
         r"""
         A static method to get a concrete RackioLSTM model
         """
-        if model.lower() == 'regression':
-            return RackioRegression(
+        if model.lower() == 'lstm':
+            from .lstm import RackioLSTM
+            return RackioLSTM(
                 units, 
                 activations, 
                 scaler=scaler, 
                 **kwargs
             )
 
-    def predict(self, x):
-        r"""
-        Documentation here
-        """
-        pass
-
-    def evaluate(self, x, y, **kwargs):
-        r"""
-        Documentation here
-        """
-        pass
-
-    def retrain(self, x, y, **kwargs):
-        r"""
-        Documentation here
-        """
-        pass
-
     def load(self, directory, **kwargs):
         r"""
         Documentation here
         """
-        self._model = tf.keras.models.load_model(directory, **kwargs)
-
-        return self._model
+        return tf.keras.models.load_model(directory, **kwargs)
