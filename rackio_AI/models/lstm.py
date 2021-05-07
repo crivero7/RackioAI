@@ -21,7 +21,6 @@ class RackioLSTM(tf.keras.Model):
         super(RackioLSTM, self).__init__(**kwargs)
         self.units = units
         self.activations = activations
-        self.layers_names = layers_names
         self.scaler = RackioDNNScaler(scaler)
         self.layers_names = self.create_layer_names(units, layers_names=layers_names)
         if not self.check_arg_length(units, activations, self.layers_names):

@@ -34,7 +34,7 @@ setuptools.setup(
         'odfpy==1.4.1',
         'pyxlsb==1.0.8',
         'statsmodels==0.12.1',
-        'tensorflow==2.4.0',
+        'tensorflow==2.4.1',
         'PyWavelets==1.1.1',
         'pydot==1.4.2'
     ],

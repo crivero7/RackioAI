@@ -749,7 +749,8 @@ class Wavelet:
         timesteps=10, 
         wavelet_type='db2',
         wavelet_lvl=2,
-        axis=0
+        axis=0,
+        slide=False
         ):
         r"""
         Documentation here
@@ -758,27 +759,31 @@ class Wavelet:
         self.wavelet_type = wavelet_type
         self.wavelet_lvl = wavelet_lvl
         self.axis = axis
-        self._start_ = 0
         self.result = list()
         rows = s.shape[0]
-        rows = range(0 , rows - timesteps)
+        if slide:
+            rows = range(0 , rows - timesteps)
+        else:
+            rows = range(0 , rows - timesteps, timesteps)
         self.timesteps = timesteps
         self.input_cols = input_cols
 
         self.__get_energies(rows)
         
         result = np.array(self.result)
+
         return result
 
-    @ProgressBar(desc="Getting energies...", unit=" Sliding windows")
-    def __get_energies(self, column):
+    @ProgressBar(desc="Getting wavelet energies...", unit=" Sliding windows")
+    def __get_energies(self, row):
         r"""
         Documentation here
+        
         """
         if isinstance(self._s_, pd.DataFrame):
-            data = self._s_.loc[self._start_ : self._start_ + self.timesteps, self.input_cols].values
+            data = self._s_.loc[row: row + self.timesteps, self.input_cols].values
         else:
-            data = self._s_[self._start_,:,:]
+            data = self._s_[row,:,:]
 
         energies = self.wave_energy(
             data, 
@@ -788,7 +793,6 @@ class Wavelet:
             )
         energies = np.concatenate(list(energies))
         self.result.append(list(energies))
-        self._start_ += 1
         return
 
 class FrequencyFeatures:

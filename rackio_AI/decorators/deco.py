@@ -2,6 +2,7 @@ from functools import wraps
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report, confusion_matrix
 
 def scaler(f):
     @wraps(f)
@@ -69,6 +70,36 @@ def plot_scaler(f):
         result = pd.DataFrame(_result, columns=['Prediction', 'Original'])
         result.plot(kind='line')
         plt.show()
+
+        return y_predict
+
+    return decorated
+
+def plot_confussion_matrix(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        self = args[0]
+        x = args[1]
+        y = args[2]
+        
+        if self.scaler:
+
+            x = self.scaler.apply(x)
+
+        y_predict = f(self, x, y, **kwargs)
+
+        if self.scaler:
+
+            y_predict = self.scaler.inverse(y_predict)[0]
+
+        # PLOT RESULT
+        y = y.reshape(y.shape[0], y.shape[-1])
+        y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
+        cm = confusion_matrix(y,y_predict)
+        print('Confusion matrix')
+        print(cm)
+
 
         return y_predict
 

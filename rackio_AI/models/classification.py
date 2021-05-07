@@ -2,83 +2,9 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-
-
-class RackioClassificationLSTMCell(tf.keras.layers.Layer):
-    r"""
-    Documentation here
-    """
-    def __init__(self, units, activation='tanh', return_sequences=False, **kwargs):
-        r"""
-        Documentation here
-        """
-        super(RackioClassificationLSTMCell, self).__init__(**kwargs)
-        self.units = units
-        self.rackio_classification_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
-        self.activation = tf.keras.activations.get(activation)
-
-    def call(self, inputs):
-        r"""
-        Documentation here
-        """
-        outputs = self.rackio_classification_lstm_cell(inputs)
-        norm_outputs = self.activation(outputs)
-
-        return norm_outputs
-
-
-class ClassificationScaler:
-    r"""
-    Documentation here
-    """
-    
-    def __init__(self, scaler):
-        r"""
-        Documentation here
-        """
-        self.input_scaler = scaler['inputs']
-        self.output_scaler = scaler['outputs']
-    
-    def apply(self, inputs, **kwargs):
-        r"""
-        Documentation here
-        """
-        # INPUT SCALING
-        samples, timesteps, features = inputs.shape
-        scaled_inputs = np.concatenate([
-            self.input_scaler[feature](inputs[:, :, feature].reshape(-1, 1)).reshape((samples, timesteps, 1)) for feature in range(features)
-        ], axis=2)
-        
-        # OUTPUT SCALING
-        if 'outputs' in kwargs:
-            outputs = kwargs['outputs']
-            samples, timesteps, features = outputs.shape
-            scaled_outputs = np.concatenate([
-                self.output_scaler[feature](outputs[:, :, feature].reshape(-1, 1)).reshape((samples, timesteps, 1)) for feature in range(features)
-            ], axis=2)
-
-            return scaled_inputs, scaled_outputs
-        
-        return scaled_inputs
-
-    def inverse(self, *outputs):
-        r"""
-        Documentation here
-        """
-        result = list()
-        
-        for output in outputs:
-            
-            features = output.shape[-1]
-            samples = output.shape[0]
-            # INVERSE APPLY
-            scaled_output = np.concatenate([
-                self.output_scaler[feature].inverse(output[:, feature].reshape(-1, 1)).reshape((samples, features, 1)) for feature in range(features)
-            ], axis=2)
-
-            result.append(scaled_output)
-       
-        return tuple(result)
+from rackio_AI.models.lstm_layer import RackioLSTMCell
+from rackio_AI.models.scaler import RackioDNNScaler
+from rackio_AI.decorators.deco import scaler, fit_scaler, plot_confussion_matrix
 
 
 class RackioClassification(tf.keras.Model):
@@ -90,28 +16,29 @@ class RackioClassification(tf.keras.Model):
         self,
         units, 
         activations,
-        scaler=None, 
+        scaler=None,
+        layers_names: list=[], 
         **kwargs
         ):
 
         super(RackioClassification, self).__init__(**kwargs)
         self.units = units
+        self.activations = activations
         
         # INITIALIZATION
-        self.scaler = ClassificationScaler(scaler)
-        layers_names = self.__create_layer_names(**kwargs)
-        if not self.__check_arg_length(units, activations, layers_names):
+        self.scaler = RackioDNNScaler(scaler)
+        self.layers_names = self.create_layer_names(units, layers_names=layers_names)
+        
+        if not self.check_arg_length(units, activations, self.layers_names):
+            
             raise ValueError('units, activations and layer_names must be of the same length')
 
-        self.activations = activations
-        self.layers_names = layers_names
-
         # HIDDEN/OUTPUT STRUCTURE DEFINITION
-        self.__hidden_output_structure_definition()
+        self.define_structure_hidden_output_layers()
 
         # LAYERS DEFINITION
-        self.__hidden_layers_definition()
-        self.__output_layer_definition()
+        self.__define_hidden_layers()
+        self.__define_output_layer()
 
     def call(self, inputs):
         r"""
@@ -136,8 +63,8 @@ class RackioClassification(tf.keras.Model):
             learning_rate=0.1, 
             amsgrad=True
             ),
-        loss='mse',
-        metrics=tf.keras.metrics.MeanAbsoluteError(),
+        loss='binary_crossentropy',
+        metrics=tf.keras.metrics.BinaryAccuracy(),
         loss_weights=None,
         weighted_metrics=None,
         run_eagerly=None,
@@ -158,6 +85,7 @@ class RackioClassification(tf.keras.Model):
             **kwargs
         )
 
+    @fit_scaler
     def fit(
         self,
         x=None,
@@ -178,33 +106,18 @@ class RackioClassification(tf.keras.Model):
         r"""
         Documentation here
         """
-        self._train_data = (x, y)
-        self._validation_data = validation_data
-
-        if self.scaler:
-            x_test, y_test = validation_data
-            x, y = self.scaler.apply(x, outputs=y)
-            validation_data = self.scaler.apply(x_test, outputs=y_test)
-
         history = super(RackioClassification, self).fit(
-            x=x,
-            y=y,
+            x,
+            y,
             validation_data=validation_data,
             epochs=epochs,
             callbacks=callbacks,
             **kwargs
         )
 
-        if plot:
-
-            if data_section.lower()=='validation':
-                
-                x, y = validation_data
-            
-            self.evaluate(x, y, plot_prediction=True)
-
         return history
 
+    @scaler
     def predict(
         self,
         x,
@@ -213,15 +126,7 @@ class RackioClassification(tf.keras.Model):
         r"""
         Documentation here
         """
-        if self.scaler:
-            
-            x = self.scaler.apply(x)
-        
         y = super(RackioClassification, self).predict(x, **kwargs)
-
-        if self.scaler:
-
-            y = self.scaler.inverse(y)[0]
 
         return y
 
@@ -237,21 +142,85 @@ class RackioClassification(tf.keras.Model):
         """        
         evaluation = super(RackioClassification, self).evaluate(x, y, **kwargs)
 
-        if plot_prediction:
-            
-            y_predict = super(RackioClassification, self).predict(x, **kwargs)
-
-            if self.scaler:
-
-                y_predict = self.scaler.inverse(y_predict)[0]
-                y = self.scaler.inverse(y)[0]
-            
-            # PLOT RESULT
-            y = y.reshape(y.shape[0], y.shape[-1])
-            y_predict = y_predict.reshape(y_predict.shape[0], y_predict.shape[-1])
-            _result = np.concatenate((y_predict, y), axis=1)
-            result = pd.DataFrame(_result, columns=['Prediction', 'Original'])
-            result.plot(kind='line')
-            plt.show()
-
         return evaluation
+
+    @plot_confussion_matrix
+    def plot(self, x, y, **kwargs):
+        r"""
+        Documentation here
+        """
+        return super(RackioClassification, self).predict(x, **kwargs)
+
+    def __define_hidden_layers(self):
+        r"""
+        Documentation here
+        """
+        for layer_num, units in enumerate(self.hidden_layers_units):
+            if layer_num==len(self.hidden_layers_units) - 1:
+                setattr(
+                    self, 
+                    self.hidden_layers_names[layer_num], 
+                    RackioLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=False)
+                    )
+
+            else:
+                setattr(
+                    self, 
+                    self.hidden_layers_names[layer_num], 
+                    RackioLSTMCell(units, self.hidden_layers_activations[layer_num], return_sequences=True)
+                    )
+
+    def __define_output_layer(self):
+        r"""
+        Documentation here
+        """
+        setattr(
+            self, 
+            self.output_layer_name, 
+            tf.keras.layers.Dense(self.output_layer_units, self.output_layer_activation)
+            )
+
+    @staticmethod
+    def check_arg_length(*args):
+        r"""
+        Documentation here
+        """
+        flag_len = len(args[0])
+
+        for arg in args:
+            
+            if len(arg) != flag_len:
+                
+                return False
+        
+        return True
+
+    @staticmethod
+    def create_layer_names(units: list, layers_names: list=[]):
+        r"""
+        Documentation here
+        """
+        layers_names = list()
+
+        if layers_names:
+            
+            layers_names = layers_names
+        
+        else:
+            
+            for layer_num in range(len(units)):
+                
+                layers_names.append('LeakNet_Layer_{}'.format(layer_num))
+
+        return layers_names
+
+    def define_structure_hidden_output_layers(self):
+        r"""
+        Documentation here
+        """
+        self.output_layer_units = self.units.pop()
+        self.output_layer_activation = self.activations.pop()
+        self.output_layer_name = self.layers_names.pop()
+        self.hidden_layers_units = self.units
+        self.hidden_layers_activations = self.activations
+        self.hidden_layers_names = self.layers_names

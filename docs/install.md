@@ -4,15 +4,17 @@
 **RackioAI** requieres:
 
 * Python (>=3.8)
-* numpy (1.18.5)
-* scipy (1.4.1)
-* scikit-learn (0.23.2)
-* tensorflow (2.3.0)
-* pandas (1.1.3)
-* easy-deco
-* Pillow (8.0.0)
-* Rackio (0.9.8)
-* matplotlib (3.3.2)
+* pyxlsb==1.0.8
+* odfpy==1.4.1
+* openpyxl==3.0.6
+* xlrd==1.2.0
+* seaborn==0.11.1
+* scikit-learn==0.24.1
+* statsmodels==0.12.1
+* easy-deco==0.1.2
+* Pillow==8.0.0
+* tensorflow==2.4.1
+* PyWavelets==1.1.1)
 
 The easiest way to install **RackioAI** is using pip
 

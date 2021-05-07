@@ -2,6 +2,8 @@
 
 from abc import ABCMeta, abstractmethod
 import tensorflow as tf
+from .lstm import RackioLSTM
+from .classification import RackioClassification
 
 
 class FactoryRackioDNN(metaclass=ABCMeta):
@@ -41,8 +43,17 @@ class RackioDNN(FactoryRackioDNN):
         A static method to get a concrete RackioLSTM model
         """
         if model.lower() == 'lstm':
-            from .lstm import RackioLSTM
+            
             return RackioLSTM(
+                units, 
+                activations, 
+                scaler=scaler, 
+                **kwargs
+            )
+
+        if model.lower() == 'classification':
+            
+            return RackioClassification(
                 units, 
                 activations, 
                 scaler=scaler, 
