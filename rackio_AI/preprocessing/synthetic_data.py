@@ -72,6 +72,10 @@ class SyntheticData(PrepareData):
 
         * **data:** (np.array, pd.DataFrame)
         """
+        if self.columns_names:
+
+            return self.app.data.loc[:, self.columns_names].values
+
         return self.app.data.values
 
     @data.setter
@@ -88,8 +92,14 @@ class SyntheticData(PrepareData):
             None
         """
         if len(self.error) == value.shape[-1]:
+            
+            if self.columns_names:
 
-            self.app.data = value
+                self.app.data.loc[:, self.columns_names] = value
+
+            else:
+            
+                self.app.data = value
         
         else:
 
@@ -344,7 +354,8 @@ class SyntheticData(PrepareData):
         frozen_data: int=None, 
         outliers: int=None, 
         out_of_range: int=None,
-        add_WN: bool=False, 
+        add_WN: bool=False,
+        columns_names: list=[], 
         **options
         ):
         """
@@ -390,6 +401,7 @@ class SyntheticData(PrepareData):
 
         ```
         """
+        self.columns_names = columns_names
         default_options = {'duration': {'min': 10,
                                         'max': 50},
                            'view': False,
