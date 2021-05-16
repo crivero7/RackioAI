@@ -1,6 +1,6 @@
 import tensorflow as tf
 from rackio_AI.models.lstm_layer import RackioLSTMCell
-from rackio_AI.models.scaler import RackioDNNScaler
+from rackio_AI.models.scaler import RackioDNNScaler, RackioDNNLayerScaler, RackioDNNLayerInverseScaler
 from rackio_AI.decorators.deco import scaler, fit_scaler, plot_scaler
 
 
@@ -13,7 +13,7 @@ class RackioLSTM(tf.keras.Model):
         self,
         units, 
         activations,
-        scaler=None,
+        min_max_values=None,
         layers_names: list=[], 
         **kwargs
         ):
@@ -21,7 +21,11 @@ class RackioLSTM(tf.keras.Model):
         super(RackioLSTM, self).__init__(**kwargs)
         self.units = units
         self.activations = activations
-        self.scaler = RackioDNNScaler(scaler)
+        self.scaler = None
+        if min_max_values:
+            self.X_min, self.y_min, self.X_max, self.y_max = min_max_values
+            self.scaler = RackioDNNLayerScaler(self.X_min, self.X_max)
+            # self.inverse_scaler = RackioDNNLayerInverseScaler(self.y_min, self.y_max)
         self.layers_names = self.create_layer_names(units, layers_names=layers_names)
         if not self.check_arg_length(units, activations, self.layers_names):
             raise ValueError('units, activations and layer_names must be of the same length')
@@ -39,6 +43,10 @@ class RackioLSTM(tf.keras.Model):
         """
         x = inputs
 
+        if self.scaler:
+            
+            x = self.scaler(x)
+
         # HIDDEN LAYER CALL
         for layer_num, units in enumerate(self.hidden_layers_units):
            
@@ -48,7 +56,9 @@ class RackioLSTM(tf.keras.Model):
         # OUTPUT LAYER CALL
         acunet_output_layer = getattr(self, self.output_layer_name)
         
-        return acunet_output_layer(x)
+        y = acunet_output_layer(x)
+
+        return y
 
     def compile(
         self,
@@ -244,11 +254,9 @@ class RackioLSTM(tf.keras.Model):
             **kwargs
         )
 
-    @fit_scaler
     def fit(
         self,
-        x=None,
-        y=None,
+        *training_data,
         validation_data=None,
         epochs=3,
         callbacks=[
@@ -280,10 +288,14 @@ class RackioLSTM(tf.keras.Model):
         If x is a dataset, generator, or keras.utils.Sequence instance, y should not be specified 
         (since targets will be obtained from x).
         """
+        x, y = training_data
+        y = (y - self.y_min) / (self.y_max - self.y_min)
+        x_val, y_val = validation_data
+        y_val = (y_val - self.y_min) / (self.y_max - self.y_min)
         history = super(RackioLSTM, self).fit(
             x,
             y,
-            validation_data=validation_data,
+            validation_data=(x_val, y_val),
             epochs=epochs,
             callbacks=callbacks,
             **kwargs
@@ -291,7 +303,6 @@ class RackioLSTM(tf.keras.Model):
 
         return history
 
-    @scaler
     def predict(
         self,
         x,
@@ -318,7 +329,6 @@ class RackioLSTM(tf.keras.Model):
 
         return evaluation
 
-    @plot_scaler
     def plot(self, x, y, **kwargs):
         r"""
         Documentation here

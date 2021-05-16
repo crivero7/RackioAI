@@ -3,7 +3,7 @@
 from abc import ABCMeta, abstractmethod
 import tensorflow as tf
 from .lstm import RackioLSTM
-from .classification import RackioClassification
+# from .classification import RackioClassification
 
 
 class FactoryRackioDNN(metaclass=ABCMeta):
@@ -36,7 +36,7 @@ class RackioDNN(FactoryRackioDNN):
         model:str, 
         units:list, 
         activations:list, 
-        scaler=None, 
+        min_max_values=None, 
         **kwargs
         ):
         r"""
@@ -47,20 +47,22 @@ class RackioDNN(FactoryRackioDNN):
             return RackioLSTM(
                 units, 
                 activations, 
-                scaler=scaler, 
+                min_max_values=min_max_values, 
                 **kwargs
             )
 
         if model.lower() == 'classification':
             
-            return RackioClassification(
-                units, 
-                activations, 
-                scaler=scaler, 
-                **kwargs
-            )
+            pass
+            # return RackioClassification(
+            #     units, 
+            #     activations, 
+            #     scaler=scaler, 
+            #     **kwargs
+            # )
 
-    def load(self, directory, **kwargs):
+    @classmethod
+    def load(cls, directory, **kwargs):
         r"""
         Documentation here
         """
