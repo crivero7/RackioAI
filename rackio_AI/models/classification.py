@@ -1,10 +1,6 @@
 import tensorflow as tf
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 from rackio_AI.models.lstm_layer import RackioLSTMCell
 from rackio_AI.models.scaler import RackioDNNScaler
-from rackio_AI.decorators.deco import scaler, fit_scaler, plot_confussion_matrix
 
 
 class RackioClassification(tf.keras.Model):
@@ -85,7 +81,6 @@ class RackioClassification(tf.keras.Model):
             **kwargs
         )
 
-    @fit_scaler
     def fit(
         self,
         x=None,
@@ -99,8 +94,6 @@ class RackioClassification(tf.keras.Model):
                 min_delta=1e-6,
                 mode='min')
             ],
-        plot=False,
-        data_section='validation',
         **kwargs
         ):
         r"""
@@ -117,7 +110,6 @@ class RackioClassification(tf.keras.Model):
 
         return history
 
-    @scaler
     def predict(
         self,
         x,
@@ -134,7 +126,6 @@ class RackioClassification(tf.keras.Model):
         self,
         x=None,
         y=None,
-        plot_prediction=False,
         **kwargs
         ):
         r"""
@@ -144,7 +135,6 @@ class RackioClassification(tf.keras.Model):
 
         return evaluation
 
-    @plot_confussion_matrix
     def plot(self, x, y, **kwargs):
         r"""
         Documentation here

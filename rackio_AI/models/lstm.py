@@ -22,12 +22,18 @@ class RackioLSTM(tf.keras.Model):
         self.units = units
         self.activations = activations
         self.scaler = None
+        self.inverse_scaler = None
+
         if min_max_values:
+
             self.X_min, self.y_min, self.X_max, self.y_max = min_max_values
             self.scaler = RackioDNNLayerScaler(self.X_min, self.X_max)
-            # self.inverse_scaler = RackioDNNLayerInverseScaler(self.y_min, self.y_max)
+            self.inverse_scaler = RackioDNNLayerInverseScaler(self.y_min, self.y_max)
+
         self.layers_names = self.create_layer_names(units, layers_names=layers_names)
+        
         if not self.check_arg_length(units, activations, self.layers_names):
+
             raise ValueError('units, activations and layer_names must be of the same length')
 
         # HIDDEN/OUTPUT STRUCTURE DEFINITION
@@ -50,13 +56,17 @@ class RackioLSTM(tf.keras.Model):
         # HIDDEN LAYER CALL
         for layer_num, units in enumerate(self.hidden_layers_units):
            
-            acunet_layer = getattr(self, self.hidden_layers_names[layer_num])
-            x = acunet_layer(x)
+            hidden_layer = getattr(self, self.hidden_layers_names[layer_num])
+            x = hidden_layer(x)
 
         # OUTPUT LAYER CALL
-        acunet_output_layer = getattr(self, self.output_layer_name)
+        output_layer = getattr(self, self.output_layer_name)
         
-        y = acunet_output_layer(x)
+        y = output_layer(x)
+
+        if self.inverse_scaler:
+
+            y = self.inverse_scaler(y)
 
         return y
 
@@ -289,13 +299,10 @@ class RackioLSTM(tf.keras.Model):
         (since targets will be obtained from x).
         """
         x, y = training_data
-        y = (y - self.y_min) / (self.y_max - self.y_min)
-        x_val, y_val = validation_data
-        y_val = (y_val - self.y_min) / (self.y_max - self.y_min)
         history = super(RackioLSTM, self).fit(
             x,
             y,
-            validation_data=(x_val, y_val),
+            validation_data=validation_data,
             epochs=epochs,
             callbacks=callbacks,
             **kwargs
@@ -303,23 +310,16 @@ class RackioLSTM(tf.keras.Model):
 
         return history
 
-    def predict(
-        self,
-        x,
-        **kwargs
-        ):
+    def predict(self, x, **kwargs):
         r"""
         Documentation here
         """
-        y = super(RackioLSTM, self).predict(x, **kwargs)
-
-        return y
+        return super(RackioLSTM, self).predict(x, **kwargs)
 
     def evaluate(
         self,
         x=None,
         y=None,
-        plot_prediction=False,
         **kwargs
         ):
         r"""
@@ -328,12 +328,6 @@ class RackioLSTM(tf.keras.Model):
         evaluation = super(RackioLSTM, self).evaluate(x, y, **kwargs)
 
         return evaluation
-
-    def plot(self, x, y, **kwargs):
-        r"""
-        Documentation here
-        """
-        return super(RackioLSTM, self).predict(x, **kwargs)
 
     def __define_hidden_layers(self):
         r"""
@@ -394,7 +388,7 @@ class RackioLSTM(tf.keras.Model):
             
             for layer_num in range(len(units)):
                 
-                layers_names.append('AcuNet_Layer_{}'.format(layer_num))
+                layers_names.append('RackioDNN_Layer_{}'.format(layer_num))
 
         return layers_names
 
