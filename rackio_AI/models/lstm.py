@@ -1,7 +1,7 @@
 import tensorflow as tf
 from rackio_AI.models.lstm_layer import RackioLSTMCell
-from rackio_AI.models.scaler import RackioDNNScaler, RackioDNNLayerScaler, RackioDNNLayerInverseScaler
-from rackio_AI.decorators.deco import scaler, fit_scaler, plot_scaler
+from rackio_AI.models.scaler import RackioDNNLayerScaler, RackioDNNLayerInverseScaler
+from rackio_AI.models.gaussian_noise import RackioGaussianNoise
 
 
 class RackioLSTM(tf.keras.Model):
@@ -15,6 +15,7 @@ class RackioLSTM(tf.keras.Model):
         activations,
         min_max_values=None,
         layers_names: list=[], 
+        add_gn: bool=True,
         **kwargs
         ):
         # INITIALIZATION
@@ -23,6 +24,11 @@ class RackioLSTM(tf.keras.Model):
         self.activations = activations
         self.scaler = None
         self.inverse_scaler = None
+        self.add_gn = add_gn
+
+        if self.add_gn:
+
+            self.gaussian_noise = RackioGaussianNoise()
 
         if min_max_values:
 
@@ -48,13 +54,17 @@ class RackioLSTM(tf.keras.Model):
         Documentation here
         """
         x = inputs
+        
+        if self.add_gn:
+
+            x = self.gaussian_noise(x)
 
         if self.scaler:
             
             x = self.scaler(x)
 
         # HIDDEN LAYER CALL
-        for layer_num, units in enumerate(self.hidden_layers_units):
+        for layer_num, _ in enumerate(self.hidden_layers_units):
            
             hidden_layer = getattr(self, self.hidden_layers_names[layer_num])
             x = hidden_layer(x)

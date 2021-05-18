@@ -74,12 +74,16 @@ class RackioAIScaler:
     }
 
     def __init__(self):
-       r"""Documentation here"""
+       r"""
+       Documentation here
+       """
        self.__scaler = None
        self.__columns = []
 
     def fit(self, df, method: str="min_max", columns: list=[], **kwargs):
-        r"""Documentation here"""
+        r"""
+        Documentation here
+        """
         if not method.lower() in self.methods:
             
             raise TypeError("{} method not available, availables methods: {}".format(method, methods.keys()))
@@ -101,18 +105,25 @@ class RackioAIScaler:
         return self.__scaler.fit(df[columns])
 
     def __call__(self, df):
-        r"""Documentation here"""
+        r"""
+        Documentation here
+        """
         if isinstance(df, pd.DataFrame):
             
             column_name = Utils.get_column_names(df)
+            
             return pd.DataFrame(self.__scaler.transform(df), columns=column_name)
 
         return self.__scaler.transform(df)
 
     def inverse(self, df):
-        r"""Documentation here"""
+        r"""
+        Documentation here
+        """
         if isinstance(df, pd.DataFrame):
+            
             column_name = Utils.get_column_names(df)
+            
             return pd.DataFrame(self.__scaler.inverse_transform(df), columns=column_name)
 
         return self.__scaler.inverse_transform(df)
