@@ -83,7 +83,7 @@ class RackioDNN(FactoryRackioDNN):
         return cls._model.predict(X)
 
     @classmethod
-    def plot(cls, dataset, dataset_type='testing'):
+    def plot(cls, dataset, dataset_type='testing', plotting_backend='matplotlib'):
         r"""
         Documentation here
         """
@@ -97,5 +97,13 @@ class RackioDNN(FactoryRackioDNN):
         y_predict = cls.predict(X)
         _result = np.concatenate((y_predict, y), axis=1)
         result = pd.DataFrame(_result, columns=['Prediction', 'Original'])
-        result.plot(kind='line')
-        plt.show()
+
+        if plotting_backend=="matplotlib":
+            result.plot(kind='line')
+            plt.show()
+        
+        if plotting_backend=="plotly":
+            pd.options.plotting.backend = "plotly"
+            fig = result.plot(kind='line')
+            fig.show()
+    
