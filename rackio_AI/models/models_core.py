@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from .classification import RackioClassification
+from .observer import RackioObserver
 
 
 class FactoryRackioDNN(metaclass=ABCMeta):
@@ -62,6 +63,14 @@ class RackioDNN(FactoryRackioDNN):
         if model.lower() == 'classification':
 
             return RackioClassification(
+                units, 
+                activations, 
+                **kwargs
+            )
+
+        if model.lower() == 'observer':
+
+            return RackioObserver(
                 units, 
                 activations, 
                 **kwargs
