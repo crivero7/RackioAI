@@ -77,6 +77,18 @@ class RackioObserverLSTM_f(tf.keras.layers.Layer):
         self.rackio_dense_layer = RackioObserverDense(1, activation="tanh")
         self.activation = tf.keras.activations.get(activation)
 
+    def build(self, input_shape):
+        r"""
+        Documentation here
+        """
+        self.batch_size = 32
+        
+        if input_shape[0]:
+            
+            self.batch_size = input_shape[0]
+
+        super(RackioObserverLSTM_f, self).build(input_shape)
+
     def call(self, inputs):
         r"""
         Documentation here
@@ -90,6 +102,7 @@ class RackioObserverLSTM_f(tf.keras.layers.Layer):
         
         # f Jacobian
         rows_f, cols_f = f.shape
+
         for i in range(cols_f):
 
             for j in range(cols_f):
@@ -116,6 +129,18 @@ class RackioObserverLSTM_Q(tf.keras.layers.Layer):
         self.rackio_observer_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
         self.rackio_dense_layer = RackioObserverDense(1, activation="tanh")
         self.activation = tf.keras.activations.get(activation)
+
+    def build(self, input_shape):
+        r"""
+        Documentation here
+        """
+        self.batch_size = 32
+        
+        if input_shape[0]:
+            
+            self.batch_size = input_shape[0]
+
+        super(RackioObserverLSTM_Q, self).build(input_shape)
 
     def call(self, inputs):
         r"""
@@ -146,6 +171,18 @@ class RackioObserverLSTM_R(tf.keras.layers.Layer):
         self.rackio_dense_layer = RackioObserverDense(2, activation="tanh")
         self.activation = tf.keras.activations.get(activation)
 
+    def build(self, input_shape):
+        r"""
+        Documentation here
+        """
+        self.batch_size = 32
+        
+        if input_shape[0]:
+            
+            self.batch_size = input_shape[0]
+
+        super(RackioObserverLSTM_R, self).build(input_shape)
+
     def call(self, inputs):
         r"""
         Documentation here
@@ -175,6 +212,18 @@ class RackioObserverLSTM_H(tf.keras.layers.Layer):
         self.rackio_dense_layer = RackioObserverDense(2, activation="tanh")
         self.H = tf.Variable(np.zeros((2, 1)), dtype=tf.dtypes.float32)
         self.activation = tf.keras.activations.get(activation)
+
+    def build(self, input_shape):
+        r"""
+        Documentation here
+        """
+        self.batch_size = 32
+        
+        if input_shape[0]:
+            
+            self.batch_size = input_shape[0]
+
+        super(RackioObserverLSTM_H, self).build(input_shape)
 
     def call(self, inputs, f):
         r"""
@@ -229,7 +278,9 @@ class RackioKF(tf.keras.layers.Layer):
         Documentation here
         """
         self.batch_size = 32
+
         if input_shape[0]:
+            
             self.batch_size = input_shape[0]
 
         super(RackioKF, self).build(input_shape)
