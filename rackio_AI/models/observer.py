@@ -1,5 +1,8 @@
 import tensorflow as tf
-from tensorflow.python.ops.parallel_for.gradients import jacobian
+import tensorflow_probability as tfp
+import numpy as np
+from rackio_AI.models.scaler import RackioDNNLayerScaler, RackioDNNLayerInverseScaler
+from rackio_AI.models.gaussian_noise import RackioGaussianNoise
 
 
 class RackioObserverDense(tf.keras.layers.Layer):
@@ -19,13 +22,15 @@ class RackioObserverDense(tf.keras.layers.Layer):
         self.kernel = self.add_weight(
             name="kernel",
             shape=[batch_input_shape[-1], self.units],
-            initializer="glorot_normal"
+            initializer=tf.keras.initializers.RandomUniform(minval=-0.05, maxval=0.05, seed=None),
+            trainable=True
         )
 
         self.bias = self.add_weight(
             name="bias",
             shape=[self.units],
-            initializer="zeros"
+            initializer=tf.keras.initializers.RandomUniform(minval=-0.05, maxval=0.05, seed=None),
+            trainable=True
         )
 
         super().build(batch_input_shape)
@@ -56,7 +61,8 @@ class RackioObserverDense(tf.keras.layers.Layer):
             "activation": tf.keras.activations.serialize(self.activation)
         }
 
-class RackioObserverLSTM_f_Q_R_H(tf.keras.layers.Layer):
+
+class RackioObserverLSTM_f(tf.keras.layers.Layer):
     r"""
     Documentation here
     """
@@ -64,10 +70,11 @@ class RackioObserverLSTM_f_Q_R_H(tf.keras.layers.Layer):
         r"""
         Documentation here
         """
-        super(RackioObserverLSTM_f_Q_R_H, self).__init__(**kwargs)
+        super(RackioObserverLSTM_f, self).__init__(**kwargs)
         self.units = units
         self.rackio_observer_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
-        self.rackio_dense_layer = RackioObserverDense(7, activation="linear")
+        self.F = tf.Variable(np.zeros((1, 1)), dtype=tf.dtypes.float32)
+        self.rackio_dense_layer = RackioObserverDense(1, activation="tanh")
         self.activation = tf.keras.activations.get(activation)
 
     def call(self, inputs):
@@ -78,9 +85,126 @@ class RackioObserverLSTM_f_Q_R_H(tf.keras.layers.Layer):
         outputs = self.rackio_observer_lstm_cell(inputs)
         norm_outputs = self.activation(outputs)
         # Dense layer
-        dense_output = self.rackio_dense_layer(norm_outputs)
+        f_t = self.rackio_dense_layer(norm_outputs)
+        f = tf.reshape(f_t, (f_t.shape[1], f_t.shape[2]))
+        
+        # f Jacobian
+        rows_f, cols_f = f.shape
+        for i in range(cols_f):
 
-        return dense_output
+            for j in range(cols_f):
+                y_t = f[0, i]
+                y_t_1 = f[1, i]
+                x_k_1 = f[1, j]
+                x_k_2 = f[2, j]
+
+                self.F[i, j].assign((y_t - y_t_1) / (x_k_1 - x_k_2))
+
+        return f_t, f, self.F
+
+
+class RackioObserverLSTM_Q(tf.keras.layers.Layer):
+    r"""
+    Documentation here
+    """
+    def __init__(self, units, activation='tanh', return_sequences=False, **kwargs):
+        r"""
+        Documentation here
+        """
+        super(RackioObserverLSTM_Q, self).__init__(**kwargs)
+        self.units = units
+        self.rackio_observer_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
+        self.rackio_dense_layer = RackioObserverDense(1, activation="tanh")
+        self.activation = tf.keras.activations.get(activation)
+
+    def call(self, inputs):
+        r"""
+        Documentation here
+        """
+        # Firt LSTM_f layer
+        outputs = self.rackio_observer_lstm_cell(inputs)
+        norm_outputs = self.activation(outputs)
+        # Dense layer
+        q_t = self.rackio_dense_layer(norm_outputs)
+        q = tf.reshape(q_t, (q_t.shape[1], q_t.shape[2]))
+        Q = tfp.stats.covariance(q, event_axis=1)
+
+        return Q
+
+
+class RackioObserverLSTM_R(tf.keras.layers.Layer):
+    r"""
+    Documentation here
+    """
+    def __init__(self, units, activation='tanh', return_sequences=False, **kwargs):
+        r"""
+        Documentation here
+        """
+        super(RackioObserverLSTM_R, self).__init__(**kwargs)
+        self.units = units
+        self.rackio_observer_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
+        self.rackio_dense_layer = RackioObserverDense(2, activation="tanh")
+        self.activation = tf.keras.activations.get(activation)
+
+    def call(self, inputs):
+        r"""
+        Documentation here
+        """
+        # Firt LSTM_f layer
+        outputs = self.rackio_observer_lstm_cell(inputs)
+        norm_outputs = self.activation(outputs)
+        # Dense layer
+        r_t = self.rackio_dense_layer(norm_outputs)
+        r = tf.reshape(r_t, (r_t.shape[1], r_t.shape[2]))
+        R = tfp.stats.covariance(r, event_axis=1)
+
+        return R
+
+
+class RackioObserverLSTM_H(tf.keras.layers.Layer):
+    r"""
+    Documentation here
+    """
+    def __init__(self, units, activation='tanh', return_sequences=False, **kwargs):
+        r"""
+        Documentation here
+        """
+        super(RackioObserverLSTM_H, self).__init__(**kwargs)
+        self.units = units
+        self.rackio_observer_lstm_cell = tf.keras.layers.LSTM(units, activation=None, return_sequences=return_sequences, **kwargs)
+        self.rackio_dense_layer = RackioObserverDense(2, activation="tanh")
+        self.H = tf.Variable(np.zeros((2, 1)), dtype=tf.dtypes.float32)
+        self.activation = tf.keras.activations.get(activation)
+
+    def call(self, inputs, f):
+        r"""
+        Documentation here
+        """
+        # Firt LSTM_f layer
+        outputs = self.rackio_observer_lstm_cell(inputs)
+        norm_outputs = self.activation(outputs)
+        # Dense layer
+        h = self.rackio_dense_layer(norm_outputs)
+
+        # LSTM_H computation
+        rows_f, cols_f = f.shape
+        h_c = tf.reshape(h, (h.shape[1], h.shape[2]))
+        x = f
+        rows_h, cols_h = h_c.shape
+
+        for i in range(cols_h):
+
+            for j in range(cols_f):
+                h_t = h_c[0, i]
+                h_t_1 = h_c[1, i]
+                x_k_1 = x[1, j]
+                x_k_2 = x[2, j]
+                self.H[i, j].assign((h_t - h_t_1) / (x_k_1 - x_k_2))
+
+        h = h_c[0, :]
+        h = tf.reshape(h, (h.shape[0], 1))
+
+        return h, self.H
 
 
 class RackioKF(tf.keras.layers.Layer):
@@ -92,76 +216,38 @@ class RackioKF(tf.keras.layers.Layer):
         Documentation here
         """
         super(RackioKF, self).__init__(**kwargs)
-        self.y_t_corregido = tf.Variable([0.0])
-        self.P_t = tf.Variable([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        self.lstm_f = RackioObserverLSTM_f_Q_R_H(units[0], activation=activations[0], return_sequences=True)
-        self.lstm_Q = RackioObserverLSTM_f_Q_R_H(units[1], activation=activations[1])
-        self.lstm_R = RackioObserverLSTM_f_Q_R_H(units[2], activation=activations[2])
-        self.lstm_H = RackioObserverLSTM_f_Q_R_H(units[3], activation=activations[3])
+        # y_t_corregido initialization
+        y_t_corregido = np.zeros((1, 1))
+        self.y_t_corregido = tf.Variable(y_t_corregido, dtype=tf.dtypes.float32)
+        # P_t initialization
+        p = np.zeros((1, 1))
+        self.P_t = tf.Variable(p, dtype=tf.dtypes.float32)
+        self.I = tf.eye(1, 1)
 
-    def call(self, inputs):
+    def build(self, input_shape):
         r"""
         Documentation here
         """
-        u = inputs[:, :, 0:2]
+        self.batch_size = 32
+        if input_shape[0]:
+            self.batch_size = input_shape[0]
 
-        z = inputs[:, :, 2:]
+        super(RackioKF, self).build(input_shape)
 
-        # LSTM_f computation
-        # u = tf.concat([u, self.y_t_corregido], axis=0) 
-        y_t = self.lstm_f(u)
-        # with tf.GradientTape() as gfg:
-        #     gfg.watch(u)
-        #     y_t = self.lstm_f(u)
-        # y_t_1 = tf.reshape(y_t, [y_t.shape[1], y_t.shape[-1]])
-        # print(y_t_1[])
-        # print('y_t: {}'.format(y_t))
-        # print('y_t_1: {}'.format(y_t_1))
-        # print('u: {}'.format(u))
-        # u_1 = tf.reshape(u, [u.shape[1], u.shape[2]])
-        # print('u_1: {}'.format(u_1))
-        # F = gfg.jacobian(y_t, u)
-        # F_1 = tf.reshape(F, [F.shape[1], F.shape[3], F.shape[4]])
-        # print('F_1 Jacobian: {}'.format(F_1))
-        
-        # F_t = tf.transpose(F)
-        # F_t_1 = tf.transpose(F_1)
-        # print('F_t_1 shape: {}'.format(F_t_1))
-
-        # LSTM_Q computation
-        Q_t = self.lstm_Q(y_t)
-
-        # LSTM_H computation
-        z_predict = self.lstm_H(y_t)
-        H = jacobian(z_predict, y_t)
+    def call(self, z, f, F, h, H, Q, R):
+        r"""
+        Documentation here
+        """
+        F_t = tf.transpose(F)
         H_t = tf.transpose(H)
-        I = tf.eye(H_t.shape[0], H_t.shape[1])
-
-        # LSTM_R computation
-        R = self.lstm_R(z)
-
-        # Update P_t
-        P_t_1 = self.P_t
-        
-        # Prediction Step
-        # print('y_t shape: {}'.format(y_t.shape))
-        # print('F shape: {}'.format(F.shape))
-        # print('P_t_1 shape: {}'.format(P_t_1.shape))
-        # print('F_t shape: {}'.format(F_t.shape))
-        # print('Q_t shape: {}'.format(Q_t.shape))
-        # print('H shape: {}'.format(H.shape))
-        # print('H_t shape: {}'.format(H_t.shape))
-        # print( F * F_t)
-        # P_t = F_1 * P_t_1 * F_t_1 + Q_t
-        P_t = P_t_1 + Q_t
-        print('P_t: {}'.format(P_t))
-        # P_t = tf.add( tf.matmul( tf.matmul(F, P_t_1), F, transpose_b=True), Q_t)
+        # Prediction Step (Kalman Intro / Coskun)
+        P_t = tf.add( tf.matmul( tf.matmul(F, self.P_t), F_t), Q)
 
         # Correction Step
-        K_t = P_t * H_t / (H * P_t * H_t + R)
-        self.y_t_corregido = y_t + K_t * (z - z_predict)
-        self.P_t = (I - K_t * H) * P_t
-
+        K_t = tf.matmul( tf.matmul(P_t, H_t), tf.linalg.inv( tf.add( tf.matmul( tf.matmul(H, P_t), H_t), R)))
+        self.y_t_corregido.assign(tf.add( f[0, :], tf.matmul( K_t, tf.subtract(z, h))))
+        self.P_t.assign(tf.matmul(tf.subtract(self.I, tf.matmul(K_t, H)), P_t))
+        
         return self.y_t_corregido
 
 
@@ -174,11 +260,29 @@ class RackioObserver(tf.keras.Model):
         self,
         units, 
         activations,
+        min_max_values=None,
+        add_gn: bool=True,
         **kwargs
         ):
         # INITIALIZATION
         super(RackioObserver, self).__init__(**kwargs)
+        self.lstm_f = RackioObserverLSTM_f(units[0], activation=activations[0], return_sequences=True)
+        self.lstm_H = RackioObserverLSTM_H(units[3], activation=activations[3], return_sequences=True)
+        self.lstm_Q = RackioObserverLSTM_Q(units[1], activation=activations[1], return_sequences=True)
+        self.lstm_R = RackioObserverLSTM_R(units[2], activation=activations[2], return_sequences=True)
         self.KF = RackioKF(units, activations, **kwargs)
+        self.scaler = None
+        self.add_gn = add_gn
+
+        if self.add_gn:
+
+            self.gaussian_noise = RackioGaussianNoise()
+
+        if min_max_values:
+
+            self.X_min, self.y_min, self.X_max, self.y_max = min_max_values
+            self.scaler = RackioDNNLayerScaler(self.X_min, self.X_max)
+            self.inverse_scaler = RackioDNNLayerInverseScaler(self.y_min, self.y_max)
  
     def call(self, inputs):
         r"""
@@ -186,8 +290,32 @@ class RackioObserver(tf.keras.Model):
 
         * *:param u:* (Input tensor) Inlet / Outlet Pressure
         * *:param z:* (Input tensor) Inlet / Outlet Flow
+
         """
-        y = self.KF(inputs)
+        
+        if self.add_gn:
+
+            inputs = self.gaussian_noise(inputs)
+
+        if self.scaler:
+            
+            inputs = self.scaler(inputs)
+
+        u = inputs[:, :, 0:2]
+        z = inputs[:, :, 2:]
+        f_t, f, F = self.lstm_f(u)
+        h, H = self.lstm_H(f_t, f)
+        Q = self.lstm_Q(f_t)
+        R = self.lstm_R(z)
+        z = tf.reshape(z, (z.shape[1], z.shape[2]))[0, :]
+        z = tf.reshape(z, (z.shape[0], 1))
+
+        # Observer layer based on Kalman Filter
+        y = self.KF(z, f, F, h, H, Q, R)
+
+        if self.inverse_scaler:
+
+            y = self.inverse_scaler(y)
 
         return y
 
@@ -419,7 +547,6 @@ class RackioObserver(tf.keras.Model):
         If x is a dataset, generator, or keras.utils.Sequence instance, y should not be specified 
         (since targets will be obtained from x).
         """
-
         x, y = training_data
 
         history = super(RackioObserver, self).fit(
