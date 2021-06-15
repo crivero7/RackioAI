@@ -49,7 +49,7 @@ class RackioLSTM(tf.keras.Model):
         self.__define_hidden_layers()
         self.__define_output_layer()
 
-    def call(self, inputs):
+    def call(self, inputs, training=None):
         r"""
         Documentation here
         """
@@ -57,7 +57,7 @@ class RackioLSTM(tf.keras.Model):
         
         if self.add_gn:
 
-            x = self.gaussian_noise(x)
+            x = self.gaussian_noise(x, training=training)
 
         if self.scaler:
             

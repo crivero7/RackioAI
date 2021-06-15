@@ -42,12 +42,12 @@ class RackioObserverDense(tf.keras.layers.Layer):
 
         return self.activation(X @ self.kernel + self.bias)
 
-    def compute_output_shape(self, batch_input_shape):
-        r"""
-        Documentation here
-        """
+    # def compute_output_shape(self, batch_input_shape):
+    #     r"""
+    #     Documentation here
+    #     """
 
-        return tf.TensorShape(batch_input_shape.as_list()[:-1] + [self.units])
+    #     return tf.TensorShape(batch_input_shape.as_list()[:-1] + [self.units])
 
     def get_config(self):
         r"""
@@ -260,7 +260,7 @@ class RackioKF(tf.keras.layers.Layer):
     r"""
     Documentation here
     """
-    def __init__(self, units, activations, **kwargs):
+    def __init__(self, **kwargs):
         r"""
         Documentation here
         """
@@ -321,7 +321,7 @@ class RackioObserver(tf.keras.Model):
         self.lstm_H = RackioObserverLSTM_H(units[3], activation=activations[3], return_sequences=True)
         self.lstm_Q = RackioObserverLSTM_Q(units[1], activation=activations[1], return_sequences=True)
         self.lstm_R = RackioObserverLSTM_R(units[2], activation=activations[2], return_sequences=True)
-        self.KF = RackioKF(units, activations, **kwargs)
+        self.KF = RackioKF(**kwargs)
         self.scaler = None
         self.add_gn = add_gn
 

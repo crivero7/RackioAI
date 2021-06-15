@@ -36,6 +36,7 @@ setuptools.setup(
         'statsmodels==0.12.1',
         'tensorflow==2.4.1',
         'tensorflow-transform==0.30.0',
+        'tensorflow-probability==0.12.2',
         'PyWavelets==1.1.1',
         'pydot==1.4.2'
     ],

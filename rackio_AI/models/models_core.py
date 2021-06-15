@@ -5,6 +5,7 @@ import tensorflow as tf
 from .lstm import RackioLSTM
 import numpy as np
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 from .classification import RackioClassification
 from .observer import RackioObserver
@@ -34,11 +35,14 @@ class RackioDNN(FactoryRackioDNN):
     r"""
     The Factory Class
     """
-    def __init__(self):
+    def __init__(self, mode='training'):
         r"""
         Documentation here
         """
         self._model = None
+        self._models = dict()
+        if mode in ['training', 'production']:
+            self._mode = mode
 
     @staticmethod
     def create(
@@ -72,7 +76,8 @@ class RackioDNN(FactoryRackioDNN):
 
             return RackioObserver(
                 units, 
-                activations, 
+                activations,
+                min_max_values=min_max_values, 
                 **kwargs
             )
 
@@ -81,8 +86,32 @@ class RackioDNN(FactoryRackioDNN):
         r"""
         Documentation here
         """
+            
         cls._model = tf.keras.models.load_model(directory, **kwargs)
+        
         return cls._model
+
+    def models_load(self, root, **kwargs):
+        r"""
+        Documentation here
+        """
+        directories = [ name for name in os.listdir(root) if os.path.isdir(os.path.join(root, name)) ]
+
+        for directory in directories:
+            
+            dir = os.path.join(root, directory)
+            filenames = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+            
+            if any(file.endswith(".pb") for file in filenames):
+                
+                self._models[directory] = RackioDNN.load(dir)
+                # self._models[directory] = {
+                #     'model': RackioDNN.load(dir),
+                #     'graph': tf.Graph(),
+                #     'session': tf.compat.v1.Session()
+                # }
+
+        return self._models
 
     @classmethod
     def predict(cls, X):
@@ -90,6 +119,15 @@ class RackioDNN(FactoryRackioDNN):
         Documentation here
         """
         return cls._model.predict(X)
+
+    def run(self, X, active_model):
+        r"""
+        Documentation here
+        """
+
+        Y = self._models[active_model].predict(X)
+
+        return Y
 
     @classmethod
     def plot(cls, dataset, dataset_type='testing', plotting_backend='matplotlib'):
