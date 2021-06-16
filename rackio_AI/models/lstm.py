@@ -28,7 +28,7 @@ class RackioLSTM(tf.keras.Model):
 
         if self.add_gn:
 
-            self.gaussian_noise = RackioGaussianNoise()
+            self.gaussian_noise = RackioGaussianNoise(stddev=10.0)
 
         if min_max_values:
 
@@ -343,8 +343,11 @@ class RackioLSTM(tf.keras.Model):
         r"""
         Documentation here
         """
+        
         for layer_num, units in enumerate(self.hidden_layers_units):
+            
             if layer_num==len(self.hidden_layers_units) - 1:
+
                 setattr(
                     self, 
                     self.hidden_layers_names[layer_num], 
