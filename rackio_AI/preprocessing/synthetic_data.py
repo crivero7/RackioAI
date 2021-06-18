@@ -402,10 +402,18 @@ class SyntheticData(PrepareData):
         ```
         """
         self.columns_names = columns_names
-        default_options = {'duration': {'min': 10,
-                                        'max': 50},
-                           'view': False,
-                           'columns': [0]}
+        default_options = {
+            'duration': {
+                'min': 10,
+                'max': 50
+                },
+            'sensor_drift_factor': {
+                'min': 1.5,
+                'max': 3
+            },
+            'view': False,
+            'columns': [0]
+            }
 
         options = {key: options[key] if key in options.keys() else default_options[key] for key in default_options}
 
@@ -426,7 +434,10 @@ class SyntheticData(PrepareData):
             for i in range(sensor_drift):
                 
                 duration = np.random.randint(duration_min, duration_max)
-                self.add_sensor_drift(duration=duration)
+                sensor_drift_factor_min = options['sensor_drift_factor']['min']
+                sensor_drift_factor_max = options['sensor_drift_factor']['max']
+                sensor_drift_factor = np.random.uniform(low=sensor_drift_factor_min, high=sensor_drift_factor_max)
+                self.add_sensor_drift(duration=duration, sensor_drift_factor=sensor_drift_factor)
 
         # Adding instrument error
         if add_WN:
@@ -574,7 +585,7 @@ class SyntheticData(PrepareData):
 
     def is_ready(self):
         
-        if not hasattr(self, accuracy):
+        if not hasattr(self, 'accuracy'):
 
             raise NotImplementedError("Please add instrument attributes")
 

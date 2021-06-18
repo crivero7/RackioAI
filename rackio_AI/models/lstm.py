@@ -347,7 +347,7 @@ class RackioLSTM(tf.keras.Model):
         for layer_num, units in enumerate(self.hidden_layers_units):
             
             if layer_num==len(self.hidden_layers_units) - 1:
-
+                
                 setattr(
                     self, 
                     self.hidden_layers_names[layer_num], 
@@ -355,6 +355,7 @@ class RackioLSTM(tf.keras.Model):
                     )
 
             else:
+                
                 setattr(
                     self, 
                     self.hidden_layers_names[layer_num], 

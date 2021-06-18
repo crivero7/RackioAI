@@ -103,6 +103,7 @@ class RackioObserverLSTM_f(tf.keras.layers.Layer):
         # f Jacobian
         rows_f, cols_f = f.shape
 
+        # Si la salida de la LSTM_f es una sola variable se calcula gradiente y no el jacobiano
         for i in range(cols_f):
 
             for j in range(cols_f):
