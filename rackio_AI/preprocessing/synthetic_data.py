@@ -449,7 +449,7 @@ class SyntheticData(PrepareData):
             drift_duration = pd.DataFrame(np.array(drift_duration).reshape(-1,1), columns=['Duration'])
             self.result['sensor_drift'] = {
                 'positions': drift_positions,
-                'druations': drift_duration
+                'durations': drift_duration
                 }
 
         # Adding instrument error
