@@ -201,14 +201,15 @@ class SyntheticData(PrepareData):
                 
                 new_value = drift[k, :] + sensor_drift_factor * self.error * self.span / duration
 
-            
             drift = np.append(drift, new_value.reshape([1, self.data.shape[-1]]), axis=0)
         
         for count, pos in enumerate(init_position):
             
             self.data[pos:pos + duration, count] = drift[:, count]
 
-        return
+        self._init_position_sensor_drift = init_position
+
+        return 
 
     @check_instrument_attributes
     @PrepareData.step
@@ -259,7 +260,7 @@ class SyntheticData(PrepareData):
             
             self.data[pos:pos + duration, count] = self.data[pos, count]
 
-        return
+        return init_position, duration
 
     @check_instrument_attributes
     @PrepareData.step
@@ -401,6 +402,7 @@ class SyntheticData(PrepareData):
 
         ```
         """
+        self.result = dict()
         self.columns_names = columns_names
         default_options = {
             'duration': {
@@ -430,7 +432,8 @@ class SyntheticData(PrepareData):
 
         # Adding sensor drift
         if sensor_drift:
-            
+            drift_positions = list()
+            drift_duration = list()
             for i in range(sensor_drift):
                 
                 duration = np.random.randint(duration_min, duration_max)
@@ -438,6 +441,16 @@ class SyntheticData(PrepareData):
                 sensor_drift_factor_max = options['sensor_drift_factor']['max']
                 sensor_drift_factor = np.random.uniform(low=sensor_drift_factor_min, high=sensor_drift_factor_max)
                 self.add_sensor_drift(duration=duration, sensor_drift_factor=sensor_drift_factor)
+                drift_positions.append(self._init_position_sensor_drift)
+                drift_duration.append(duration)
+
+            columns_names = self.app.data.columns
+            drift_positions = pd.DataFrame(np.vstack(drift_positions), columns=columns_names)
+            drift_duration = pd.DataFrame(np.array(drift_duration).reshape(-1,1), columns=['Duration'])
+            self.result['sensor_drift'] = {
+                'positions': drift_positions,
+                'druations': drift_duration
+                }
 
         # Adding instrument error
         if add_WN:
