@@ -2,6 +2,7 @@
     :docstring:
     :members: create
     :members: predict
-    :members: evaluate
-    :members: retrain
+    :members: run
+    :members: plot
     :members: load
+    :members: models_load

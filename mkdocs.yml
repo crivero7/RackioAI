@@ -35,7 +35,7 @@ nav:
         - Feature Extraction: 'api_preprocessing_feature_extraction.md'
       - Models:
         - RackioDNN: 'api_model_RackioDNN.md'
-        - RackioRegression: 'api_model_RackioRegression.md'
+        - RackioLSTM: 'api_model_RackioLSTM.md'
         - RackioClassification: 'api_model_RackioClassification.md'
         - RackioEnsemble: 'api_model_RackioEnsemble.md'
         - RackioObserver: 'api_model_RackioObserver.md'

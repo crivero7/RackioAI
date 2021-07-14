@@ -7,13 +7,15 @@ from rackio_AI.decorators.wavelets import WaveletDeco
 from easy_deco.progress_bar import ProgressBar
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
-@set_to_methods(del_temp_attr)
+# @set_to_methods(del_temp_attr)
 class StatisticalsFeatures:
     """
     When we consider the original discretized time domain signal , some basic discriminative
     information can be extracted in form of statistical parameters from the $n$ samples
     $s_{1},\cdots s_{n}$
     """
+
+    _instances = list()
 
     def mean(
         self, 
@@ -599,7 +601,7 @@ class StatisticalsFeatures:
         return peak / rms
 
 
-@set_to_methods(del_temp_attr)
+# @set_to_methods(del_temp_attr)
 class Wavelet:
     r"""
     A wavelet is a mathematical function used to divide a given function or continuous-time 
@@ -799,6 +801,8 @@ class FrequencyFeatures:
     r"""
     Documentation here
     """
+
+    _instances = list()
 
     def __init__(self):
         r"""
