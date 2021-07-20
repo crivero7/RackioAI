@@ -38,7 +38,7 @@ setuptools.setup(
         'tensorflow-transform==0.30.0',
         'tensorflow-probability==0.12.2',
         'PyWavelets==1.1.1',
-        'pydot==1.4.2'
+        'pydot==1.4.2',
         'pandas==1.2.4'
     ],
     classifiers=[
