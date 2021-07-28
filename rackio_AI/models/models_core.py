@@ -105,11 +105,6 @@ class RackioDNN(FactoryRackioDNN):
             if any(file.endswith(".pb") for file in filenames):
                 
                 self._models[directory] = RackioDNN.load(dir)
-                # self._models[directory] = {
-                #     'model': RackioDNN.load(dir),
-                #     'graph': tf.Graph(),
-                #     'session': tf.compat.v1.Session()
-                # }
 
         return self._models
 
