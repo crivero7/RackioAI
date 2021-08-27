@@ -2,6 +2,7 @@ import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 import pickle
+from random import shuffle
 
 
 @set_to_methods(del_temp_attr)
@@ -44,6 +45,11 @@ class PKL:
         """  
         self._df_ = list()
         self.__read(pathname, **kwargs)
+        if 'shuffle' in kwargs:
+            _shuffle = kwargs['shuffle']
+            if _shuffle:
+                shuffle(self._df_)
+            
         df = pd.concat(self._df_)
             
         return df
@@ -54,8 +60,14 @@ class PKL:
         Read (pkl) file into DataFrame.
         """
         with open(pathname, 'rb') as f:
-                
-            self._df_.append(pickle.load(f))
+            _df = pickle.load(f)
+
+        if 'remove_initial_points' in pkl_options:
+            _rip = pkl_options['remove_initial_points']
+
+            _df.drop(index=_df.iloc[0:_rip, :].index.tolist(), inplace=True)
+        
+        self._df_.append(_df)
 
         return
     

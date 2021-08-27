@@ -25,7 +25,7 @@ setuptools.setup(
     include_package_data=True,
     packages=setuptools.find_packages(),
     install_requires=[
-        'scikit-learn==0.24.1',
+        'scikit-learn==0.22.2.post1',
         'Pillow==8.0.0',
         'easy-deco==0.1.2',
         'seaborn==0.11.1',

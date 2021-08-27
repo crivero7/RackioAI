@@ -134,6 +134,10 @@ class RackioDNN(FactoryRackioDNN):
         if dataset_type.lower()=="testing":
             
             X, y = dataset['test_dataset']
+
+        if dataset_type.lower()=="all":
+            X_test, y_test = dataset['test_dataset']
+            X , y = np.concatenate((X, X_test), axis=0), np.concatenate((y, y_test), axis=0)
         
         y = y.reshape((y.shape[0], 1))
         y_predict = cls.predict(X)
@@ -148,4 +152,25 @@ class RackioDNN(FactoryRackioDNN):
             pd.options.plotting.backend = "plotly"
             fig = result.plot(kind='line')
             fig.show()
-    
+
+        return result
+
+    @classmethod
+    def get_predict(cls, dataset, dataset_type='all'):
+        r"""
+        Documentation here
+        """
+        X, y = dataset['train_dataset']
+        
+        if dataset_type.lower()=="testing":
+            
+            X, y = dataset['test_dataset']
+
+        if dataset_type.lower()=="all":
+            X_test, y_test = dataset['test_dataset']
+            X , y = np.concatenate((X, X_test), axis=0), np.concatenate((y, y_test), axis=0)
+        
+        y = y.reshape((y.shape[0], 1))
+        y_predict = cls.predict(X)
+        _result = np.concatenate((y_predict, y), axis=1)
+        return pd.DataFrame(_result, columns=['Prediction', 'Original'])
