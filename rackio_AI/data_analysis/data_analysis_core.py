@@ -742,7 +742,7 @@ class RackioEDA(Pipeline):
         self._rows_to_delete_ = list()
         self._rows_to_keep_ = list()
         self._datetime = False
-        self._diff_ = self._row_ = 0
+        self._diff_ = self._diff = self._row_ = 0
         label_index = 'index'
         if not label:
             if df.index.name:
@@ -786,17 +786,39 @@ class RackioEDA(Pipeline):
         """
         freq = kwargs["freq"]
         if self._row_ == 0:
+            
             self._rows_to_keep_.append(self._row_)
             self._row_ += 1
+            
             return
+        
         delta = column - self._column_[self._row_ - 1]
-        self._diff_ += delta 
-        if abs(self._diff_) < freq:
+        self._diff += delta 
+        self._diff_ =  freq * len(self._rows_to_keep_)
+
+        if len(self._rows_to_keep_) == 1:
+
+            if self._diff < freq:
+
+                self._rows_to_delete_.append(self._row_)
+                self._row_ += 1
+                
+                return
+            
+            self._rows_to_keep_.append(self._row_)
+            self._row_ += 1
+
+            return
+
+        if abs(self._diff_ - self._diff) < freq:
+            
             self._rows_to_delete_.append(self._row_)
             self._row_ += 1
+            
             return
+        
         self._rows_to_keep_.append(self._row_)
-        self._diff_ = 0
+        # self._diff_ = 0
         self._row_ += 1
 
         return
