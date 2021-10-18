@@ -387,7 +387,7 @@ class RackioAI(Singleton):
         return result
 
     @staticmethod
-    def save(obj, filename, format='pkl'):
+    def save(obj, filename, protocol=None, format='pkl'):
         """
         Method to persist any object in pickle format
 
@@ -404,6 +404,12 @@ class RackioAI(Singleton):
         """
         with open('{}.{}'.format(filename, format), 'wb') as file:
 
-            pickle.dump(obj, file, protocol=HIGHEST_PROTOCOL)
+            if protocol:
+
+                pickle.dump(obj, file, protocol=protocol)
+
+            else: 
+
+                pickle.dump(obj, file, protocol=HIGHEST_PROTOCOL)
 
         return obj
