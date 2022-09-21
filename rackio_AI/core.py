@@ -42,7 +42,7 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def load(self, pathname: str, ext: str=".tpl", reset_index=False, **kwargs):
+    def load(self, pathname: str, ext: str=".tpl", reset_index=False, join_files:bool=True, **kwargs):
         """
         Load data into DataFrame format:
 
@@ -150,7 +150,7 @@ class RackioAI(Singleton):
         """
         filename, ext = Utils.check_path(pathname, ext=ext)
 
-        data = self.reader.read(filename, ext=ext, **kwargs)
+        data = self.reader.read(filename, ext=ext, join_files=join_files, **kwargs)
 
         self.columns_name = Utils.get_column_names(data)
         

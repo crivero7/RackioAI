@@ -4,6 +4,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("requirements.txt", "r") as fh:
+    _requirements = fh.read()
+
 setuptools.setup(
     name="RackioAI",
     version="0.3.1",
@@ -24,23 +27,7 @@ setuptools.setup(
     'json/*.json']},
     include_package_data=True,
     packages=setuptools.find_packages(),
-    install_requires=[
-        'scikit-learn==1.0.2',
-        'Pillow==9.0.0',
-        'easy-deco==0.1.2',
-        'seaborn==0.11.1',
-        'xlrd==1.2.0',
-        'openpyxl==3.0.6',
-        'odfpy==1.4.1',
-        'pyxlsb==1.0.8',
-        'statsmodels==0.13.1',
-        'tensorflow==2.7.0',
-        'tensorflow-probability==0.15.0',
-        'PyWavelets==1.1.1',
-        'pydot==1.4.2',
-        'pandas==1.2.4',
-        'pickle5==0.0.12'
-    ],
+    install_requires=_requirements,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

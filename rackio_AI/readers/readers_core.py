@@ -21,7 +21,7 @@ class Reader:
     pkl = PKL()
     exl = EXL()
 
-    def read(self, pathname: str, ext: str=".tpl", **kwargs):
+    def read(self, pathname: str, ext: str=".tpl", join_files:bool=True, **kwargs):
         """
         Read data supported by RackioAI in pandas.DataFrame
 
@@ -99,7 +99,7 @@ class Reader:
         if ext==".tpl":
 
             self.tpl.read(pathname)
-            data = self.tpl.to('dataframe')
+            data = self.tpl.to('dataframe', join_files=join_files)
 
         elif ext==".csv":
 

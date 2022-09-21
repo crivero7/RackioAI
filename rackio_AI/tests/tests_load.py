@@ -1,10 +1,9 @@
 import unittest
 import os
-import pandas as pd
-from rackio_AI import get_directory, RackioAI
+from . import RackioAI, get_directory
 
 
-class LoadDataTestCase(unittest.TestCase):
+class TestLoadData(unittest.TestCase):
 
     def setUp(self):
         """
@@ -27,7 +26,7 @@ class LoadDataTestCase(unittest.TestCase):
         :return:
         """
         directory = os.path.join(get_directory('Leak'))
-        df = RackioAI.load(directory)
+        df = RackioAI.load(directory, join_files=False)
 
     def test_load_csv_file(self):
         """
@@ -77,7 +76,3 @@ class LoadDataTestCase(unittest.TestCase):
         filename = os.path.join(get_directory('pkl_files'))
         df = RackioAI.load(filename, ext=".pkl")
 
-
-if __name__ == '__main__':
-    
-    unittest.main()

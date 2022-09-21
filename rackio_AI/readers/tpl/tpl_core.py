@@ -309,7 +309,7 @@ class TPL:
 
         return tag, unit, variable_type
 
-    def __to_dataframe(self):
+    def __to_dataframe(self, join_files:bool=True):
         """
         ...Documentation here...
 
@@ -320,7 +320,7 @@ class TPL:
         **:return:**
 
         """
-        return self.__join(flag=True)
+        return self.__join(flag=join_files)
 
     def __to_series(self):
         """
@@ -389,21 +389,27 @@ class TPL:
             return df
 
         else:
-            columns = self.doc[0].keys()
+            # columns = self.doc[0].keys()
             index_name = list()
             new_data = list()
 
             for count, data in enumerate(self.doc):
-                attrs = [data[key]['data'] for key in columns]
+                # print(f"data: {data}")
+                columns = data.keys()
+                attrs = [data[key] for key in columns]
                 index_name.append('Case{}'.format(count))
-                new_data.append(pd.DataFrame(np.array(attrs).transpose(), columns=self.header))
 
+                new_data.append({
+                    'tpl': pd.DataFrame(np.array(attrs).transpose(), columns=self.header)
+                    }
+                )
+            # print(f"New Data: {new_data}")
             data = pd.Series(new_data)
             data.index = index_name
 
             return data
 
-    def to(self, data_type, **kwargs):
+    def to(self, data_type, join_files:bool=True, **kwargs):
         """
         This method allows to you transform from .tpl to a 'data_type'
 
@@ -424,7 +430,7 @@ class TPL:
 
         if data_type.lower() == 'dataframe':
 
-            return self.__to_dataframe()
+            return self.__to_dataframe(join_files=join_files)
 
         elif data_type.lower() == 'series':
 
