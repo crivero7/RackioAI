@@ -455,6 +455,104 @@ class TPL:
             yield pd.DataFrame(map(list, zip(*list(data.values()))), columns=self.header)
 
 
+class Genkey(dict):
+
+    def __init__(self, *args, **kwargs):
+        self.__level = 0
+        self.__keys = list()
+        super().__init__(*args, **kwargs)
+
+    def __increase_level(self):
+        
+        self.__level += 1
+
+    def __reset_level(self):
+
+        self.__level = 0
+
+    def __decrease_level(self):
+
+        self.__level -= 1
+
+    def __get_level(self):
+
+        return self.__level
+
+    def __append_key(self, key:str):
+
+        self.__keys.append(key)
+
+    def __clean_keys(self):
+
+        self.__keys = list()
+
+    def __get_keys(self):
+
+        return self.__keys
+
+    def __setitem__(self, key:str, value=None):
+
+        _value = value
+
+        if key in self.keys():
+
+            _value = self.__getitem__(key)
+
+            if _value is None:
+
+                _value = list()
+
+            if isinstance(_value, list):
+
+                _value.append(value)
+        
+        return super().__setitem__(key, _value)
+
+    def __getitem__(self, key:str):
+        
+        
+        return super().__getitem__(key)
+
+    def read(self, filename:str):
+        r"""
+        Documentation here"""
+        with open(filename, "r") as file:
+            
+            lines = file.readlines()
+
+        for line in lines:
+            
+            if line.strip().startswith("!*"):
+                
+                continue
+
+            if line.strip().startswith(" "):
+                
+                continue
+
+            if line.strip().startswith("\t"):
+                
+                continue
+            
+            if line.strip().startswith("! "):
+                self.__clean_keys()
+                key = line.strip().split("!")[1].strip()
+                self.__append_key(key)
+                self.__setitem__(key)
+            
+                continue
+
+            _items = line.strip().split(" ")
+            if len(_items) > 1:
+                flag = 0
+                for item in _items:
+            
+                    if flag==0:
+
+                        self.__append_key(key)
+                    
+                    flag += 1
+
 if __name__ == "__main__":
     import doctest
 
