@@ -1,8 +1,8 @@
-import os
+import os, re
+from sys import flags
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
-from rackio_AI.utils import Utils
 from rackio_AI.readers.tpl.options import TPLOptions
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 
@@ -458,41 +458,46 @@ class TPL:
 class Genkey(dict):
 
     def __init__(self, *args, **kwargs):
-        self.__level = 0
+        self.__previous_line = None
+        self.__previous_item = None
         self.__keys = list()
         super().__init__(*args, **kwargs)
 
-    def __increase_level(self):
-        
-        self.__level += 1
+    def set_previous_item(self, item:str):
 
-    def __reset_level(self):
+        self.__previous_item = item
+    
+    def get_previous_item(self)->str:
 
-        self.__level = 0
+        return self.__previous_item
 
-    def __decrease_level(self):
+    def set_previous_line(self, line:str):
 
-        self.__level -= 1
+        self.__previous_line = line
 
-    def __get_level(self):
+    def get_previous_line(self):
 
-        return self.__level
+        return self.__previous_line
 
     def __append_key(self, key:str):
 
-        self.__keys.append(key)
+        if key not in self.__get_keys():
+
+            self.__keys.append(key)
 
     def __clean_keys(self):
 
         self.__keys = list()
+
+    def __clean_last_key(self):
+
+        self.__keys.pop(-1)
 
     def __get_keys(self):
 
         return self.__keys
 
     def __setitem__(self, key:str, value=None):
-
-        _value = value
 
         if key in self.keys():
 
@@ -505,11 +510,12 @@ class Genkey(dict):
             if isinstance(_value, list):
 
                 _value.append(value)
-        
-        return super().__setitem__(key, _value)
+
+            return super().__setitem__(key, _value)
+
+        return super().__setitem__(key, Genkey())
 
     def __getitem__(self, key:str):
-        
         
         return super().__getitem__(key)
 
@@ -521,19 +527,30 @@ class Genkey(dict):
             lines = file.readlines()
 
         for line in lines:
+
+            previous_line = self.get_previous_line()
             
-            if line.strip().startswith("!*"):
+            if previous_line:
+
+                line = previous_line.replace("\\", line.lstrip())
+
+
+            if "\\" in line:
+                line.replace("\\", "")
+                self.set_previous_line(line)
+                continue
+            else:
+
+                self.set_previous_line(None)
+
+            if line.startswith("!*"):
                 
                 continue
 
-            if line.strip().startswith(" "):
+            if line.startswith(" "):
                 
                 continue
 
-            if line.strip().startswith("\t"):
-                
-                continue
-            
             if line.strip().startswith("! "):
                 self.__clean_keys()
                 key = line.strip().split("!")[1].strip()
@@ -541,17 +558,44 @@ class Genkey(dict):
                 self.__setitem__(key)
             
                 continue
-
-            _items = line.strip().split(" ")
-            if len(_items) > 1:
-                flag = 0
-                for item in _items:
             
-                    if flag==0:
+            value = re.search('\w+\s', line)
 
-                        self.__append_key(key)
-                    
-                    flag += 1
+            if not value:
+
+                continue
+
+            _key = value.group(0)
+            
+            _items = line.split(f"{_key}")[-1]
+            self.__append_key(_key.lstrip().rstrip())
+
+            if len(_items) > 1:
+                print(f"Keys: {self.__get_keys()}")
+                
+                _items = _items.split(", ")
+                print(f"Items: {_items}")
+                
+                flag = False
+
+                for item in _items:
+                    # flag = False
+                    if "=" in item:
+                        # item += ", "
+                        self.set_previous_item(item)
+                        # flag = True
+                        continue
+
+                    else:
+
+                        _item = self.get_previous_item() + ", " + item
+                        self.set_previous_item(_item)
+
+    
+                    key, value = self.get_previous_item().split("=")
+                    print(f"key: {key} - value: {value}")
+
+                self.__clean_last_key()
 
 if __name__ == "__main__":
     import doctest

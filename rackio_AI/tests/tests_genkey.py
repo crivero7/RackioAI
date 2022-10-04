@@ -1,5 +1,5 @@
 import unittest
-import os
+import os, re
 from . import get_directory
 from rackio_AI.readers.tpl import Genkey
 
@@ -112,25 +112,6 @@ genkey_test = {
         } 
     },
     'Library keywords': {
-        'MATERIAL': {
-            'LABEL': "Stainless Steel",
-            'CAPACITY': {
-                'VALUE': 450,
-                'UNIT': 'J/kg-C'
-            },
-            'CONDUCTIVITY': {
-                'VALUE': 20,
-                'UNIT': 'W/m-K'
-            },
-            'DENSITY': {
-                'VALUE': 7850,
-                'UNIT': 'kg/m3'
-            },
-            'EMOD': {
-                'VALUE': 210942150000,
-                'UNIT': 'Pa'
-            }
-        },
         'WALL': {
             'LABEL': "WALL-1",
             'THICKNESS': {
@@ -259,6 +240,25 @@ genkey_test = {
                 },
                 'EMOD': {
                     'VALUE': 50481503000,
+                    'UNIT': 'Pa'
+                }
+            },
+            {
+                'LABEL': "Stainless Steel",
+                'CAPACITY': {
+                    'VALUE': 450,
+                    'UNIT': 'J/kg-C'
+                },
+                'CONDUCTIVITY': {
+                    'VALUE': 20,
+                    'UNIT': 'W/m-K'
+                },
+                'DENSITY': {
+                    'VALUE': 7850,
+                    'UNIT': 'kg/m3'
+                },
+                'EMOD': {
+                    'VALUE': 210942150000,
                     'UNIT': 'Pa'
                 }
             }
@@ -510,14 +510,16 @@ genkey_test = {
             }
         }
     ],
-    'Connections': [
-        {
-            'TERMINALS': [
-                ('FLOWPATH_1 INLET', 'NODE_1 FLOWTERM_1'),
-                ('MANUALCONTROLLER_1 CONTR_1', 'FLOWPATH_1 PUMP@SPEEDSIG')
-            ]
-        }
-    ]
+    'Connections': {
+        'CONNECTION': [
+            {
+                'TERMINALS': ('FLOWPATH_1 INLET', 'NODE_1 FLOWTERM_1')
+            }, 
+            {
+                'TERMINALS': ('MANUALCONTROLLER_1 CONTR_1', 'FLOWPATH_1 PUMP@SPEEDSIG')
+            }
+        ]
+    }
 }
 
 
@@ -531,6 +533,37 @@ class TestGenkey(unittest.TestCase):
         self.filename = os.path.join(get_directory('Leak'), 'genkey', '01.genkey')
         self.genkey = Genkey()
         self.genkey.read(filename=self.filename)
+
+    # def test_00(self):
+        
+    #     with open(self.filename, 'r') as f:
+    #         file = f.read()
+
+    #     val_list = []
+    #     for element in re.split("\s\n", file):
+    #         val_list.append(element)
+
+    #     keys = []
+    #     vals = []
+    #     for el in val_list:
+    #         val = ' '.join([c.strip() for c in el.split(' ')])
+    #         _key = re.search('!\s\w+.+', val)
+    #         if _key:
+    #             init, end = _key.span()
+    #             r = re.findall('\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=', el)
+    #             r = {k.split(' ')[0] for k in r if k}
+    #             key = val[_key.start():_key.end()].replace('!', '').strip()
+
+    #             keys.append(key)
+    #             vals.append(r)
+
+    #     _genkey = list(zip(keys, vals))
+    #     genkey = {}
+    #     for key in _genkey:
+    #         genkey.setdefault(key[0], []).append(key[1])
+
+    #     print(genkey)
+    #     self.assertListEqual(list(genkey.keys()), list(genkey_test.keys()))
 
     def test_01_genkey_as_dict(self):
         """
