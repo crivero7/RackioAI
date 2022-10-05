@@ -1,4 +1,5 @@
-import os, re
+import os
+import re
 from sys import flags
 import numpy as np
 import pandas as pd
@@ -14,7 +15,7 @@ class TPL:
     """
 
     tpl_options = TPLOptions()
-    _instances = list()       
+    _instances = list()
 
     def __init__(self):
 
@@ -64,7 +65,7 @@ class TPL:
         ```
         """
         self.doc = self.__read_files(name)
-        
+
         return self.doc
 
     def __read_file(self, filename):
@@ -130,7 +131,8 @@ class TPL:
         multi_index.append(('file', 'filename', '.tpl'))
         doc['file'] = data_name
 
-        self.header = pd.MultiIndex.from_tuples(multi_index, names=['tag', 'variable', 'unit'])
+        self.header = pd.MultiIndex.from_tuples(
+            multi_index, names=['tag', 'variable', 'unit'])
 
         return doc
 
@@ -174,13 +176,15 @@ class TPL:
         with open(filename, 'r') as file:
             file = file.read()
 
-        sections = file.split("{} \n".format(self.tpl_options.split_expression))
+        sections = file.split("{} \n".format(
+            self.tpl_options.split_expression))
 
         self.tpl_options.header_line_numbers = int(sections[1].split('\n')[0])
 
         data_header_section = sections[1].split('\n')
 
-        data = self.__get_data(data_header_section[self.tpl_options.header_line_numbers + 2::])
+        data = self.__get_data(
+            data_header_section[self.tpl_options.header_line_numbers + 2::])
 
         return data_header_section, data
 
@@ -198,7 +202,8 @@ class TPL:
         * **header_section:** list('str') each item in the list is tag variable summary in .tpl files
 
         """
-        header_section = data_header_section[1: self.tpl_options.header_line_numbers + 2]
+        header_section = data_header_section[1:
+                                             self.tpl_options.header_line_numbers + 2]
 
         return header_section[-1:] + header_section[:-1]
 
@@ -309,7 +314,7 @@ class TPL:
 
         return tag, unit, variable_type
 
-    def __to_dataframe(self, join_files:bool=True):
+    def __to_dataframe(self, join_files: bool = True):
         """
         ...Documentation here...
 
@@ -401,7 +406,7 @@ class TPL:
 
                 new_data.append({
                     'tpl': pd.DataFrame(np.array(attrs).transpose(), columns=self.header)
-                    }
+                }
                 )
             # print(f"New Data: {new_data}")
             data = pd.Series(new_data)
@@ -409,7 +414,7 @@ class TPL:
 
             return data
 
-    def to(self, data_type, join_files:bool=True, **kwargs):
+    def to(self, data_type, join_files: bool = True, **kwargs):
         """
         This method allows to you transform from .tpl to a 'data_type'
 
@@ -426,7 +431,8 @@ class TPL:
 
         kwargs_default = {'path': os.getcwd(),
                           'filename': 'tpl_to_csv.csv'}
-        options = {key: kwargs[key] if key in kwargs.keys() else kwargs_default[key] for key in kwargs_default.keys()}
+        options = {key: kwargs[key] if key in kwargs.keys(
+        ) else kwargs_default[key] for key in kwargs_default.keys()}
 
         if data_type.lower() == 'dataframe':
 
@@ -444,7 +450,8 @@ class TPL:
 
         else:
 
-            raise NameError('{} is not possible convert to {}'.format(type(self).__name__, data_type.lower()))
+            raise NameError('{} is not possible convert to {}'.format(
+                type(self).__name__, data_type.lower()))
 
     def __making_dataframes(self, doc):
         """
@@ -460,18 +467,18 @@ class Genkey(dict):
     def __init__(self, *args, **kwargs):
         self.__previous_line = None
         self.__previous_item = None
-        self.__keys = list()
+        self._keys = list()
         super().__init__(*args, **kwargs)
 
-    def set_previous_item(self, item:str):
+    def set_previous_item(self, item: str):
 
         self.__previous_item = item
-    
-    def get_previous_item(self)->str:
+
+    def get_previous_item(self) -> str:
 
         return self.__previous_item
 
-    def set_previous_line(self, line:str):
+    def set_previous_line(self, line: str):
 
         self.__previous_line = line
 
@@ -479,123 +486,165 @@ class Genkey(dict):
 
         return self.__previous_line
 
-    def __append_key(self, key:str):
+    def __append_key(self, key: str):
 
         if key not in self.__get_keys():
 
-            self.__keys.append(key)
+            self._keys.append(key)
 
     def __clean_keys(self):
 
-        self.__keys = list()
+        self._keys = list()
 
     def __clean_last_key(self):
 
-        self.__keys.pop(-1)
+        self._keys.pop(-1)
 
     def __get_keys(self):
 
-        return self.__keys
+        return self._keys
 
-    def __setitem__(self, key:str, value=None):
+    # def __setitem__(self, key: str, value=None):
 
-        if key in self.keys():
+    #     if key in self.keys():
 
-            _value = self.__getitem__(key)
+    #         _value = self.__getitem__(key)
 
-            if _value is None:
+    #         if _value is None:
 
-                _value = list()
+    #             _value = list()
 
-            if isinstance(_value, list):
+    #         if isinstance(_value, list):
 
-                _value.append(value)
+    #             _value.append(value)
 
-            return super().__setitem__(key, _value)
+    #         return super().__setitem__(key, _value)
 
-        return super().__setitem__(key, Genkey())
+    #     return super().__setitem__(key, Genkey())
 
-    def __getitem__(self, key:str):
-        
-        return super().__getitem__(key)
+    # def __getitem__(self, key: str):
 
-    def read(self, filename:str):
-        r"""
-        Documentation here"""
-        with open(filename, "r") as file:
-            
-            lines = file.readlines()
+    #     return super().__getitem__(key)
 
-        for line in lines:
+    # def _read(self, filename: str):
+    #     r"""
+    #     Documentation here"""
+    #     with open(filename, "r") as file:
 
-            previous_line = self.get_previous_line()
-            
-            if previous_line:
+    #         lines = file.readlines()
 
-                line = previous_line.replace("\\", line.lstrip())
+    #     for line in lines:
 
+    #         previous_line = self.get_previous_line()
 
-            if "\\" in line:
-                line.replace("\\", "")
-                self.set_previous_line(line)
-                continue
-            else:
+    #         if previous_line:
 
-                self.set_previous_line(None)
+    #             line = previous_line.replace("\\", line.lstrip())
 
-            if line.startswith("!*"):
-                
-                continue
+    #         # Join line continuation
+    #         if "\\" in line:
+    #             line.replace("\\", "")
+    #             self.set_previous_line(line)
+    #             continue
+    #         else:
 
-            if line.startswith(" "):
-                
-                continue
+    #             self.set_previous_line(None)
 
-            if line.strip().startswith("! "):
-                self.__clean_keys()
-                key = line.strip().split("!")[1].strip()
-                self.__append_key(key)
-                self.__setitem__(key)
-            
-                continue
-            
-            value = re.search('\w+\s', line)
+    #         if line.startswith("!*"):
 
-            if not value:
+    #             continue
 
-                continue
+    #         # if line.startswith(" "):
 
-            _key = value.group(0)
-            
-            _items = line.split(f"{_key}")[-1]
-            self.__append_key(_key.lstrip().rstrip())
+    #         #     continue
 
-            if len(_items) > 1:
-                print(f"Keys: {self.__get_keys()}")
-                
-                _items = _items.split(", ")
-                print(f"Items: {_items}")
-                
-                flag = False
+    #         # Setting first level keys
+    #         if line.strip().startswith("! "):
+    #             self.__clean_keys()
+    #             key = line.strip().split("!")[1].strip()
+    #             self.__append_key(key)
+    #             self.__setitem__(key)
 
-                for item in _items:
-                    # flag = False
-                    if "=" in item:
-                        # item += ", "
-                        self.set_previous_item(item)
-                        # flag = True
-                        continue
+    #             # breakpoint()
 
-                    else:
+    #             continue
 
-                        _item = self.get_previous_item() + ", " + item
-                        self.set_previous_item(_item)
+    #         # Setting second level keys
+    #         value = re.search('\w+\s', line)
+    #         if not value:
 
-    
-                    key, value = self.get_previous_item().split("=")
-                    print(f"key: {key} - value: {value}")
+    #             continue
 
-                self.__clean_last_key()
+    #         _key = value.group(0)
+    #         _items = line.split(f"{_key}")[-1]
+    #         self.__append_key(_key.lstrip().rstrip())
+
+    #         _items = _items.split(", ")
+    #         # print(f"Items: {_items}")
+
+    #         # Iteration in last key - value
+    #         for item in _items:
+    #             # Is an item key - value
+    #             breakpoint()
+    #             if "=" in item:
+    #                 previous_item = self.get_previous_item()
+    #                 if previous_item:
+    #                     key, value = self.get_previous_item().split("=")
+    #                     self.__append_key(key)
+    #                     continue
+    #                     # print(f"Keys: {self.__get_keys()}")
+    #                     # print(f"value: {value}")
+    #                 self.set_previous_item(item)
+    #                 # key, value = self.get_previous_item().split("=")
+    #                 self.__setitem__(key=self._key)
+
+    #                 self.__clean_last_key()
+    #                 continue
+
+    #             # This item belongs to previous item
+    #             else:
+
+    #                 _item = self.get_previous_item() + ", " + item
+    #                 self.set_previous_item(_item)
+
+    #         self.__clean_last_key()
+
+    def read(self, filename: str):
+
+        with open(filename, 'r') as f:
+            file = f.read()
+
+        val_list = []
+        for element in re.split("\s\n", file):
+            val_list.append(element)
+
+        keys = []
+        vals = []
+        for el in val_list:
+            val = ' '.join([c.strip() for c in el.split(' ')])
+            _key = re.search('!\s\w+.+', val)
+            if _key:
+                r = re.findall('\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=', el)
+                r = {k.split(' ')[0] for k in r if k}
+                key = _key.group().replace('!', '').strip()
+
+                keys.append(key)
+                vals.append(r)
+
+        _genkey = list(zip(keys, vals))
+        for key in _genkey:
+            self.setdefault(key[0], []).append(key[1])
+
+        for key, val in self.items():
+            if len(val) == 1:
+                self[key] = self.fromkeys(self.get(key)[0])
+
+            if not bool(val[0]):
+                self[key] = None
+
+        # print(genkey)
+        # breakpoint()
+
 
 if __name__ == "__main__":
     import doctest

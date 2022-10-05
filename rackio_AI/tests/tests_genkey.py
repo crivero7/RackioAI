@@ -1,5 +1,6 @@
 import unittest
-import os, re
+import os
+import re
 from . import get_directory
 from rackio_AI.readers.tpl import Genkey
 
@@ -72,12 +73,12 @@ genkey_test = {
             {
                 'LABEL': 'oil',
                 'TYPE': 'OIL',
-                'OILSPECIFICGRAVITY':0.872
+                'OILSPECIFICGRAVITY': 0.872
             },
             {
                 'LABEL': 'gas',
                 'TYPE': 'GAS',
-                'GASSPECIFICGRAVITY':0.7
+                'GASSPECIFICGRAVITY': 0.7
             }
         ],
         'BLACKOILFEED': {
@@ -102,14 +103,14 @@ genkey_test = {
                 'UNIT': 'CP'
             },
             'VISCTEMP': {
-                'VALUE': 25 ,
+                'VALUE': 25,
                 'UNIT': 'C'
             },
             'VISCPRESS': {
                 'VALUE': 0,
                 'UNIT': 'psig'
             }
-        } 
+        }
     },
     'Library keywords': {
         'WALL': {
@@ -136,11 +137,11 @@ genkey_test = {
                     'VALUE': 0,
                     'UNIT': '%'
                 },
-                'DENSITY':{
+                'DENSITY': {
                     'VALUE': 997,
                     'UNIT': 'kg/m3'
                 },
-                'EFFICIENCY':{
+                'EFFICIENCY': {
                     'VALUES': (63, 66.89, 69.22, 70, 69.56, 68.25, 66.06, 63),
                     'UNIT': '%'
                 },
@@ -400,17 +401,17 @@ genkey_test = {
                     }
                 },
                 {
-                     'LABEL': 'Soil',
-                     'PIPE': ("PIPE-9", "PIPE-10"),
-                     'HOUTEROPTION': 'HGIVEN',
-                     'TAMBIENT': {
-                         'VALUE': 21,
-                         'UNIT': 'C'
-                     },
-                     'HAMBIENT': {
-                         'VALUE': 10000,
-                         'UNIT': 'W/m2-C'
-                     }
+                    'LABEL': 'Soil',
+                    'PIPE': ("PIPE-9", "PIPE-10"),
+                    'HOUTEROPTION': 'HGIVEN',
+                    'TAMBIENT': {
+                        'VALUE': 21,
+                        'UNIT': 'C'
+                    },
+                    'HAMBIENT': {
+                        'VALUE': 10000,
+                        'UNIT': 'W/m2-C'
+                    }
                 }
             ],
             'LEAK': {
@@ -483,7 +484,7 @@ genkey_test = {
                         'UNIT': 'm'
                     }
                 }
-            ] 
+            ]
         },
         {
             'TYPE': 'MANUALCONTROLLER',
@@ -514,7 +515,7 @@ genkey_test = {
         'CONNECTION': [
             {
                 'TERMINALS': ('FLOWPATH_1 INLET', 'NODE_1 FLOWTERM_1')
-            }, 
+            },
             {
                 'TERMINALS': ('MANUALCONTROLLER_1 CONTR_1', 'FLOWPATH_1 PUMP@SPEEDSIG')
             }
@@ -530,12 +531,13 @@ class TestGenkey(unittest.TestCase):
 
         :return:
         """
-        self.filename = os.path.join(get_directory('Leak'), 'genkey', '01.genkey')
+        self.filename = os.path.join(
+            get_directory('Leak'), 'genkey', '01.genkey')
         self.genkey = Genkey()
         self.genkey.read(filename=self.filename)
-
+        print(self.genkey)
     # def test_00(self):
-        
+
     #     with open(self.filename, 'r') as f:
     #         file = f.read()
 
@@ -571,10 +573,11 @@ class TestGenkey(unittest.TestCase):
         :return:
         """
         self.assertIsInstance(self.genkey, dict)
-    
+
     def test_02_check_primary_keys(self):
 
-        self.assertListEqual(list(self.genkey.keys()), list(genkey_test.keys()))
+        self.assertListEqual(list(self.genkey.keys()),
+                             list(genkey_test.keys()))
 
     def test_03_check_global_keywords_as_dict(self):
 
@@ -582,7 +585,8 @@ class TestGenkey(unittest.TestCase):
 
     def test_04_check_global_keywords_keys(self):
 
-        self.assertListEqual(list(self.genkey['Global keywords'].keys()), list(genkey_test['Global keywords'].keys()))
+        self.assertListEqual(sorted(list(self.genkey['Global keywords'].keys())), sorted(list(
+            genkey_test['Global keywords'].keys())))
 
     def test_05_check_library_keywords_as_dict(self):
 
@@ -590,15 +594,16 @@ class TestGenkey(unittest.TestCase):
 
     def test_06_check_library_keywords_keys(self):
 
-        self.assertListEqual(list(self.genkey['Library keywords'].keys()), list(genkey_test['Library keywords'].keys()))
+        self.assertListEqual(sorted(list(self.genkey['Library keywords'].keys())), sorted(list(
+            genkey_test['Library keywords'].keys())))
 
     def test_07_check_network_component_as_list(self):
 
         self.assertIsInstance(self.genkey['Network Component'], list)
 
-    def test_08_check_connections_as_list(self):
+    def test_08_check_connections_as_dict(self):
 
-        self.assertIsInstance(self.genkey['Connections'], list)
+        self.assertIsInstance(self.genkey['Connections'], dict)
 
     def test_09_check_genkey(self):
 
