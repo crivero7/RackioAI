@@ -526,7 +526,7 @@ class Genkey(dict):
 
     #     return super().__getitem__(key)
 
-    # def _read(self, filename: str):
+    # def read(self, filename: str):
     #     r"""
     #     Documentation here"""
     #     with open(filename, "r") as file:
@@ -610,40 +610,57 @@ class Genkey(dict):
     #         self.__clean_last_key()
 
     def read(self, filename: str):
+        '''
+        Documentation here
+        '''
+        assert isinstance(
+            filename, str), f'filename must be a string! Not {type(filename)}'
 
         with open(filename, 'r') as f:
             file = f.read()
 
-        val_list = []
-        for element in re.split("\s\n", file):
-            val_list.append(element)
+        # Splitting Genkey in principal elements
+        split_genkey_elements_pattern = re.compile('\s\n')
+        genkey_elements = []
 
-        keys = []
-        vals = []
-        for el in val_list:
-            val = ' '.join([c.strip() for c in el.split(' ')])
-            _key = re.search('!\s\w+.+', val)
-            if _key:
-                r = re.findall('\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=', el)
-                r = {k.split(' ')[0] for k in r if k}
-                key = _key.group().replace('!', '').strip()
+        for element in split_genkey_elements_pattern.split(file):
+            genkey_elements.append(element)
 
-                keys.append(key)
-                vals.append(r)
+        # Getting first level and second level Genkey keys
+        first_level_key_pattern = re.compile('!\s\w+.+')
+        second_level_key_pattern = re.compile(
+            '\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=')
+        first_level_keys = []
+        second_level_keys_list = []
 
-        _genkey = list(zip(keys, vals))
-        for key in _genkey:
+        for el in genkey_elements:
+            genkey_element = ' '.join([c.strip() for c in el.split(' ')])
+            _first_level_key = first_level_key_pattern.search(genkey_element)
+
+            if _first_level_key:
+                second_level_keys = second_level_key_pattern.findall(el)
+                second_level_keys = {k.split(' ')[0]
+                                     for k in second_level_keys if k}
+                first_level_key = _first_level_key.group().replace('!', '').strip()
+
+                first_level_keys.append(first_level_key)
+                second_level_keys_list.append(second_level_keys)
+
+        # Putting together first and second level keys
+        genkey_keys = list(zip(first_level_keys, second_level_keys_list))
+
+        # Creating list of second level keys for duplicated first level keys
+        for key in genkey_keys:
             self.setdefault(key[0], []).append(key[1])
 
+        # Extracting second level keys from list if first level key is not duplicated.
+        # Setting None first level key value if its value is empty.
         for key, val in self.items():
             if len(val) == 1:
                 self[key] = self.fromkeys(self.get(key)[0])
 
             if not bool(val[0]):
                 self[key] = None
-
-        # print(genkey)
-        # breakpoint()
 
 
 if __name__ == "__main__":
