@@ -663,7 +663,9 @@ class Genkey(dict):
         clean_line = []
         flag = False
         second_key_pattern = re.compile(r'^[A-Z]+\s')
-        opening_third_key_pattern = re.compile(r'^[A-Z]+\=\(')
+        opening_third_key_pattern_1 = re.compile(
+            r'^[A-Z]+\=\(|^[A-Z]+\s\=\s\(')
+        opening_third_key_pattern_2 = re.compile(r'^[A-Z]+\=\(')
         third_key_pattern = re.compile(r'^[A-Z]+\=')
         closing_third_key_pattern = re.compile(r'\)$|\)\s.+$')
 
@@ -671,16 +673,17 @@ class Genkey(dict):
             if second_key_pattern.search(el):
                 splited_line = el.split(' ')
                 clean_line.append(splited_line[0])
+                second_key = ' '.join([e for e in splited_line[1:]])
 
-                if opening_third_key_pattern.search(splited_line[1]):
-                    _el = ' '.join([e for e in splited_line[1:]])
+                if opening_third_key_pattern_1.search(second_key):
+                    _el = second_key
                     flag = True
                     continue
-                el = ' '.join([e for e in splited_line[1:]])
+                el = second_key
                 clean_line.append(el)
                 continue
 
-            if opening_third_key_pattern.search(el):
+            if opening_third_key_pattern_2.search(el):
                 _el = el
                 flag = True
                 continue
@@ -714,8 +717,8 @@ class Genkey(dict):
         '''
         Documentation here
         '''
-        k = [el.split('=')[0] for el in values]
-        v = [el.split('=')[1] for el in values]
+        k = [el.split('=')[0].strip() for el in values]
+        v = [el.split('=')[1].strip() for el in values]
         k_v = dict(zip(k, v))
 
         pattern = re.compile(r'\d\s\w|\d\)\s\w+|\d\)\s\%|\d\s\%')
@@ -727,23 +730,42 @@ class Genkey(dict):
                 continue
 
             if pattern.search(val):
-                val = val.split(' ')
-                VALUE = ' '.join([el for el in val[:-1]])
-                UNIT = val[-1]
-                plural = False
+                if re.search(r'TERMINALS', key):
+                    val = val.replace('(', '').replace(')',
+                                                       '').replace(',', '')
+                    val = [e.strip() for e in val.split(' ')]
+                    _val = []
+                    _el = ''
+                    n = 0
+                    for el in val:
+                        n += 1
+                        if n == 1:
+                            _el = el
+                            continue
 
-                try:
+                        if n == 2:
+                            el = ', ' + el
+                            _el += el
+                            _val.append(_el)
+                            n = 0
+                            continue
+                    VALUE = tuple(_val)
+                    k_v[key] = VALUE
+                    continue
+                else:
+                    val = val.split(' ')
+                    VALUE = ' '.join([el for el in val[:-1]])
+                    UNIT = val[-1]
+                    plural = False
                     VALUE = eval(VALUE)
-                except:
-                    pass
 
-                if isinstance(VALUE, tuple):
-                    plural = True
+                    if isinstance(VALUE, tuple):
+                        plural = True
 
-                k_v[key] = {
-                    f'VALUE{"S" if plural else ""}': VALUE,
-                    'UNIT': UNIT.strip(',')
-                }
+                    k_v[key] = {
+                        f'VALUE{"S" if plural else ""}': VALUE,
+                        'UNIT': UNIT.strip(',')
+                    }
 
         return k_v
 
@@ -766,8 +788,6 @@ class Genkey(dict):
 
         # Getting first level and second level Genkey keys
         first_level_key_pattern = re.compile('!\s\w+.+')
-        # second_level_key_pattern = re.compile(
-        #     '\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=')
         first_level_keys = []
         second_level_keys = []
 
@@ -783,7 +803,6 @@ class Genkey(dict):
                 elements = list(map(self.split_values, lines))
                 second_keys = [el[0] for el in elements]
                 list_values = [el[1:] for el in elements]
-                # breakpoint()
                 values = list(map(self.get_dict_values, list_values))
                 key_vals_list = list(zip(second_keys, values))
 
@@ -797,15 +816,6 @@ class Genkey(dict):
 
                 second_level_keys.append(key_vals_dict)
 
-        #     if _first_level_key:
-        #         second_level_keys = second_level_key_pattern.findall(el)
-        #         second_level_keys = {k.split(' ')[0]
-        #                              for k in second_level_keys if k}
-        #         first_level_key = _first_level_key.group().replace('!', '').strip()
-
-        #         first_level_keys.append(first_level_key)
-        #         second_level_keys_list.append(second_level_keys)
-
         # Putting together first and second level keys
         genkey_keys = list(zip(first_level_keys, second_level_keys))
 
@@ -814,13 +824,13 @@ class Genkey(dict):
             self.setdefault(key[0], []).append(key[1])
 
         # Extracting second level keys from list if first level key is not duplicated.
-        # Setting None first level key value if its value is empty.
         for key, val in self.items():
             if len(val) == 1:
                 self[key] = self.get(key)[0]
 
-            # if not bool(val[0]):
-            #     self[key] = None
+        for key, val in self.items():
+            if val == {}:
+                self[key] = None
 
         # breakpoint()
 
