@@ -536,7 +536,6 @@ class TestGenkey(unittest.TestCase):
         self.genkey = Genkey()
         self.genkey.read(filename=self.filename)
 
-
     def test_01_genkey_as_dict(self):
         """
 
@@ -544,106 +543,110 @@ class TestGenkey(unittest.TestCase):
         """
         self.assertIsInstance(self.genkey, dict)
 
-
     def test_02_check_primary_keys(self):
 
         self.assertListEqual(list(self.genkey.keys()),
                              list(genkey_test.keys()))
 
-
     def test_03_check_global_keywords_as_dict(self):
 
         self.assertIsInstance(self.genkey['Global keywords'], dict)
-
 
     def test_04_check_global_keywords_keys(self):
 
         self.assertListEqual(sorted(list(self.genkey['Global keywords'].keys())), sorted(list(
             genkey_test['Global keywords'].keys())))
 
-
     def test_05_check_library_keywords_as_dict(self):
 
         self.assertIsInstance(self.genkey['Library keywords'], dict)
-
 
     def test_06_check_library_keywords_keys(self):
 
         self.assertListEqual(sorted(list(self.genkey['Library keywords'].keys())), sorted(list(
             genkey_test['Library keywords'].keys())))
 
-
     def test_07_check_network_component_as_list(self):
 
         self.assertIsInstance(self.genkey['Network Component'], list)
-
 
     def test_08_check_connections_as_dict(self):
 
         self.assertIsInstance(self.genkey['Connections'], dict)
 
-
     def test_09_check_global_keywords(self):
 
         with self.subTest("Testing Global Keywords - OPTIONS"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['OPTIONS'], genkey_test['Global keywords']['OPTIONS'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['OPTIONS'], genkey_test['Global keywords']['OPTIONS'])
 
         with self.subTest("Testing Global Keywords - CASE"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['CASE'], genkey_test['Global keywords']['CASE'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['CASE'], genkey_test['Global keywords']['CASE'])
 
         with self.subTest("Testing Global Keywords - FILES"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['FILES'], genkey_test['Global keywords']['FILES'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['FILES'], genkey_test['Global keywords']['FILES'])
 
         with self.subTest("Testing Global Keywords - INTEGRATION"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['INTEGRATION'], genkey_test['Global keywords']['INTEGRATION'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['INTEGRATION'], genkey_test['Global keywords']['INTEGRATION'])
 
         with self.subTest("Testing Global Keywords - OUTPUT"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['OUTPUT'], genkey_test['Global keywords']['OUTPUT'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['OUTPUT'], genkey_test['Global keywords']['OUTPUT'])
 
         with self.subTest("Testing Global Keywords - TREND"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['TREND'], genkey_test['Global keywords']['TREND'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['TREND'], genkey_test['Global keywords']['TREND'])
 
         with self.subTest("Testing Global Keywords - PROFILE"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['PROFILE'], genkey_test['Global keywords']['PROFILE'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['PROFILE'], genkey_test['Global keywords']['PROFILE'])
 
         with self.subTest("Testing Global Keywords - RESTART"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['RESTART'], genkey_test['Global keywords']['RESTART'])
-        
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['RESTART'], genkey_test['Global keywords']['RESTART'])
+
         with self.subTest("Testing Global Keywords - BLACKOILCOMPONENT"):
-            
-            self.assertListEqual(self.genkey['Global keywords']['BLACKOILCOMPONENT'], genkey_test['Global keywords']['BLACKOILCOMPONENT'])
+
+            self.assertListEqual(self.genkey['Global keywords']['BLACKOILCOMPONENT'],
+                                 genkey_test['Global keywords']['BLACKOILCOMPONENT'])
 
         with self.subTest("Testing Global Keywords - BLACKOILFEED"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['BLACKOILFEED'], genkey_test['Global keywords']['BLACKOILFEED'])
+
+            self.assertDictEqual(
+                self.genkey['Global keywords']['BLACKOILFEED'], genkey_test['Global keywords']['BLACKOILFEED'])
 
         with self.subTest("Testing Global Keywords - BLACKOILOPTIONS"):
-            
-            self.assertDictEqual(self.genkey['Global keywords']['BLACKOILOPTIONS'], genkey_test['Global keywords']['BLACKOILOPTIONS'])
-        
+
+            self.assertDictEqual(self.genkey['Global keywords']['BLACKOILOPTIONS'],
+                                 genkey_test['Global keywords']['BLACKOILOPTIONS'])
 
     def test_10_check_library_keywords(self):
 
         with self.subTest("Testing Library Keywords - WALL"):
-            
-            self.assertDictEqual(self.genkey['Library keywords']['WALL'], genkey_test['Library keywords']['WALL'])
+
+            self.assertDictEqual(
+                self.genkey['Library keywords']['WALL'], genkey_test['Library keywords']['WALL'])
 
         with self.subTest("Testing Library Keywords - CENTPUMPCURVE"):
-            
-            self.assertListEqual(self.genkey['Library keywords']['CENTPUMPCURVE'], genkey_test['Library keywords']['CENTPUMPCURVE'])
+
+            self.assertListEqual(
+                self.genkey['Library keywords']['CENTPUMPCURVE'], genkey_test['Library keywords']['CENTPUMPCURVE'])
 
         with self.subTest("Testing Library Keywords - MATERIAL"):
-            
-            self.assertListEqual(self.genkey['Library keywords']['MATERIAL'], genkey_test['Library keywords']['MATERIAL'])
 
+            self.assertListEqual(
+                self.genkey['Library keywords']['MATERIAL'], genkey_test['Library keywords']['MATERIAL'])
 
     def test_11_check_network_component(self):
 
@@ -652,13 +655,13 @@ class TestGenkey(unittest.TestCase):
         for elem, component in enumerate(components):
 
             with self.subTest("Testing Network Component"):
-                
-                self.assertListEqual(component, genkey_test['Connections'][elem])
-    
+
+                self.assertListEqual(
+                    component, genkey_test['Connections'][elem])
 
     def test_12_check_connections(self):
 
         with self.subTest("Testing Connections - CONNECTION"):
-            
-            self.assertListEqual(self.genkey['Connections']['CONNECTION'], genkey_test['Connections']['CONNECTION'])
 
+            self.assertListEqual(
+                self.genkey['Connections']['CONNECTION'], genkey_test['Connections']['CONNECTION'])
