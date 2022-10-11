@@ -638,7 +638,7 @@ class TestGenkey(unittest.TestCase):
 
         with self.subTest("Testing Library Keywords - CENTPUMPCURVE"):
             
-            self.assertListEqual(self.genkey['Library keywords']['CENTPUMPCURVE'], genkey_test['Libraryl keywords']['CENTPUMPCURVE'])
+            self.assertListEqual(self.genkey['Library keywords']['CENTPUMPCURVE'], genkey_test['Library keywords']['CENTPUMPCURVE'])
 
         with self.subTest("Testing Library Keywords - MATERIAL"):
             
