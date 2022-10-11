@@ -15,13 +15,13 @@ genkey_test = {
             'FLOWMODEL': 'OLGAHD'
         },
         'CASE': {
-            'AUTHOR': 'Jesus E Varajas',
+            'AUTHOR': "Jesus E Varajas",
             'DATE': '02/09/2022',
             'PROJECT': 'Supe',
-            'INFO': 'Modelo de parada, a partir del minuto 9 el sistema queda estable'
+            'INFO': "Modelo de parada, a partir del minuto 9 el sistema queda estable"
         },
         'FILES': {
-            'PVTFILE': ("../../../07 Fluido/fase4.tab", "../../../07 Fluido/Fluido 0.tab")
+            'PVTFILE': '("../../../07 Fluido/fase4.tab", "../../../07 Fluido/Fluido 0.tab")'
         },
         'INTEGRATION': {
             'ENDTIME': {
@@ -97,7 +97,7 @@ genkey_test = {
                 'UNIT': 'Sm3/Sm3'
             },
             'GASSPECIFICGRAVITY': 0.7,
-            'APIGRAVITY': '29.94',
+            'APIGRAVITY': 29.94,
             'OILVISC': {
                 'VALUE': 4.839,
                 'UNIT': 'CP'
@@ -178,7 +178,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': "C-3",
+                'LABEL': '"C-3"',
                 'VOLUMEFLOW': {
                     'VALUES': (0, 198.4581, 396.7509, 594.8785, 743.5981, 892.3177, 1041.037, 1189.757),
                     'UNIT': 'm3/h'
@@ -207,7 +207,7 @@ genkey_test = {
         ],
         'MATERIAL': [
             {
-                'LABEL': "Fibra de vidrio",
+                'LABEL': '"Fibra de vidrio"',
                 'CAPACITY': {
                     'VALUE': 450,
                     'UNIT': 'J/kg-C'
@@ -226,7 +226,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': "Concrete Coating HD",
+                'LABEL': '"Concrete Coating HD"',
                 'CAPACITY': {
                     'VALUE': 880,
                     'UNIT': 'J/kg-C'
@@ -245,7 +245,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': "Stainless Steel",
+                'LABEL': '"Stainless Steel"',
                 'CAPACITY': {
                     'VALUE': 450,
                     'UNIT': 'J/kg-C'
@@ -535,7 +535,6 @@ class TestGenkey(unittest.TestCase):
             get_directory('Leak'), 'genkey', '01.genkey')
         self.genkey = Genkey()
         self.genkey.read(filename=self.filename)
-        print(self.genkey)
     # def test_00(self):
 
     #     with open(self.filename, 'r') as f:
@@ -605,6 +604,70 @@ class TestGenkey(unittest.TestCase):
 
         self.assertIsInstance(self.genkey['Connections'], dict)
 
-    def test_09_check_genkey(self):
+    def test_09_check_global_keywords(self):
 
-        self.assertDictEqual(self.genkey, genkey_test)
+        with self.subTest("Testing Global Keywords - OPTIONS"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['OPTIONS'], genkey_test['Global keywords']['OPTIONS'])
+
+        with self.subTest("Testing Global Keywords - CASE"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['CASE'], genkey_test['Global keywords']['CASE'])
+
+        with self.subTest("Testing Global Keywords - FILES"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['FILES'], genkey_test['Global keywords']['FILES'])
+
+        with self.subTest("Testing Global Keywords - INTEGRATION"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['INTEGRATION'], genkey_test['Global keywords']['INTEGRATION'])
+
+        with self.subTest("Testing Global Keywords - OUTPUT"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['OUTPUT'], genkey_test['Global keywords']['OUTPUT'])
+
+        with self.subTest("Testing Global Keywords - TREND"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['TREND'], genkey_test['Global keywords']['TREND'])
+
+        with self.subTest("Testing Global Keywords - PROFILE"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['PROFILE'], genkey_test['Global keywords']['PROFILE'])
+
+        with self.subTest("Testing Global Keywords - RESTART"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['RESTART'], genkey_test['Global keywords']['RESTART'])
+        
+        with self.subTest("Testing Global Keywords - BLACKOILCOMPONENT"):
+            
+            self.assertListEqual(self.genkey['Global keywords']['BLACKOILCOMPONENT'], genkey_test['Global keywords']['BLACKOILCOMPONENT'])
+
+        with self.subTest("Testing Global Keywords - BLACKOILFEED"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['BLACKOILFEED'], genkey_test['Global keywords']['BLACKOILFEED'])
+
+        with self.subTest("Testing Global Keywords - BLACKOILOPTIONS"):
+            
+            self.assertDictEqual(self.genkey['Global keywords']['BLACKOILOPTIONS'], genkey_test['Global keywords']['BLACKOILOPTIONS'])
+        
+
+    def test_10_check_library_keywords(self):
+
+        with self.subTest("Testing Library Keywords - WALL"):
+            
+            self.assertDictEqual(self.genkey['Library keywords']['WALL'], genkey_test['Library keywords']['WALL'])
+
+        with self.subTest("Testing Library Keywords - CENTPUMPCURVE"):
+            
+            self.assertListEqual(self.genkey['Library keywords']['CENTPUMPCURVE'], genkey_test['Libraryl keywords']['CENTPUMPCURVE'])
+
+        with self.subTest("Testing Library Keywords - MATERIAL"):
+            
+            self.assertListEqual(self.genkey['Library keywords']['MATERIAL'], genkey_test['Library keywords']['MATERIAL'])
+    
+    def test_11_check_connections(self):
+
+        with self.subTest("Testing Connections - CONNECTION"):
+            
+            self.assertListEqual(self.genkey['Connections']['CONNECTION'], genkey_test['Connections']['CONNECTION'])
+
