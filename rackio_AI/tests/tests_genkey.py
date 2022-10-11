@@ -15,13 +15,13 @@ genkey_test = {
             'FLOWMODEL': 'OLGAHD'
         },
         'CASE': {
-            'AUTHOR': "Jesus E Varajas",
+            'AUTHOR': 'Jesus E Varajas',
             'DATE': '02/09/2022',
             'PROJECT': 'Supe',
-            'INFO': "Modelo de parada, a partir del minuto 9 el sistema queda estable"
+            'INFO': 'Modelo de parada, a partir del minuto 9 el sistema queda estable'
         },
         'FILES': {
-            'PVTFILE': '("../../../07 Fluido/fase4.tab", "../../../07 Fluido/Fluido 0.tab")'
+            'PVTFILE': ("../../../07 Fluido/fase4.tab", "../../../07 Fluido/Fluido 0.tab")
         },
         'INTEGRATION': {
             'ENDTIME': {
@@ -114,17 +114,17 @@ genkey_test = {
     },
     'Library keywords': {
         'WALL': {
-            'LABEL': "WALL-1",
+            'LABEL': 'WALL-1',
             'THICKNESS': {
                 'VALUES': (0.6, 3.315, 1.015),
                 'UNIT': 'cm'
             },
-            'MATERIAL': ("Fibra de vidrio", "Concrete Coating HD", "Stainless Steel"),
+            'MATERIAL': ('Fibra de vidrio', 'Concrete Coating HD', 'Stainless Steel'),
             'ELASTIC': 'ON'
         },
         'CENTPUMPCURVE': [
             {
-                'LABEL': "C-1",
+                'LABEL': 'C-1',
                 'VOLUMEFLOW': {
                     'VALUES': (0, 181.9067, 363.6619, 545.2656, 681.582, 817.8984, 954.2148, 1090.531),
                     'UNIT': 'm3/h'
@@ -151,7 +151,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': "C-2",
+                'LABEL': 'C-2',
                 'VOLUMEFLOW': {
                     'VALUES': (0, 188.5352, 376.9134, 565.1346, 706.4182, 847.7018, 988.9855, 1130.269),
                     'UNIT': 'm3/h'
@@ -178,7 +178,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': '"C-3"',
+                'LABEL': 'C-3',
                 'VOLUMEFLOW': {
                     'VALUES': (0, 198.4581, 396.7509, 594.8785, 743.5981, 892.3177, 1041.037, 1189.757),
                     'UNIT': 'm3/h'
@@ -207,7 +207,7 @@ genkey_test = {
         ],
         'MATERIAL': [
             {
-                'LABEL': '"Fibra de vidrio"',
+                'LABEL': 'Fibra de vidrio',
                 'CAPACITY': {
                     'VALUE': 450,
                     'UNIT': 'J/kg-C'
@@ -226,7 +226,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': '"Concrete Coating HD"',
+                'LABEL': 'Concrete Coating HD',
                 'CAPACITY': {
                     'VALUE': 880,
                     'UNIT': 'J/kg-C'
@@ -245,7 +245,7 @@ genkey_test = {
                 }
             },
             {
-                'LABEL': '"Stainless Steel"',
+                'LABEL': 'Stainless Steel',
                 'CAPACITY': {
                     'VALUE': 450,
                     'UNIT': 'J/kg-C'
@@ -354,7 +354,7 @@ genkey_test = {
                     'VARIABLE': ('ACMLK', 'GTLEAK', 'PTLKUP')
                 },
                 {
-                    'VALVE': ("V-out", "V-in"),
+                    'VALVE': ('V-out', 'V-in'),
                     'VARIABLE': ('PVALVE', 'VALVOP')
                 },
                 {
@@ -379,12 +379,12 @@ genkey_test = {
                     'VALUE': 1.5,
                     'UNIT': 'm'
                 },
-                'CURVES': ("C-1", "C-2", "C-3")
+                'CURVES': ('C-1', 'C-2', 'C-3')
             },
             'HEATTRANSFER': [
                 {
                     'LABEL': 'Air',
-                    'PIPE': ("PIPE-1", "PIPE-2", "PIPE-3"),
+                    'PIPE': ('PIPE-1', 'PIPE-2', 'PIPE-3'),
                     'HOUTEROPTION': 'AIR',
                     'TAMBIENT': {
                         'VALUE': 21,
@@ -402,7 +402,7 @@ genkey_test = {
                 },
                 {
                     'LABEL': 'Soil',
-                    'PIPE': ("PIPE-9", "PIPE-10"),
+                    'PIPE': ('PIPE-9', 'PIPE-10'),
                     'HOUTEROPTION': 'HGIVEN',
                     'TAMBIENT': {
                         'VALUE': 21,
@@ -436,7 +436,7 @@ genkey_test = {
             },
             'VALVE': [
                 {
-                    'LABEL': "C-1",
+                    'LABEL': 'C-1',
                     'MODEL': 'HYDROVALVE',
                     'ABSPOSITION': {
                         'VALUE': 16.7,
@@ -448,7 +448,7 @@ genkey_test = {
                     }
                 },
                 {
-                    'LABEL': "V-out",
+                    'LABEL': 'V-out',
                     'MODEL': 'HYDROVALVE',
                     'TIME': {
                         'VALUE': 0,
@@ -471,14 +471,14 @@ genkey_test = {
             ],
             'CHECKVALVE': [
                 {
-                    'LABEL': "CHECK-1",
+                    'LABEL': 'CHECK-1',
                     'ABSPOSITION': {
                         'VALUE': 1492,
                         'UNIT': 'm'
                     }
                 },
                 {
-                    'LABEL': "CHECK-2",
+                    'LABEL': 'CHECK-2',
                     'ABSPOSITION': {
                         'VALUE': 1,
                         'UNIT': 'm'
@@ -490,7 +490,7 @@ genkey_test = {
             'TYPE': 'MANUALCONTROLLER',
             'TAG': 'MANUALCONTROLLER_1',
             'PARAMETERS': {
-                'LABEL': "Control-Pump",
+                'LABEL': 'Control-Pump',
                 'TIME': {
                     'VALUE': 0,
                     'UNIT': 'M'
@@ -535,36 +535,7 @@ class TestGenkey(unittest.TestCase):
             get_directory('Leak'), 'genkey', '01.genkey')
         self.genkey = Genkey()
         self.genkey.read(filename=self.filename)
-    # def test_00(self):
 
-    #     with open(self.filename, 'r') as f:
-    #         file = f.read()
-
-    #     val_list = []
-    #     for element in re.split("\s\n", file):
-    #         val_list.append(element)
-
-    #     keys = []
-    #     vals = []
-    #     for el in val_list:
-    #         val = ' '.join([c.strip() for c in el.split(' ')])
-    #         _key = re.search('!\s\w+.+', val)
-    #         if _key:
-    #             init, end = _key.span()
-    #             r = re.findall('\w+\s\w+\=|\w+\s\w+\-\w+|\w+\s\w+\s\=', el)
-    #             r = {k.split(' ')[0] for k in r if k}
-    #             key = val[_key.start():_key.end()].replace('!', '').strip()
-
-    #             keys.append(key)
-    #             vals.append(r)
-
-    #     _genkey = list(zip(keys, vals))
-    #     genkey = {}
-    #     for key in _genkey:
-    #         genkey.setdefault(key[0], []).append(key[1])
-
-    #     print(genkey)
-    #     self.assertListEqual(list(genkey.keys()), list(genkey_test.keys()))
 
     def test_01_genkey_as_dict(self):
         """
@@ -573,36 +544,44 @@ class TestGenkey(unittest.TestCase):
         """
         self.assertIsInstance(self.genkey, dict)
 
+
     def test_02_check_primary_keys(self):
 
         self.assertListEqual(list(self.genkey.keys()),
                              list(genkey_test.keys()))
 
+
     def test_03_check_global_keywords_as_dict(self):
 
         self.assertIsInstance(self.genkey['Global keywords'], dict)
+
 
     def test_04_check_global_keywords_keys(self):
 
         self.assertListEqual(sorted(list(self.genkey['Global keywords'].keys())), sorted(list(
             genkey_test['Global keywords'].keys())))
 
+
     def test_05_check_library_keywords_as_dict(self):
 
         self.assertIsInstance(self.genkey['Library keywords'], dict)
+
 
     def test_06_check_library_keywords_keys(self):
 
         self.assertListEqual(sorted(list(self.genkey['Library keywords'].keys())), sorted(list(
             genkey_test['Library keywords'].keys())))
 
+
     def test_07_check_network_component_as_list(self):
 
         self.assertIsInstance(self.genkey['Network Component'], list)
 
+
     def test_08_check_connections_as_dict(self):
 
         self.assertIsInstance(self.genkey['Connections'], dict)
+
 
     def test_09_check_global_keywords(self):
 
@@ -664,8 +643,20 @@ class TestGenkey(unittest.TestCase):
         with self.subTest("Testing Library Keywords - MATERIAL"):
             
             self.assertListEqual(self.genkey['Library keywords']['MATERIAL'], genkey_test['Library keywords']['MATERIAL'])
+
+
+    def test_11_check_network_component(self):
+
+        components = self.genkey['Network Component']
+
+        for elem, component in enumerate(components):
+
+            with self.subTest("Testing Network Component"):
+                
+                self.assertListEqual(component, genkey_test['Connections'][elem])
     
-    def test_11_check_connections(self):
+
+    def test_12_check_connections(self):
 
         with self.subTest("Testing Connections - CONNECTION"):
             
