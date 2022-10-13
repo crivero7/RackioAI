@@ -26,7 +26,7 @@ class TestLoadData(unittest.TestCase):
         :return:
         """
         directory = os.path.join(get_directory('Leak'))
-        df = RackioAI.load(directory, join_files=False)
+        df = RackioAI.load(directory)
 
     def test_load_csv_file(self):
         """

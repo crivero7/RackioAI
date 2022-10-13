@@ -97,7 +97,8 @@ class Reader:
         ```
         """
         if ext==".tpl":
-
+            
+            setattr(self.tpl, '_join_files', join_files)
             self.tpl.read(pathname)
             data = self.tpl.to('dataframe', join_files=join_files)
 

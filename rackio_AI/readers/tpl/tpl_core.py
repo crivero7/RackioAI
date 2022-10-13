@@ -1,6 +1,5 @@
 import os
 import re
-from sys import flags
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
@@ -21,9 +20,11 @@ class TPL:
 
         self.file_extension = ".tpl"
         self.doc = list()
+        self.genkey = list()
+        self.settings = list()
         TPL._instances.append(self)
 
-    def read(self, name):
+    def read(self, name, **kwargs):
         """
         Read .tpl files
 
@@ -64,11 +65,11 @@ class TPL:
 
         ```
         """
-        self.doc = self.__read_files(name)
+        self.doc = self.__read_files(name, **kwargs)
 
         return self.doc
 
-    def __read_file(self, filename):
+    def __read_file(self, filename, **kwargs):
         """
         Read only one .tpl file
 
@@ -112,6 +113,7 @@ class TPL:
 
         doc = dict()
 
+
         (data_header_section, data) = self.__get_section_from(filename)
         header_section = self.__get_header_section(data_header_section)
         (filename, _) = os.path.splitext(filename)
@@ -134,10 +136,26 @@ class TPL:
         self.header = pd.MultiIndex.from_tuples(
             multi_index, names=['tag', 'variable', 'unit'])
 
+        # Read Genkey
+
+        if hasattr(self, '_join_files'):
+            
+            _attr = getattr(self, '_join_files')
+
+            if not _attr:
+
+                genkey_filename = filename.split(os.path.sep)
+                genkey_filename.pop(-2)
+                genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
+                genkey = Genkey()
+                genkey.read(filename=genkey_filename)
+
+                # print(f"Genkey: {genkey}")
+
         return doc
 
     @progress_bar(desc='Loading .tpl files...', unit='files', gen=True)
-    def __read_files(self, filenames):
+    def __read_files(self, filenames, **kwargs):
         """
         Read all .tpl files in a list of filenames
 
@@ -152,7 +170,7 @@ class TPL:
 
         """
 
-        return self.__read_file(filenames)
+        return self.__read_file(filenames, **kwargs)
 
     @raise_error
     def __get_section_from(self, filename):
@@ -845,7 +863,7 @@ class Genkey(dict):
             if val == {}:
                 self[key] = None
 
-        # breakpoint()
+    
 
 
 if __name__ == "__main__":
