@@ -29,26 +29,26 @@ class TestLoad(unittest.TestCase):
 
             self.assertEqual(len(data), 16)
 
-        for case in data:
+        case = data[0]
 
-            with self.subTest("Testing Case as dict"):
+        with self.subTest("Testing Case as dict"):
 
-                self.assertIsInstance(case, list)
+            self.assertIsInstance(case, dict)
 
-            with self.subTest("Testing Case structure"):
+        with self.subTest("Testing Case structure"):
 
-                self.assertListEqual(list(case.keys()), ['tpl', 'genkey', 'settings'])
+            self.assertListEqual(list(case.keys()), ['tpl', 'genkey', 'settings'])
 
-            with self.subTest("Testing TPL instance"):
+        with self.subTest("Testing TPL instance"):
 
-                self.assertIsInstance(case['tpl'], DataFrame)
-            
-            with self.subTest("Testing genkey instance"):
+            self.assertIsInstance(case['tpl'], DataFrame)
+        
+        with self.subTest("Testing genkey instance"):
 
-                self.assertIsInstance(case['genkey'], dict)
+            self.assertIsInstance(case['genkey'], dict)
 
-            with self.subTest("Testing settings instance"):
+        with self.subTest("Testing settings instance"):
 
-                self.assertIsInstance(case['settings'], dict)
+            self.assertIsInstance(case['settings'], dict)
 
 
