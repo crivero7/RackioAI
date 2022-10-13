@@ -1,5 +1,6 @@
 from functools import wraps
 import pywt
+import types
 
 class WaveletDeco(object):
 
