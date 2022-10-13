@@ -721,12 +721,18 @@ class Genkey(dict):
         v = [el.split('=')[1].strip() for el in values]
         k_v = dict(zip(k, v))
 
-        pattern = re.compile(r'\d\s\w|\d\)\s\w+|\d\)\s\%|\d\s\%')
+        pattern = re.compile(r'\d\s\w|\d\)\s\w+|\d\)\s\%|\d\s\%|\(\"\w+')
         for key, val in k_v.items():
-            if re.search(r'\(\"\.\./', k_v[key]):
+            if re.search(r'\(\"\.\./|\(\"\w+', val):
+                val = [e.replace('"', '').replace('(', '').replace(')', '').strip()
+                       for e in val.split(',')]
+                val = tuple(val)
+                k_v[key] = val
                 continue
 
             if re.search(r'^INFO', key):
+                val = val.replace('"', '')
+                k_v[key] = val
                 continue
 
             if pattern.search(val):
@@ -744,7 +750,7 @@ class Genkey(dict):
                             continue
 
                         if n == 2:
-                            el = ', ' + el
+                            el = ' ' + el
                             _el += el
                             _val.append(_el)
                             n = 0
@@ -766,6 +772,13 @@ class Genkey(dict):
                         f'VALUE{"S" if plural else ""}': VALUE,
                         'UNIT': UNIT.strip(',')
                     }
+                    continue
+
+            if re.search(r'\d+\.\d+|^[0-9]*$', val):
+                k_v[key] = eval(val)
+                continue
+
+            k_v[key] = val.replace('"', '')
 
         return k_v
 
