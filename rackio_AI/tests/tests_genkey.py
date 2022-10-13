@@ -207,6 +207,25 @@ genkey_test = {
         ],
         'MATERIAL': [
             {
+                'LABEL': 'Stainless Steel',
+                'CAPACITY': {
+                    'VALUE': 450,
+                    'UNIT': 'J/kg-C'
+                },
+                'CONDUCTIVITY': {
+                    'VALUE': 20,
+                    'UNIT': 'W/m-K'
+                },
+                'DENSITY': {
+                    'VALUE': 7850,
+                    'UNIT': 'kg/m3'
+                },
+                'EMOD': {
+                    'VALUE': 210942150000,
+                    'UNIT': 'Pa'
+                }
+            },
+            {
                 'LABEL': 'Fibra de vidrio',
                 'CAPACITY': {
                     'VALUE': 450,
@@ -243,32 +262,15 @@ genkey_test = {
                     'VALUE': 50481503000,
                     'UNIT': 'Pa'
                 }
-            },
-            {
-                'LABEL': 'Stainless Steel',
-                'CAPACITY': {
-                    'VALUE': 450,
-                    'UNIT': 'J/kg-C'
-                },
-                'CONDUCTIVITY': {
-                    'VALUE': 20,
-                    'UNIT': 'W/m-K'
-                },
-                'DENSITY': {
-                    'VALUE': 7850,
-                    'UNIT': 'kg/m3'
-                },
-                'EMOD': {
-                    'VALUE': 210942150000,
-                    'UNIT': 'Pa'
-                }
             }
         ]
     },
     'Network Component': [
         {
-            'TYPE': 'FLOWPATH',
-            'TAG': 'FLOWPATH_1',
+            'NETWORKCOMPONENT': {
+                'TYPE': 'FLOWPATH',
+                'TAG': 'FLOWPATH_1'
+            },
             'PARAMETERS': {
                 'LABEL': 'Pipeline'
             },
@@ -487,8 +489,10 @@ genkey_test = {
             ]
         },
         {
-            'TYPE': 'MANUALCONTROLLER',
-            'TAG': 'MANUALCONTROLLER_1',
+            'NETWORKCOMPONENT': {
+                'TYPE': 'MANUALCONTROLLER',
+                'TAG': 'MANUALCONTROLLER_1'
+            },
             'PARAMETERS': {
                 'LABEL': 'Control-Pump',
                 'TIME': {
@@ -509,6 +513,7 @@ genkey_test = {
             'TRENDDATA': {
                 'VARIABLE': 'CONTR'
             }
+
         }
     ],
     'Connections': {
@@ -567,7 +572,7 @@ class TestGenkey(unittest.TestCase):
             genkey_test['Library keywords'].keys())))
 
     def test_07_check_network_component_as_list(self):
-
+        
         self.assertIsInstance(self.genkey['Network Component'], list)
 
     def test_08_check_connections_as_dict(self):
@@ -655,9 +660,10 @@ class TestGenkey(unittest.TestCase):
         for elem, component in enumerate(components):
 
             with self.subTest("Testing Network Component"):
-
-                self.assertListEqual(
-                    component, genkey_test['Connections'][elem])
+                if elem==0:
+                    print(f"Genkey: {component}")
+                    print(f"Genkey Test: {genkey_test['Network Component'][elem]}")
+                self.assertDictEqual(component, genkey_test['Network Component'][elem])
 
     def test_12_check_connections(self):
 
