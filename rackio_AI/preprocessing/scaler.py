@@ -86,7 +86,7 @@ class RackioAIScaler:
         """
         if not method.lower() in self.methods:
             
-            raise TypeError("{} method not available, availables methods: {}".format(method, methods.keys()))
+            raise TypeError("{} method not available, availables methods: {}".format(method, self.methods.keys()))
 
         self.__scaler = self.methods[method.lower()](**kwargs)
         self.__columns = columns
