@@ -338,14 +338,14 @@ genkey_test = {
                         'VALUES': (19, 58, 1378),
                         'UNIT': 'm'
                     },
-                    'VARIABLE': ('KAPPA', 'PT', 'TM')
+                    'VARIABLE': '(KAPPA, PT, TM)'
                 },
                 {
                     'ABSPOSITION': {
                         'VALUES': (19, 58, 1378),
                         'UNIT': 'm'
                     },
-                    'VARIABLE': ('GT', 'ROHL')
+                    'VARIABLE': '(GT, ROHL)'
                 },
                 {
                     'CENTRIFUGALPUMP': 'PUMP',
@@ -353,22 +353,22 @@ genkey_test = {
                 },
                 {
                     'LEAK': 'LEAK',
-                    'VARIABLE': ('ACMLK', 'GTLEAK', 'PTLKUP')
-                },
-                {
-                    'VALVE': ('V-out', 'V-in'),
-                    'VARIABLE': ('PVALVE', 'VALVOP')
+                    'VARIABLE': '(ACMLK, GTLEAK, PTLKUP)'
                 },
                 {
                     'ABSPOSITION': {
                         'VALUES': (19, 58, 1378),
                         'UNIT': 'm'
                     },
-                    'VARIABLE': ('SSP', 'VISHLTAB')
+                    'VARIABLE': '(SSP, VISHLTAB)'
+                },
+                {
+                    'VALVE': ('V-out', 'V-in'),
+                    'VARIABLE': '(PVALVE, VALVOP)'
                 }
             ],
             'PROFILEDATA': {
-                'VARIABLE': ('GT', 'PT', 'QOST', 'STDROHL', 'TM', 'VISHLTAB')
+                'VARIABLE': '(GT, PT, QOST, STDROHL, TM, VISHLTAB)'
             },
             'CENTRIFUGALPUMP': {
                 'LABEL': 'PUMP',
@@ -660,9 +660,7 @@ class TestGenkey(unittest.TestCase):
         for elem, component in enumerate(components):
 
             with self.subTest("Testing Network Component"):
-                if elem==0:
-                    print(f"Genkey: {component}")
-                    print(f"Genkey Test: {genkey_test['Network Component'][elem]}")
+
                 self.assertDictEqual(component, genkey_test['Network Component'][elem])
 
     def test_12_check_connections(self):
