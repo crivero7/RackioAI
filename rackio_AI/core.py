@@ -152,21 +152,24 @@ class RackioAI(Singleton):
 
         data = self.reader.read(filename, ext=ext, join_files=join_files, **kwargs)
 
-        self.columns_name = Utils.get_column_names(data)
-        
-        if data.index.has_duplicates:
-        
-            data = data.reset_index(drop=True)
-        
-        if reset_index:
+        if isinstance(data, pd.Series):
 
-            data = data.reset_index(drop=True)
+            self.columns_name = Utils.get_column_names(data)
+            
+            if data.index.has_duplicates:
+            
+                data = data.reset_index(drop=True)
+            
+            if reset_index:
 
-        self.columns_name = Utils.get_column_names(data)
+                data = data.reset_index(drop=True)
 
-        self._data = data
+            self.columns_name = Utils.get_column_names(data)
+
+            self._data = data
 
         return data
+        
 
     @property
     def data(self):
