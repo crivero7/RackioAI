@@ -20,8 +20,8 @@ class TPL:
 
         self.file_extension = ".tpl"
         self.doc = list()
-        self.genkey = list()
-        self.settings = list()
+        # self.genkey = list()
+        self.settings = dict()
         TPL._instances.append(self)
 
     def read(self, name, **kwargs):
@@ -113,7 +113,6 @@ class TPL:
 
         doc = dict()
 
-
         (data_header_section, data) = self.__get_section_from(filename)
         header_section = self.__get_header_section(data_header_section)
         (filename, _) = os.path.splitext(filename)
@@ -139,18 +138,27 @@ class TPL:
         # Read Genkey
 
         if hasattr(self, '_join_files'):
-            
+
             _attr = getattr(self, '_join_files')
 
             if not _attr:
 
-                genkey_filename = filename.split(os.path.sep)
+                # Doesn't work on Windows
+                # genkey_filename = filename.split(os.path.sep)
+                # genkey_filename.pop(-2)
+                # genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
+
+                # Works on Windows
+                genkey_filename = filename.split('\\')
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
+                genkey_filename = '\\'.join(
+                    [e for e in genkey_filename]) + '.genkey'
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
+                doc['genkey'] = genkey
 
-                # print(f"Genkey: {genkey}")
+                # Provisional meanwhile read settings is not implemented.
+                doc['settings'] = self.settings
 
         return doc
 
@@ -417,20 +425,25 @@ class TPL:
             new_data = list()
 
             for count, data in enumerate(self.doc):
+               
                 # print(f"data: {data}")
                 columns = data.keys()
-                attrs = [data[key] for key in columns]
+                attrs = [data[key] for key in columns if key != 'genkey' and key != 'settings']
+                # breakpoint()
                 index_name.append('Case{}'.format(count))
 
                 new_data.append({
-                    'tpl': pd.DataFrame(np.array(attrs).transpose(), columns=self.header)
+                    'tpl': pd.DataFrame(np.array(attrs).transpose(), columns=self.header),
+                    'genkey': data['genkey'],
+                    'settings': data['settings']
                 }
                 )
+            # breakpoint()
             # print(f"New Data: {new_data}")
-            data = pd.Series(new_data)
-            data.index = index_name
-
-            return data
+            # data = pd.Series(new_data)
+            # data.index = index_name
+            
+            return new_data
 
     def to(self, data_type, join_files: bool = True, **kwargs):
         """
@@ -862,8 +875,6 @@ class Genkey(dict):
         for key, val in self.items():
             if val == {}:
                 self[key] = None
-
-    
 
 
 if __name__ == "__main__":
