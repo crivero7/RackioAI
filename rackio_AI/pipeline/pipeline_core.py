@@ -33,7 +33,7 @@ class Pipeline(object):
 
     app = RackioAI()
 
-    def __call__(self, func_args, *args):
+    def __call__(self, func_args, *args, **kwargs):
         """
         Pipeline is too a callable object, so, when the Pipeline is called this function creates the pipeline
         architecture. Each component in the pipeline (function or method) may need input arguments in addition to its
@@ -102,7 +102,7 @@ class Pipeline(object):
         c = self.__sink(_sink)
         c.__next__() 
         t = c
-
+    
         # Define filters component
         filter_args = list(reversed(func_args[1:-1]))
         for i, stg in enumerate(reversed(args[1:-1])):
@@ -119,7 +119,7 @@ class Pipeline(object):
 
         return 
 
-    def start(self, initial_state):
+    def start(self, initial_state, **kwargs):
         """
         This method starts to run the pipeline architecture
 
@@ -133,7 +133,6 @@ class Pipeline(object):
 
         """
         try:
-            
             self._pipeline.send(initial_state)
         
         except StopPipeline:
