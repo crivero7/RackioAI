@@ -166,6 +166,7 @@ class RackioAI(Singleton):
 
             self.columns_name = Utils.get_column_names(data)
     
+        print(f"Data: {data[0]['tpl'].info()}")
         self._data = data
 
         return data
@@ -200,7 +201,8 @@ class RackioAI(Singleton):
 
         None
         """
-        if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray):
+        # print(f"Type: {type(value)} - Value: {value}")
+        if isinstance(value, pd.DataFrame) or isinstance(value, np.ndarray) or isinstance(value, list):
 
             if hasattr(self, '_data'):
 

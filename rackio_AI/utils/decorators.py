@@ -32,14 +32,15 @@ def decorator(declared_decorator):
 
 
 @decorator
-def chek_if_is_list(func, args, kwargs):
+def check_if_is_list(func, args, kwargs):
     # print(f"func: {func} - args: {args} - kwargs: {kwargs}")
     elem_to_check = args[1]
+    _self = args[0]
     new_result = list()
 
     if isinstance(elem_to_check, list):
 
-        print("Se hace la modificación y retornamos el mismo tipo de dato")
+        # print("Se hace la modificación y retornamos el mismo tipo de dato")
         for elem in elem_to_check:
 
             df = elem['tpl']
@@ -56,9 +57,10 @@ def chek_if_is_list(func, args, kwargs):
             )
 
         result = new_result
+        setattr(_self, 'etl_data', result)
 
     else:
-        print('Its not')
+        
         result = func(*args, **kwargs)
 
     # breakpoint()

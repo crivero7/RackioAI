@@ -1,10 +1,10 @@
-from tabnanny import check
+from itertools import chain
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
 from rackio_AI.utils.utils_core import Utils
-from rackio_AI.utils import chek_if_is_list
+from rackio_AI.utils import check_if_is_list
 from rackio_AI.pipeline import Pipeline
 from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
@@ -263,6 +263,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    @check_if_is_list
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert columns *data* in the dataframe *df* in the location *locs*
@@ -337,6 +338,7 @@ class RackioEDA(Pipeline):
         
         return
 
+    @check_if_is_list
     def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
@@ -374,7 +376,7 @@ class RackioEDA(Pipeline):
 
         return self._data_
 
-    @chek_if_is_list
+    @check_if_is_list
     def keep_columns(self, df, *args):
         """
         Keep columns in the data by their names
@@ -403,13 +405,12 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        print("Executing Keep Columns Method")
         
         self._data_ = df
         
         columns = df.columns.tolist()
         for arg in args:
-            print(f"arg: {arg}")
+            
             columns.remove(arg)
         # [columns.remove(arg) for arg in args]
 
@@ -612,6 +613,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
+    @check_if_is_list
     def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
@@ -641,7 +643,11 @@ class RackioEDA(Pipeline):
 
         ```
         """
-        self._column_ = df[label].values.tolist()
+        
+        self._column_ = list(chain.from_iterable(df[label].values.tolist()))
+        self._column_ = list(map(float, self._column_))
+
+        # print(f"DF Before: {df.head()}")
 
         if isinstance(start, datetime.datetime):
             
@@ -658,12 +664,11 @@ class RackioEDA(Pipeline):
         self._start_ = 0
 
         self.__create_datetime_index(self._column_)
-
-        df[label] = pd.DataFrame(self._new_time_column_, columns=[label])
+        # _df = pd.DataFrame(self._new_time_column_, columns=[label])
+        # df[label] = _df
         df.index = self._index_
         df.index.name = index_name
         self.data = df
-
         return df
 
     @ProgressBar(desc="Creating datetime index...", unit="datetime index")
@@ -688,7 +693,6 @@ class RackioEDA(Pipeline):
             self._start_ += 1
             
             return
-
         self._delta_.append(column - self._column_[self._start_ - 1])
 
         if self._delta_[self._start_] > 0:
@@ -705,6 +709,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    @check_if_is_list
     def resample(self, df, sample_time, label=None, datetime_format="%Y-%m-%d %H:%M:%S.%f", set_index=False):
         """
         Resample timeseries column in the dataframe *df*
@@ -761,6 +766,7 @@ class RackioEDA(Pipeline):
         df = df.reset_index()
         self._column_ = df[label].values
         if isinstance(self._column_[0], (str, np.datetime64)):
+
             base_time = pd.to_datetime(self._column_[0], format=datetime_format)
             self._column_ = pd.to_datetime(self._column_, format=datetime_format)
             self._column_ = (self._column_ - base_time).total_seconds()
@@ -846,6 +852,7 @@ class RackioEDA(Pipeline):
         """
         return
 
+    @check_if_is_list
     def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
@@ -907,6 +914,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    @check_if_is_list
     def print_report(
         self, 
         df: pd.DataFrame, 
