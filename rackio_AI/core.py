@@ -148,8 +148,8 @@ class RackioAI(Singleton):
 
         ```
         """
-        filename, ext = Utils.check_path(pathname, ext=ext)
 
+        filename, ext = Utils.check_path(pathname, ext=ext)
         data = self.reader.read(filename, ext=ext, join_files=join_files, **kwargs)
 
         if isinstance(data, pd.Series):
@@ -165,8 +165,8 @@ class RackioAI(Singleton):
                 data = data.reset_index(drop=True)
 
             self.columns_name = Utils.get_column_names(data)
-
-            self._data = data
+    
+        self._data = data
 
         return data
         
@@ -209,10 +209,20 @@ class RackioAI(Singleton):
                     self._data = pd.DataFrame(value, columns=self.columns_name)
 
                 else:
+                    # breakpoint()
+                    if isinstance(self._data, list):
+
+                        self._data = value
                     
                     if isinstance(self._data.columns, pd.MultiIndex):
 
-                        self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
+                        if hasattr(self, 'columns_name'):
+
+                            self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
+
+                        else:
+
+                            self.columns_name = pd.MultiIndex.from_tuples(value.columns, names=['tag', 'variable', 'unit'])
 
                     self._data = value
             

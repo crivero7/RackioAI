@@ -1,8 +1,10 @@
+from tabnanny import check
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from rackio_AI.core import RackioAI
 from rackio_AI.utils.utils_core import Utils
+from rackio_AI.utils import chek_if_is_list
 from rackio_AI.pipeline import Pipeline
 from rackio_AI.data_analysis.outliers import Outliers
 from rackio_AI.data_analysis.noise import Noise
@@ -372,6 +374,7 @@ class RackioEDA(Pipeline):
 
         return self._data_
 
+    @chek_if_is_list
     def keep_columns(self, df, *args):
         """
         Keep columns in the data by their names
@@ -400,14 +403,18 @@ class RackioEDA(Pipeline):
 
         ```
         """
-            
+        print("Executing Keep Columns Method")
+        
         self._data_ = df
-
+        
         columns = df.columns.tolist()
-        [columns.remove(arg) for arg in args]
+        for arg in args:
+            print(f"arg: {arg}")
+            columns.remove(arg)
+        # [columns.remove(arg) for arg in args]
 
         self.__remove_columns(columns)
-
+        # breakpoint()
         self.data = self._data_
 
         return self._data_
