@@ -36,7 +36,7 @@ class TestLoadPKL(unittest.TestCase):
 
         with self.subTest("Testing Number of Items"):
 
-            self.assertEqual(len(data[0]), 16)
+            self.assertEqual(len(data[0]), 18)
 
         case = data[0][0]
 

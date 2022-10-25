@@ -27,7 +27,7 @@ class TestLoad(unittest.TestCase):
 
         with self.subTest("Testing Number of Items"):
 
-            self.assertEqual(len(data), 16)
+            self.assertEqual(len(data), 18)
 
         case = data[0]
 

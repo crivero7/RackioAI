@@ -22,6 +22,16 @@ class DataWrangling(RackioEDA):
                 "kwargs":{'join_files': False}
             },
             {
+                "args": [],
+                "kwargs":{
+                    "KAPPA_POSITION_PIPELINE@19M": "KAPPA_POSITION_POS19M",
+                    "KAPPA_POSITION_PIPELINE@58M": "KAPPA_POSITION_POS58M",
+                    "PT_POSITION_PIPELINE@19M": "PT_POSITION_POS19M",
+                    "PT_POSITION_PIPELINE@58M": "PT_POSITION_POS58M",
+                    "PT_POSITION_PIPELINE@1378M": "PT_POSITION_POS1378M"
+                }
+            },
+            {
                 "args": [
                     ("KAPPA_POSITION_POS19M", "Compressibility_of_fluid", "1/Pa"),
                     ("KAPPA_POSITION_POS58M", "Compressibility_of_fluid", "1/Pa")
@@ -63,6 +73,7 @@ class DataWrangling(RackioEDA):
         self(
             func_args, #Method's arguments
             RackioAI.load, #Methods
+            self.rename_columns,
             self.remove_columns,
             self.keep_columns,
             self.add_column,

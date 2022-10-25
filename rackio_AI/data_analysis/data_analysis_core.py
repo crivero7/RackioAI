@@ -438,6 +438,7 @@ class RackioEDA(Pipeline):
 
         return
 
+    @check_if_is_list
     def rename_columns(self, df, **kwargs):
         """
         Rename column names in the dataframe *df*
