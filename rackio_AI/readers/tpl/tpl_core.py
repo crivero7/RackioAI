@@ -1,5 +1,6 @@
 import os
 import re
+import platform
 import numpy as np
 import pandas as pd
 from easy_deco import progress_bar, raise_error
@@ -148,11 +149,16 @@ class TPL:
                 genkey_filename.pop(-2)
                 genkey_filename = os.path.join(os.path.sep, *genkey_filename) + '.genkey'
 
-                # Works on Windows
-                # genkey_filename = filename.split('\\')
-                # genkey_filename.pop(-2)
-                # genkey_filename = '\\'.join(
-                #     [e for e in genkey_filename]) + '.genkey'
+                if platform.system().lower()=="windows":
+                    genkey_filename = filename.split('\\')
+                    genkey_filename.pop(-2)
+                    genkey_filename = '\\'.join(
+                        [e for e in genkey_filename]) + '.genkey'
+                else:
+                    genkey_filename = filename.split(os.path.sep)
+                    genkey_filename.pop(-2)
+                    genkey_filename = os.path.join(os.path.sep, *genkey_filename) + '.genkey'
+                    
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
                 doc['genkey'] = genkey
