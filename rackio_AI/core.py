@@ -26,6 +26,7 @@ class RackioAI(Singleton):
 
     ```
     """
+
     def __init__(self):
         super(RackioAI, self).__init__()
         self.reader = Reader()
@@ -42,7 +43,7 @@ class RackioAI(Singleton):
         """
         self.app = app
 
-    def load(self, pathname: str, ext: str=".tpl", reset_index=False, join_files:bool=True, **kwargs):
+    def load(self, pathname: str, ext: str = ".tpl", reset_index=False, join_files: bool = True, **kwargs):
         """
         Load data into DataFrame format:
 
@@ -150,27 +151,27 @@ class RackioAI(Singleton):
         """
 
         filename, ext = Utils.check_path(pathname, ext=ext)
-        data = self.reader.read(filename, ext=ext, join_files=join_files, **kwargs)
+        data = self.reader.read(
+            filename, ext=ext, join_files=join_files, **kwargs)
 
         if isinstance(data, pd.Series):
 
             self.columns_name = Utils.get_column_names(data)
-            
+
             if data.index.has_duplicates:
-            
+
                 data = data.reset_index(drop=True)
-            
+
             if reset_index:
 
                 data = data.reset_index(drop=True)
 
             self.columns_name = Utils.get_column_names(data)
-    
-        print(f"Data: {data[0]['tpl'].info()}")
+
+        # print(f"Data: {data[0]['tpl'].info()}")
         self._data = data
 
         return data
-        
 
     @property
     def data(self):
@@ -215,19 +216,21 @@ class RackioAI(Singleton):
                     if isinstance(self._data, list):
 
                         self._data = value
-                    
+
                     if isinstance(self._data.columns, pd.MultiIndex):
 
                         if hasattr(self, 'columns_name'):
 
-                            self.columns_name = pd.MultiIndex.from_tuples(self.columns_name, names=['tag', 'variable', 'unit'])
+                            self.columns_name = pd.MultiIndex.from_tuples(
+                                self.columns_name, names=['tag', 'variable', 'unit'])
 
                         else:
 
-                            self.columns_name = pd.MultiIndex.from_tuples(value.columns, names=['tag', 'variable', 'unit'])
+                            self.columns_name = pd.MultiIndex.from_tuples(
+                                value.columns, names=['tag', 'variable', 'unit'])
 
                     self._data = value
-            
+
             else:
 
                 self.columns_name = Utils.get_column_names(value)
@@ -262,9 +265,9 @@ class RackioAI(Singleton):
         ```
         """
         if "RackioEDA" in str(type(obj)):
-        
+
             self._data_analysis_manager.append(obj)
-        
+
         elif "Preprocessing" in str(type(obj)):
 
             self._preprocessing_manager.append(obj)
@@ -307,7 +310,7 @@ class RackioAI(Singleton):
             data = self._data_analysis_manager.get(name)
 
             if serialize:
-                
+
                 return data.serialize()
 
             return data
@@ -321,10 +324,11 @@ class RackioAI(Singleton):
                 return preprocess.serialize()
 
             return preprocess
-        
+
         else:
-            
-            raise TypeError('Is not possible get {} object from RackioAI'.format(_type))
+
+            raise TypeError(
+                'Is not possible get {} object from RackioAI'.format(_type))
 
         return
 
@@ -423,7 +427,7 @@ class RackioAI(Singleton):
 
                 pickle.dump(obj, file, protocol=protocol)
 
-            else: 
+            else:
 
                 pickle.dump(obj, file, protocol=HIGHEST_PROTOCOL)
 

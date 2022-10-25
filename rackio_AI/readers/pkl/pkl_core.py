@@ -42,16 +42,21 @@ class PKL:
         [5 rows x 12 columns]
 
         ```
-        """  
+        """
         self._df_ = list()
         self.__read(pathname, **kwargs)
         if 'shuffle' in kwargs:
             _shuffle = kwargs['shuffle']
             if _shuffle:
                 shuffle(self._df_)
-            
-        df = pd.concat(self._df_)
-            
+
+        if isinstance(self._df_, pd.DataFrame):
+            df = pd.concat(self._df_)
+
+            return df
+
+        df = self._df_
+
         return df
 
     @ProgressBar(desc="Reading .pkl files...", unit="file")
@@ -66,11 +71,11 @@ class PKL:
             _rip = pkl_options['remove_initial_points']
 
             _df.drop(index=_df.iloc[0:_rip, :].index.tolist(), inplace=True)
-        
+
         self._df_.append(_df)
 
         return
-    
+
 
 if __name__ == "__main__":
     # import doctest

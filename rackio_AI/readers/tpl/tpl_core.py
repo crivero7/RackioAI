@@ -146,7 +146,8 @@ class TPL:
                 # Doesn't work on Windows
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
+                genkey_filename = os.path.sep + \
+                    os.path.join(*genkey_filename) + '.genkey'
 
                 # Works on Windows
                 # genkey_filename = filename.split('\\')
@@ -425,10 +426,11 @@ class TPL:
             new_data = list()
 
             for count, data in enumerate(self.doc):
-               
+
                 # print(f"data: {data}")
                 columns = data.keys()
-                attrs = [data[key] for key in columns if key != 'genkey' and key != 'settings']
+                attrs = [data[key] for key in columns if key !=
+                         'genkey' and key != 'settings']
                 # breakpoint()
                 index_name.append('Case{}'.format(count))
 
@@ -442,7 +444,7 @@ class TPL:
             # print(f"New Data: {new_data}")
             # data = pd.Series(new_data)
             # data.index = index_name
-            
+
             return new_data
 
     def to(self, data_type, join_files: bool = True, **kwargs):
