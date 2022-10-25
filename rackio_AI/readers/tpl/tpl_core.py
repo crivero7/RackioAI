@@ -146,8 +146,7 @@ class TPL:
                 # Doesn't work on Windows
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.sep + \
-                    os.path.join(*genkey_filename) + '.genkey'
+                genkey_filename = os.path.join(os.path.sep, *genkey_filename) + '.genkey'
 
                 # Works on Windows
                 # genkey_filename = filename.split('\\')
