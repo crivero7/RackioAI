@@ -27,7 +27,7 @@ class TestLoadPKL(unittest.TestCase):
 
         :return:
         """
-        directory = os.path.join(get_directory())
+        directory = os.path.join(get_directory(os.path.join('Gasoline.pkl')))
         data = RackioAI.load(directory, ext=".pkl", join_files=False)
 
         with self.subTest("Testing List RackioAI.load"):
@@ -36,9 +36,9 @@ class TestLoadPKL(unittest.TestCase):
 
         with self.subTest("Testing Number of Items"):
 
-            self.assertEqual(len(data[0]), 18)
+            self.assertEqual(len(data), 18)
 
-        case = data[0][0]
+        case = data[0]
 
         with self.subTest("Testing Case as dict"):
 
