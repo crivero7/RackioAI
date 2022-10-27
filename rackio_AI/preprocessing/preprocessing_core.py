@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from rackio_AI.core import RackioAI
+from rackio_AI.utils import check_if_is_list
 from rackio_AI.preprocessing import RackioAIScaler, RackioAISplitter, KalmanFilter, LSTMDataPreparation
 from rackio_AI.preprocessing import SyntheticData, RackioAIFE
 
@@ -12,9 +13,9 @@ class Preprocessing:
     ```python
     >>> from rackio_AI import Preprocessing
     >>> preprocessing = Preprocessing(name='Preprocessing core', description='preprocessing for data', problem_type='regression')
-    
+
     ```
-    
+
     """
     scaler = RackioAIScaler()
     splitter = RackioAISplitter()
@@ -25,11 +26,11 @@ class Preprocessing:
     app = RackioAI()
 
     def __init__(
-        self, 
-        name: str='', 
-        description: str='', 
-        problem_type: str='regression'
-        ):
+        self,
+        name: str = '',
+        description: str = '',
+        problem_type: str = 'regression'
+    ):
         """
         Preprocessing instantiation
 
@@ -79,11 +80,11 @@ class Preprocessing:
         * **data:** (pandas.DataFrame)
         """
         if isinstance(value, np.ndarray):
-            
+
             self.app.data = pd.DataFrame(value)
-        
+
         else:
-            
+
             self.app.data = value
 
     @property
@@ -178,6 +179,35 @@ class Preprocessing:
 
         return self._name
 
+    def example(self, data, **kwargs):
+        r"""
+        Documentation here
+        """
+        print("Running example method")
+
+    @check_if_is_list
+    def get_train_test_split(self, data, input_cols, output_cols, train_size=0.7, test_size=0.3):
+        r"""
+        Documentation here
+        """
+        X = data.loc[:, input_cols].values
+        y = data.loc[:, output_cols].values
+        X_train, X_test, y_train, y_test = self.splitter.split(
+            X,
+            y,
+            train_size=train_size,
+            test_size=test_size
+        )
+
+        X_train = pd.DataFrame(X_train, columns=input_cols)
+        X_test = pd.DataFrame(X_test, columns=input_cols)
+        y_train = pd.DataFrame(y_train, columns=output_cols)
+        y_test = pd.DataFrame(y_test, columns=output_cols)
+        data_train = pd.concat([X_train, y_train], axis=1)
+        data_test = pd.concat([X_test, y_test], axis=1)
+
+        return data_train, data_test
+
 
 class Regression(Preprocessing):
     """
@@ -216,8 +246,9 @@ class Classification(Preprocessing):
         self._name = name
         self._description = description
 
-if __name__=="__main__":
-    
+
+if __name__ == "__main__":
+
     import doctest
 
     doctest.testmod()
