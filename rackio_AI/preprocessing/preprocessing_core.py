@@ -179,12 +179,6 @@ class Preprocessing:
 
         return self._name
 
-    def example(self, data, **kwargs):
-        r"""
-        Documentation here
-        """
-        print("Running example method")
-
     @check_if_is_list
     def get_train_test_split(self, data, input_cols, output_cols, train_size=0.7, test_size=0.3):
         r"""
