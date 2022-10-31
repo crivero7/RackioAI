@@ -185,6 +185,7 @@ class Preprocessing:
         Documentation here
         """
         # TODO Document this method and create its test
+        result = dict()
 
         X = data.loc[:, input_cols].values
         y = data.loc[:, output_cols].values
@@ -202,7 +203,10 @@ class Preprocessing:
         data_train = pd.concat([X_train, y_train], axis=1)
         data_test = pd.concat([X_test, y_test], axis=1)
 
-        return data_train, data_test
+        result['training'] = data_train
+        result['testing'] = data_test
+
+        return result
 
     @check_if_is_list
     def get_tensor(self, data, timesteps, input_cols=None, output_cols=None):
@@ -210,11 +214,15 @@ class Preprocessing:
         Documentation here
         """
         # TODO Decorate this fuction to handle tuple as input data
-        print("GETTING TENSORS!!!!")
-        x, y = self.lstm_data_preparation.split_sequences(
-            data, timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
+        # TODO Document this method and create its test
+        result = dict()
 
-        return x, y
+        if isinstance(data, dict):
+            for key in data.keys():
+                result[key] = self.lstm_data_preparation.split_sequences(
+            data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
+
+            return result
 
 
 class Regression(Preprocessing):
