@@ -184,6 +184,7 @@ class Preprocessing:
         r"""
         Documentation here
         """
+        # TODO Document this method and create its tests.
         if periods > 0:
             t = f"t+{periods}"
         else:
@@ -205,7 +206,7 @@ class Preprocessing:
         r"""
         Documentation here
         """
-        # TODO Document this method and create its test
+        # TODO Document this method and create its tests.
         result = dict()
 
         X = data.loc[:, input_cols].values
@@ -234,7 +235,7 @@ class Preprocessing:
         r"""
         Documentation here
         """
-        # TODO Document this method and create its test
+        # TODO Document this method and create its tests.
 
         result = dict()
 
