@@ -1,4 +1,6 @@
 import functools
+import logging
+
 
 def decorator(declared_decorator):
     """
@@ -16,13 +18,13 @@ def decorator(declared_decorator):
                 # This is used when actually executing the function that was decorated
 
                 return declared_decorator(func, a, kw, **kwargs)
-            
+
             return wrapper
-        
+
         if func is None:
-            
+
             return decorated
-        
+
         else:
             # The decorator was called without arguments, so the function should be
             # decorated immediately
@@ -31,38 +33,57 @@ def decorator(declared_decorator):
     return final_decorator
 
 
-@decorator
-def check_if_is_list(func, args, kwargs):
-    # print(f"func: {func} - args: {args} - kwargs: {kwargs}")
-    elem_to_check = args[1]
-    _self = args[0]
-    new_result = list()
+def check_if_is_list(one_key_dict: bool = False):
+    def _check_if_is_list(func):
+        @functools.wraps(func)
+        def decorated(*args, **kwargs):
+            try:
+                elem_to_check = args[1]
+                _self = args[0]
+                new_result = list()
 
-    if isinstance(elem_to_check, list):
+                if isinstance(elem_to_check, list):
+                    for elem in elem_to_check:
+                        # TODO Change df to read data from 'data' key also.
 
-        # print("Se hace la modificación y retornamos el mismo tipo de dato")
-        for elem in elem_to_check:
+                        if 'data' in elem.keys():
+                            df = elem['data']
+                        else:
+                            df = elem['tpl']
 
-            df = elem['tpl']
-            _args = [arg for arg in args[2:] if arg]
-            # print(args)
-            _result = func(args[0], df, *_args, **kwargs)
+                        _args = [arg for arg in args[2:] if arg]
+                        # print(args)
+                        _result = func(args[0], df, *_args, **kwargs)
 
-            new_result.append(
-                {
-                    'tpl': _result,
-                    'genkey': elem['genkey'],
-                    'settings': elem['settings']
-                }
-            )
+                        if not one_key_dict:
+                            new_result.append(
+                                {
+                                    'tpl': _result,
+                                    'genkey': elem['genkey'],
+                                    'settings': elem['settings']
+                                }
+                            )
+                        else:
+                            new_result.append(
+                                {
+                                    'data': _result
+                                }
+                            )
+                    result = new_result
+                    setattr(_self, 'etl_data', result)
 
-        result = new_result
-        setattr(_self, 'etl_data', result)
+                else:
 
-    else:
-        
-        result = func(*args, **kwargs)
+                    result = func(*args, **kwargs)
 
-    # breakpoint()
+                # breakpoint()
 
-    return result
+                return result
+
+            except Exception as err:
+
+                logging.ERROR(str(err))
+
+        return decorated
+
+    return _check_if_is_list

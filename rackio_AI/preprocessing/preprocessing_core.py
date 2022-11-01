@@ -179,7 +179,28 @@ class Preprocessing:
 
         return self._name
 
-    @check_if_is_list
+    @check_if_is_list()
+    def shift_columns(self, data, column_names: list, periods=1):
+        r"""
+        Documentation here
+        """
+        if periods > 0:
+            t = f"t+{periods}"
+        else:
+            t = f"t{periods}"
+
+        for name in column_names:
+            try:
+                data[(f"{name[0]} {t}", name[1], name[2])
+                     ] = data[name].shift(-1)
+            except Exception as err:
+                raise err
+
+        data = data.dropna()
+
+        return data
+
+    @check_if_is_list()
     def get_train_test_split(self, data, input_cols, output_cols, train_size=0.7, test_size=0.3):
         r"""
         Documentation here
@@ -208,19 +229,19 @@ class Preprocessing:
 
         return result
 
-    @check_if_is_list
+    @check_if_is_list(one_key_dict=True)
     def get_tensor(self, data, timesteps, input_cols=None, output_cols=None):
         r"""
         Documentation here
         """
-        # TODO Decorate this fuction to handle tuple as input data
         # TODO Document this method and create its test
+
         result = dict()
 
         if isinstance(data, dict):
             for key in data.keys():
                 result[key] = self.lstm_data_preparation.split_sequences(
-            data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
+                    data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
 
             return result
 
