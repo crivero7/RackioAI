@@ -202,6 +202,27 @@ class Preprocessing:
         return data
 
     @check_if_is_list()
+    def get_min_max_values(self, data, input_cols, output_cols):
+        r"""
+        Documentation here
+        """
+        result = dict()
+
+        inputs = data.loc[:, input_cols]
+        targets = data.loc[:, output_cols]
+        X_min = inputs.min().values
+        X_max = inputs.max().values
+        y_min = targets.min().values
+        y_max = targets.max().values
+
+        result['data'] = data
+        result['min_max_values'] = (
+            X_min, y_min, X_max, y_max
+        )
+
+        return result
+
+    @check_if_is_list()
     def get_train_test_split(self, data, input_cols, output_cols, train_size=0.7, test_size=0.3):
         r"""
         Documentation here
@@ -230,7 +251,7 @@ class Preprocessing:
 
         return result
 
-    @check_if_is_list(one_key_dict=True)
+    @check_if_is_list(tensor=True)
     def get_tensor(self, data, timesteps, input_cols=None, output_cols=None):
         r"""
         Documentation here

@@ -33,7 +33,7 @@ def decorator(declared_decorator):
     return final_decorator
 
 
-def check_if_is_list(one_key_dict: bool = False):
+def check_if_is_list(tensor: bool = False):
     def _check_if_is_list(func):
         @functools.wraps(func)
         def decorated(*args, **kwargs):
@@ -55,7 +55,7 @@ def check_if_is_list(one_key_dict: bool = False):
                         # print(args)
                         _result = func(args[0], df, *_args, **kwargs)
 
-                        if not one_key_dict:
+                        if not tensor:
                             new_result.append(
                                 {
                                     'tpl': _result,
@@ -66,7 +66,8 @@ def check_if_is_list(one_key_dict: bool = False):
                         else:
                             new_result.append(
                                 {
-                                    'data': _result
+                                    'data': _result,
+                                    'min_max_values': elem['min_max_values']
                                 }
                             )
                     result = new_result
