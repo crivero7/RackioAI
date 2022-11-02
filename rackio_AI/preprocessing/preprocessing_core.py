@@ -201,7 +201,7 @@ class Preprocessing:
 
         return data
 
-    @check_if_is_list()
+    @check_if_is_list(result_format='min_max')
     def get_min_max_values(self, data, input_cols, output_cols):
         r"""
         Documentation here
@@ -222,7 +222,7 @@ class Preprocessing:
 
         return result
 
-    @check_if_is_list()
+    @check_if_is_list(result_format='train_test_split')
     def get_train_test_split(self, data, input_cols, output_cols, train_size=0.7, test_size=0.3):
         r"""
         Documentation here
@@ -251,7 +251,7 @@ class Preprocessing:
 
         return result
 
-    @check_if_is_list(tensor=True)
+    @check_if_is_list(result_format='tensor')
     def get_tensor(self, data, timesteps, input_cols=None, output_cols=None):
         r"""
         Documentation here
@@ -262,8 +262,9 @@ class Preprocessing:
 
         if isinstance(data, dict):
             for key in data.keys():
-                result[key] = self.lstm_data_preparation.split_sequences(
-                    data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
+                if key == 'training' or key == 'testing':
+                    result[key] = self.lstm_data_preparation.split_sequences(
+                        data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
 
             return result
 

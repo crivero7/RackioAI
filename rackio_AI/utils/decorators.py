@@ -33,16 +33,21 @@ def decorator(declared_decorator):
     return final_decorator
 
 
-def check_if_is_list(tensor: bool = False):
+def check_if_is_list(result_format: str = ''):
+    # TODO document this decorator
+
     def _check_if_is_list(func):
         @functools.wraps(func)
         def decorated(*args, **kwargs):
+
+            _result_format = result_format.strip().lower()
             try:
                 elem_to_check = args[1]
                 _self = args[0]
                 new_result = list()
 
                 if isinstance(elem_to_check, list):
+
                     for elem in elem_to_check:
                         # TODO Change df to read data from 'data' key also.
 
@@ -55,7 +60,7 @@ def check_if_is_list(tensor: bool = False):
                         # print(args)
                         _result = func(args[0], df, *_args, **kwargs)
 
-                        if not tensor:
+                        if not _result_format:
                             new_result.append(
                                 {
                                     'tpl': _result,
@@ -63,7 +68,17 @@ def check_if_is_list(tensor: bool = False):
                                     'settings': elem['settings']
                                 }
                             )
-                        else:
+                        elif _result_format == 'min_max':
+                            new_result.append(
+                                {
+                                    'data': _result['data'],
+                                    'min_max_values': _result['min_max_values']
+                                }
+                            )
+                        elif _result_format == 'train_test_split' or _result_format == 'tensor':
+                            if 'min_max_values' not in elem.keys():
+                                elem['min_max_values'] = None
+
                             new_result.append(
                                 {
                                     'data': _result,
