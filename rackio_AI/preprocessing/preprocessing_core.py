@@ -186,9 +186,9 @@ class Preprocessing:
         """
         # TODO Document this method and create its tests.
         if periods > 0:
-            t = f"t+{periods}"
+            t = f"t-{periods}"
         else:
-            t = f"t{periods}"
+            t = f"t+{abs(periods)}"
 
         for name in column_names:
             try:
