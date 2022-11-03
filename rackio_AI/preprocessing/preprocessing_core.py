@@ -268,6 +268,48 @@ class Preprocessing:
 
             return result
 
+    def get_overall_min_max_values(self, data: list):
+        r"""
+        Documentation here
+        """
+        assert isinstance(data, list), "Data must be a list!"
+
+        new_data_dict = dict()
+        new_data_dict['data'] = list()
+        min_max_vals = None
+
+        try:
+            for el in data:
+                vals = el['min_max_values']
+
+                new_data_dict['data'].append(
+                    el['data']
+                )
+
+                if not min_max_vals:
+                    min_max_vals = vals
+                    continue
+
+                # X_min
+                min_max_vals[0][vals[0] < min_max_vals[0]
+                                ] = vals[0][vals[0] < min_max_vals[0]]
+                # y_min
+                min_max_vals[1][vals[1] < min_max_vals[1]
+                                ] = vals[1][vals[1] < min_max_vals[1]]
+                # X_max
+                min_max_vals[2][vals[2] > min_max_vals[2]
+                                ] = vals[2][vals[2] > min_max_vals[2]]
+                # y_max
+                min_max_vals[2][vals[2] > min_max_vals[2]
+                                ] = vals[2][vals[2] > min_max_vals[2]]
+
+            new_data_dict['min_max_values'] = min_max_vals
+
+        except ValueError as err:
+            raise err
+
+        return new_data_dict
+
 
 class Regression(Preprocessing):
     """
