@@ -272,6 +272,8 @@ class Preprocessing:
         r"""
         Documentation here
         """
+        # TODO Document this method and create its tests.
+
         assert isinstance(data, list), "Data must be a list!"
 
         new_data_dict = dict()
