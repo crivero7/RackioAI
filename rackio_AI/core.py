@@ -168,6 +168,10 @@ class RackioAI(Singleton):
 
             self.columns_name = Utils.get_column_names(data)
 
+        if isinstance(data, list):
+            if len(data) == 1:
+                data = data[0]
+
         # print(f"Data: {data[0]['tpl'].info()}")
         self._data = data
 

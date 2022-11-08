@@ -263,7 +263,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def insert_columns(self, df, data, column_names, locs=[], allow_duplicates=False):
         """
         Insert columns *data* in the dataframe *df* in the location *locs*
@@ -338,7 +338,7 @@ class RackioEDA(Pipeline):
         
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def remove_columns(self, df, *args):
         """
         Remove columns in the data by their names
@@ -376,7 +376,7 @@ class RackioEDA(Pipeline):
 
         return self._data_
 
-    @check_if_is_list
+    @check_if_is_list()
     def keep_columns(self, df, *args):
         """
         Keep columns in the data by their names
@@ -438,7 +438,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def rename_columns(self, df, **kwargs):
         """
         Rename column names in the dataframe *df*
@@ -614,7 +614,7 @@ class RackioEDA(Pipeline):
 
         return self.data
 
-    @check_if_is_list
+    @check_if_is_list()
     def set_datetime_index(self, df, label, index_name, start=datetime.datetime.now(), format="%Y-%m-%d %H:%M:%S"):
         """
         Set index in dataframe *df* in datetime format
@@ -710,7 +710,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def resample(self, df, sample_time, label=None, datetime_format="%Y-%m-%d %H:%M:%S.%f", set_index=False):
         """
         Resample timeseries column in the dataframe *df*
@@ -853,7 +853,7 @@ class RackioEDA(Pipeline):
         """
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def reset_index(self, df: pd.DataFrame, drop: bool=False):
         """
         Reset index in the dataframe *df*
@@ -915,7 +915,7 @@ class RackioEDA(Pipeline):
 
         return
 
-    @check_if_is_list
+    @check_if_is_list()
     def print_report(
         self, 
         df: pd.DataFrame, 
