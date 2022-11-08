@@ -147,9 +147,10 @@ class TPL:
                 # Doesn't work on Windows
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.join(os.path.sep, *genkey_filename) + '.genkey'
+                genkey_filename = os.path.join(
+                    os.path.sep, *genkey_filename) + '.genkey'
 
-                if platform.system().lower()=="windows":
+                if platform.system().lower() == "windows":
                     genkey_filename = filename.split('\\')
                     genkey_filename.pop(-2)
                     genkey_filename = '\\'.join(
@@ -157,8 +158,9 @@ class TPL:
                 else:
                     genkey_filename = filename.split(os.path.sep)
                     genkey_filename.pop(-2)
-                    genkey_filename = os.path.join(os.path.sep, *genkey_filename) + '.genkey'
-                    
+                    genkey_filename = os.path.join(
+                        os.path.sep, *genkey_filename) + '.genkey'
+
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
                 doc['genkey'] = genkey
@@ -646,6 +648,8 @@ class Genkey(dict):
     #                 self.set_previous_item(_item)
 
     #         self.__clean_last_key()
+
+    # TODO: Refactor and document the class' methods.
 
     def clean_lines(self, lines: str):
         '''
