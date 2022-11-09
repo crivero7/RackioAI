@@ -34,7 +34,8 @@ def decorator(declared_decorator):
 
 
 def check_if_is_list(result_format: str = ''):
-    # TODO document this decorator
+    # TODO: document this decorator
+    # TODO: refactor this decorator. It does too many things.
 
     def _check_if_is_list(func):
         @functools.wraps(func)
@@ -47,6 +48,15 @@ def check_if_is_list(result_format: str = ''):
                 new_result = list()
 
                 if isinstance(elem_to_check, list):
+
+                    if all(isinstance(el, list) for el in elem_to_check):
+                        flat_list = []
+                        for sublist in elem_to_check:
+                            for item in sublist:
+                                flat_list.append(item)
+
+                        elem_to_check = flat_list
+                        del flat_list
 
                     for elem in elem_to_check:
                         # TODO Change df to read data from 'data' key also.
