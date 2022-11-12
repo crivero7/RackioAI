@@ -752,6 +752,7 @@ class RackioEDA(Pipeline):
 
         ```
         """
+        print(f"Sample Time: {sample_time} - Label: {label}")
         self._rows_to_delete_ = list()
         self._rows_to_keep_ = list()
         self._datetime = False
@@ -805,8 +806,10 @@ class RackioEDA(Pipeline):
             self._row_ += 1
             
             return
-        
-        delta = column - self._column_[self._row_ - 1]
+        if isinstance(column, list):
+            delta = float(column[0]) - float(self._column_[self._row_ - 1][0])
+        else:
+            delta = column - self._column_[self._row_ - 1]
         self._diff += delta 
         self._diff_ =  freq * len(self._rows_to_keep_)
 
