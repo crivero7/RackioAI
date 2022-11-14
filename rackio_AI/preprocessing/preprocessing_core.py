@@ -246,8 +246,8 @@ class Preprocessing:
         data_train = pd.concat([X_train, y_train], axis=1)
         data_test = pd.concat([X_test, y_test], axis=1)
 
-        result['training'] = data_train
-        result['testing'] = data_test
+        result['train_dataset'] = data_train
+        result['test_dataset'] = data_test
 
         return result
 
@@ -262,7 +262,7 @@ class Preprocessing:
 
         if isinstance(data, dict):
             for key in data.keys():
-                if key == 'training' or key == 'testing':
+                if key == 'train_dataset' or key == 'test_dataset':
                     result[key] = self.lstm_data_preparation.split_sequences(
                         data[key], timesteps=timesteps, input_cols=input_cols, output_cols=output_cols, dtype='float')
 
