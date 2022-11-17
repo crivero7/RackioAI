@@ -2,7 +2,6 @@ import pandas as pd
 from easy_deco.progress_bar import ProgressBar
 from easy_deco.del_temp_attr import set_to_methods, del_temp_attr
 import pickle
-import pickle5
 from random import shuffle
 
 
@@ -66,10 +65,8 @@ class PKL:
         Read (pkl) file into DataFrame.
         """
         with open(pathname, 'rb') as f:
-            try:
-                _df = pickle.load(f)
-            except:
-                _df = pickle5.load(f)
+
+            _df = pickle.load(f)
 
         if 'remove_initial_points' in pkl_options:
             _rip = pkl_options['remove_initial_points']
