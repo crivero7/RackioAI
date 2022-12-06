@@ -777,6 +777,10 @@ class Genkey(dict):
                 k_v[key] = val
                 continue
 
+            if re.search(r'PVTFILE', key) and not re.search(r'\(\"\.\./|\(\"\w+', val):
+                k_v[key] = val.replace('"', '')
+                continue
+
             if pattern.search(val):
                 if re.search(r'TERMINALS', key):
                     val = val.replace('(', '').replace(')',
