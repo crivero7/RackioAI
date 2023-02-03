@@ -27,7 +27,7 @@ class TestLoad(unittest.TestCase):
 
         with self.subTest("Testing Number of Items"):
 
-            self.assertEqual(len(data), 18)
+            self.assertEqual(len(data), 19)
 
         case = data[0]
 
@@ -37,12 +37,13 @@ class TestLoad(unittest.TestCase):
 
         with self.subTest("Testing Case structure"):
 
-            self.assertListEqual(list(case.keys()), ['tpl', 'genkey', 'settings'])
+            self.assertListEqual(list(case.keys()), [
+                                 'tpl', 'genkey', 'settings'])
 
         with self.subTest("Testing TPL instance"):
 
             self.assertIsInstance(case['tpl'], DataFrame)
-        
+
         with self.subTest("Testing genkey instance"):
 
             self.assertIsInstance(case['genkey'], dict)
@@ -50,5 +51,3 @@ class TestLoad(unittest.TestCase):
         with self.subTest("Testing settings instance"):
 
             self.assertIsInstance(case['settings'], dict)
-
-

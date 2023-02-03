@@ -158,7 +158,8 @@ class TPL:
                 else:
                     genkey_filename = filename.split(os.path.sep)
                     genkey_filename.pop(-2)
-                    genkey_filename = os.path.join(*genkey_filename) + '.genkey'
+                    genkey_filename = os.path.sep + \
+                        os.path.join(*genkey_filename) + '.genkey'
 
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
@@ -774,6 +775,10 @@ class Genkey(dict):
             if re.search(r'^INFO', key):
                 val = val.replace('"', '')
                 k_v[key] = val
+                continue
+
+            if re.search(r'PVTFILE', key) and not re.search(r'\(\"\.\./|\(\"\w+', val):
+                k_v[key] = val.replace('"', '')
                 continue
 
             if pattern.search(val):
