@@ -146,15 +146,7 @@ class TPL:
 
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                
-                try:
-                    
-                    genkey_filename = os.path.join(*genkey_filename) + '.genkey'
-                
-                except:
-
-                    genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
-
+                genkey_filename = os.path.join(*genkey_filename) + '.genkey'
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
                 doc['genkey'] = genkey
@@ -828,9 +820,16 @@ class Genkey(dict):
         '''
         assert isinstance(
             filename, str), f'filename must be a string! Not {type(filename)}'
+        
+        try:
 
-        with open(filename, 'r') as f:
-            file = f.read()
+            with open(filename, 'r') as f:
+                file = f.read()
+
+        except:
+
+            with open(os.path.sep + os.path.join(filename), 'r') as f:
+                file = f.read()
 
         # Splitting Genkey in principal elements
         split_genkey_elements_pattern = re.compile('\s\n')
