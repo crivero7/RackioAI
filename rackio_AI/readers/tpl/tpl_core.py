@@ -146,7 +146,14 @@ class TPL:
 
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.join(*genkey_filename) + '.genkey'
+                
+                try:
+                    
+                    genkey_filename = os.path.join(*genkey_filename) + '.genkey'
+                
+                except:
+
+                    genkey_filename = os.path.sep + os.path.join(*genkey_filename) + '.genkey'
 
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
