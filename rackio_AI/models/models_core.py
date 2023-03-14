@@ -129,15 +129,15 @@ class RackioDNN(FactoryRackioDNN):
         r"""
         Documentation here
         """
-        X, y = dataset['train_dataset']
+        X, y = dataset['test_dataset']
         
-        if dataset_type.lower()=="testing":
+        if dataset_type.lower()=="training":
             
-            X, y = dataset['test_dataset']
+            X, y = dataset['train_dataset']
 
         if dataset_type.lower()=="all":
-            X_test, y_test = dataset['test_dataset']
-            X , y = np.concatenate((X, X_test), axis=0), np.concatenate((y, y_test), axis=0)
+            X_train, y_train = dataset['train_dataset']
+            X , y = np.concatenate((X, X_train), axis=0), np.concatenate((y, y_train), axis=0)
         
         y = y.reshape((y.shape[0], 1))
         y_predict = cls.predict(X)
