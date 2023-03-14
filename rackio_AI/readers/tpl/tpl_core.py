@@ -144,22 +144,9 @@ class TPL:
 
             if not _attr:
 
-                # Doesn't work on Windows
                 genkey_filename = filename.split(os.path.sep)
                 genkey_filename.pop(-2)
-                genkey_filename = os.path.join(
-                    os.path.sep, *genkey_filename) + '.genkey'
-
-                if platform.system().lower() == "windows":
-                    genkey_filename = filename.split('\\')
-                    genkey_filename.pop(-2)
-                    genkey_filename = '\\'.join(
-                        [e for e in genkey_filename]) + '.genkey'
-                else:
-                    genkey_filename = filename.split(os.path.sep)
-                    genkey_filename.pop(-2)
-                    genkey_filename = os.path.sep + \
-                        os.path.join(*genkey_filename) + '.genkey'
+                genkey_filename = os.path.join(*genkey_filename) + '.genkey'
 
                 genkey = Genkey()
                 genkey.read(filename=genkey_filename)
